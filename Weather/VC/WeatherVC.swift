@@ -16,6 +16,7 @@ class WeatherVC: UIViewController {
     private var currentWeatherColorView: UIView!
     private var nameAndTemperatureStackView: UIStackView!
     private var iconAndColorStackView: UIStackView!
+    private var goToCityChooserButton: UIBarButtonItem!
     
     private lazy var guide = self.view.layoutMarginsGuide
     
@@ -40,6 +41,7 @@ class WeatherVC: UIViewController {
         configureCurrentWeatherIconImageView()
         configureCurrentWeatherColorView()
         configureIconAndColorStackView()
+        configureGoToChooseButtonItem()
     }
     
     private func configureSelf() {
@@ -58,7 +60,6 @@ class WeatherVC: UIViewController {
         networkManager.getCoordinateByName(cityName: "Гомель") { geoResponce in
             DispatchQueue.main.async {
                 print(geoResponce)
-                
             }
         }
         
@@ -127,5 +128,16 @@ class WeatherVC: UIViewController {
         ])
     }
     
+    private func configureGoToChooseButtonItem() {
+        goToCityChooserButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))
+        self.navigationItem.rightBarButtonItem = goToCityChooserButton
+    }
+    
+    //MARK: - Selectors
+    @objc
+    private func goToCityChooserVC() {
+        let vc = CityChooserVC()
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
