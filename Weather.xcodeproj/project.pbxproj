@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C70AEB4A2A55C0D9006CABF6 /* temperatureColors.csv in Resources */ = {isa = PBXBuildFile; fileRef = C70AEB492A55C0D9006CABF6 /* temperatureColors.csv */; };
+		C70AEB512A55C196006CABF6 /* TemperatureColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB502A55C196006CABF6 /* TemperatureColor.swift */; };
+		C70AEB542A55C399006CABF6 /* TemperatureParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB532A55C399006CABF6 /* TemperatureParser.swift */; };
+		C70AEB562A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB552A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift */; };
 		C72B99E92A556A3300C5088E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99E82A556A3300C5088E /* AppDelegate.swift */; };
 		C72B99EB2A556A3300C5088E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99EA2A556A3300C5088E /* SceneDelegate.swift */; };
 		C72B99ED2A556A3300C5088E /* WeatherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99EC2A556A3300C5088E /* WeatherVC.swift */; };
@@ -15,6 +19,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C70AEB492A55C0D9006CABF6 /* temperatureColors.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = temperatureColors.csv; sourceTree = "<group>"; };
+		C70AEB502A55C196006CABF6 /* TemperatureColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureColor.swift; sourceTree = "<group>"; };
+		C70AEB532A55C399006CABF6 /* TemperatureParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureParser.swift; sourceTree = "<group>"; };
+		C70AEB552A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+GetTemperatureColor.swift"; sourceTree = "<group>"; };
 		C72B99E52A556A3300C5088E /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72B99E82A556A3300C5088E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C72B99EA2A556A3300C5088E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -35,6 +43,59 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C70AEB4B2A55C0F6006CABF6 /* VC */ = {
+			isa = PBXGroup;
+			children = (
+				C72B99EC2A556A3300C5088E /* WeatherVC.swift */,
+			);
+			path = VC;
+			sourceTree = "<group>";
+		};
+		C70AEB4C2A55C117006CABF6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C72B99E82A556A3300C5088E /* AppDelegate.swift */,
+				C72B99EA2A556A3300C5088E /* SceneDelegate.swift */,
+				C72B99F12A556A3500C5088E /* Assets.xcassets */,
+				C72B99F32A556A3500C5088E /* LaunchScreen.storyboard */,
+				C72B99F62A556A3500C5088E /* Info.plist */,
+				C70AEB492A55C0D9006CABF6 /* temperatureColors.csv */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C70AEB4D2A55C143006CABF6 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C70AEB522A55C335006CABF6 /* TemperatureColor */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C70AEB4E2A55C14C006CABF6 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		C70AEB4F2A55C154006CABF6 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C70AEB522A55C335006CABF6 /* TemperatureColor */ = {
+			isa = PBXGroup;
+			children = (
+				C70AEB552A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift */,
+				C70AEB502A55C196006CABF6 /* TemperatureColor.swift */,
+				C70AEB532A55C399006CABF6 /* TemperatureParser.swift */,
+			);
+			path = TemperatureColor;
+			sourceTree = "<group>";
+		};
 		C72B99DC2A556A3300C5088E = {
 			isa = PBXGroup;
 			children = (
@@ -54,12 +115,11 @@
 		C72B99E72A556A3300C5088E /* Weather */ = {
 			isa = PBXGroup;
 			children = (
-				C72B99E82A556A3300C5088E /* AppDelegate.swift */,
-				C72B99EA2A556A3300C5088E /* SceneDelegate.swift */,
-				C72B99EC2A556A3300C5088E /* WeatherVC.swift */,
-				C72B99F12A556A3500C5088E /* Assets.xcassets */,
-				C72B99F32A556A3500C5088E /* LaunchScreen.storyboard */,
-				C72B99F62A556A3500C5088E /* Info.plist */,
+				C70AEB4F2A55C154006CABF6 /* Extensions */,
+				C70AEB4E2A55C14C006CABF6 /* Networking */,
+				C70AEB4D2A55C143006CABF6 /* Models */,
+				C70AEB4C2A55C117006CABF6 /* Resources */,
+				C70AEB4B2A55C0F6006CABF6 /* VC */,
 			);
 			path = Weather;
 			sourceTree = "<group>";
@@ -123,6 +183,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C72B99F52A556A3500C5088E /* LaunchScreen.storyboard in Resources */,
+				C70AEB4A2A55C0D9006CABF6 /* temperatureColors.csv in Resources */,
 				C72B99F22A556A3500C5088E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,8 +195,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C70AEB542A55C399006CABF6 /* TemperatureParser.swift in Sources */,
+				C70AEB562A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift in Sources */,
 				C72B99ED2A556A3300C5088E /* WeatherVC.swift in Sources */,
 				C72B99E92A556A3300C5088E /* AppDelegate.swift in Sources */,
+				C70AEB512A55C196006CABF6 /* TemperatureColor.swift in Sources */,
 				C72B99EB2A556A3300C5088E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -277,7 +341,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C5K64GS5PN;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Weather/Info.plist;
+				INFOPLIST_FILE = Weather/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -308,7 +372,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = C5K64GS5PN;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Weather/Info.plist;
+				INFOPLIST_FILE = Weather/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
