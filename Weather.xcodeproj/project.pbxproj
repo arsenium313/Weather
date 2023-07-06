@@ -16,9 +16,9 @@
 		C70AEB5D2A56A6B5006CABF6 /* weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB5C2A56A6B5006CABF6 /* weather.swift */; };
 		C70AEB5F2A56A75B006CABF6 /* mainValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB5E2A56A75B006CABF6 /* mainValues.swift */; };
 		C70AEB612A56A811006CABF6 /* wind.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB602A56A811006CABF6 /* wind.swift */; };
-		C70AEB632A56A88E006CABF6 /* rain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB622A56A88E006CABF6 /* rain.swift */; };
 		C70AEB652A56A9F3006CABF6 /* clouds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB642A56A9F3006CABF6 /* clouds.swift */; };
 		C70AEB672A56AA3E006CABF6 /* sys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB662A56AA3E006CABF6 /* sys.swift */; };
+		C70AEB692A56AC01006CABF6 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB682A56AC01006CABF6 /* NetworkManager.swift */; };
 		C72B99E92A556A3300C5088E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99E82A556A3300C5088E /* AppDelegate.swift */; };
 		C72B99EB2A556A3300C5088E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99EA2A556A3300C5088E /* SceneDelegate.swift */; };
 		C72B99ED2A556A3300C5088E /* WeatherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99EC2A556A3300C5088E /* WeatherVC.swift */; };
@@ -36,9 +36,9 @@
 		C70AEB5C2A56A6B5006CABF6 /* weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = weather.swift; sourceTree = "<group>"; };
 		C70AEB5E2A56A75B006CABF6 /* mainValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mainValues.swift; sourceTree = "<group>"; };
 		C70AEB602A56A811006CABF6 /* wind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = wind.swift; sourceTree = "<group>"; };
-		C70AEB622A56A88E006CABF6 /* rain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = rain.swift; sourceTree = "<group>"; };
 		C70AEB642A56A9F3006CABF6 /* clouds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clouds.swift; sourceTree = "<group>"; };
 		C70AEB662A56AA3E006CABF6 /* sys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sys.swift; sourceTree = "<group>"; };
+		C70AEB682A56AC01006CABF6 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		C72B99E52A556A3300C5088E /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72B99E82A556A3300C5088E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C72B99EA2A556A3300C5088E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -92,6 +92,7 @@
 		C70AEB4E2A55C14C006CABF6 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				C70AEB682A56AC01006CABF6 /* NetworkManager.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -121,7 +122,6 @@
 				C70AEB5C2A56A6B5006CABF6 /* weather.swift */,
 				C70AEB5E2A56A75B006CABF6 /* mainValues.swift */,
 				C70AEB602A56A811006CABF6 /* wind.swift */,
-				C70AEB622A56A88E006CABF6 /* rain.swift */,
 				C70AEB642A56A9F3006CABF6 /* clouds.swift */,
 				C70AEB662A56AA3E006CABF6 /* sys.swift */,
 			);
@@ -231,7 +231,6 @@
 				C70AEB592A56A602006CABF6 /* coord.swift in Sources */,
 				C70AEB542A55C399006CABF6 /* TemperatureParser.swift in Sources */,
 				C70AEB562A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift in Sources */,
-				C70AEB632A56A88E006CABF6 /* rain.swift in Sources */,
 				C70AEB672A56AA3E006CABF6 /* sys.swift in Sources */,
 				C72B99ED2A556A3300C5088E /* WeatherVC.swift in Sources */,
 				C72B99E92A556A3300C5088E /* AppDelegate.swift in Sources */,
@@ -239,6 +238,7 @@
 				C70AEB5F2A56A75B006CABF6 /* mainValues.swift in Sources */,
 				C72B99EB2A556A3300C5088E /* SceneDelegate.swift in Sources */,
 				C70AEB5B2A56A655006CABF6 /* WeatherResponce.swift in Sources */,
+				C70AEB692A56AC01006CABF6 /* NetworkManager.swift in Sources */,
 				C70AEB612A56A811006CABF6 /* wind.swift in Sources */,
 				C70AEB5D2A56A6B5006CABF6 /* weather.swift in Sources */,
 			);

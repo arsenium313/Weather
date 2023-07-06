@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Main: Encodable {
+struct Main: Decodable {
     let temp: Double
     let feels_like: Double
     let temp_min: Double

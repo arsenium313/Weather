@@ -7,10 +7,11 @@
 
 import Foundation
 
-struct Sys: Encodable {
-    let type: Int
-    let id: Int
-    let country: String
-    let sunrise: Int
+struct Sys: Decodable {
+    let type: Int?
+    let id: Int?
+    let message: String?
+    let country: String?
+    let sunrise: Int?
     let sunset: Int
 }

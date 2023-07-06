@@ -19,7 +19,7 @@ extension UIColor {
         var a: CGFloat = 0
         
         for i in values {
-            if i.value == temperature {
+            if i.value == temperature.rounded(.toNearestOrAwayFromZero) {
                 r = CGFloat(i.r) / 255
                 g = CGFloat(i.g) / 255
                 b = CGFloat(i.b) / 255

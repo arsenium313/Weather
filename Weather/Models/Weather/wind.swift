@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Wind: Encodable {
+struct Wind: Decodable {
     let speed: Double
     let deg: Int
     let gust: Double

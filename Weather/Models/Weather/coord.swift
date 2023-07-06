@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Coord: Encodable {
+struct Coord: Decodable {
     let lon: Double
     let lat: Double
 }

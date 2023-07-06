@@ -19,11 +19,15 @@ class WeatherVC: UIViewController {
     
     private lazy var guide = self.view.layoutMarginsGuide
     
+    private let networkManager = NetworkManager()
+    private var weatherResponce: WeatherResponce!
     
     //MARK: - VIew Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        
+        
     }
     
     
@@ -41,6 +45,16 @@ class WeatherVC: UIViewController {
     private func configureSelf() {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.navigationItem.title = "Weather"
+        
+        
+        networkManager.getWeather(coord: Coord(lon: 52.43, lat: 30.97)) { weatherResponce in
+            DispatchQueue.main.async {
+                self.weatherResponce = weatherResponce
+                self.cityNameLabel.text = weatherResponce.name
+                self.currentTemperatureLabel.text = String(weatherResponce.main.temp)
+                self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.main.temp)
+            }
+        }
     }
     
     private func configureCityNameLabel() {
@@ -60,7 +74,7 @@ class WeatherVC: UIViewController {
     
     private func configureCurrentWeatherColorView() {
         currentWeatherColorView = UIView()
-        currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: 0)
+        currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: 2.99)
         currentWeatherColorView.translatesAutoresizingMaskIntoConstraints = false
     }
     
