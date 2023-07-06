@@ -46,7 +46,6 @@ class WeatherVC: UIViewController {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.navigationItem.title = "Weather"
         
-        
         networkManager.getWeather(coord: Coord(lon: 52.43, lat: 30.97)) { weatherResponce in
             DispatchQueue.main.async {
                 self.weatherResponce = weatherResponce
@@ -55,6 +54,14 @@ class WeatherVC: UIViewController {
                 self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.main.temp)
             }
         }
+        
+        networkManager.getCoordinateByName(cityName: "Гомель") { geoResponce in
+            DispatchQueue.main.async {
+                print(geoResponce)
+                
+            }
+        }
+        
     }
     
     private func configureCityNameLabel() {

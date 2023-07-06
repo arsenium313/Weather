@@ -24,6 +24,8 @@
 		C72B99ED2A556A3300C5088E /* WeatherVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99EC2A556A3300C5088E /* WeatherVC.swift */; };
 		C72B99F22A556A3500C5088E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C72B99F12A556A3500C5088E /* Assets.xcassets */; };
 		C72B99F52A556A3500C5088E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C72B99F32A556A3500C5088E /* LaunchScreen.storyboard */; };
+		C7C8C2452A56CA8F005E6392 /* GeoResponce.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C8C2442A56CA8F005E6392 /* GeoResponce.swift */; };
+		C7C8C2472A56CB76005E6392 /* localNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C8C2462A56CB76005E6392 /* localNames.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,8 @@
 		C72B99F12A556A3500C5088E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C72B99F42A556A3500C5088E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C72B99F62A556A3500C5088E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C7C8C2442A56CA8F005E6392 /* GeoResponce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoResponce.swift; sourceTree = "<group>"; };
+		C7C8C2462A56CB76005E6392 /* localNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = localNames.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +87,7 @@
 		C70AEB4D2A55C143006CABF6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C7C8C2432A56CA4D005E6392 /* CItyCoordFinder */,
 				C70AEB572A56A4A6006CABF6 /* Weather */,
 				C70AEB522A55C335006CABF6 /* TemperatureColor */,
 			);
@@ -154,6 +159,15 @@
 				C70AEB4B2A55C0F6006CABF6 /* VC */,
 			);
 			path = Weather;
+			sourceTree = "<group>";
+		};
+		C7C8C2432A56CA4D005E6392 /* CItyCoordFinder */ = {
+			isa = PBXGroup;
+			children = (
+				C7C8C2442A56CA8F005E6392 /* GeoResponce.swift */,
+				C7C8C2462A56CB76005E6392 /* localNames.swift */,
+			);
+			path = CItyCoordFinder;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -237,10 +251,12 @@
 				C70AEB512A55C196006CABF6 /* TemperatureColor.swift in Sources */,
 				C70AEB5F2A56A75B006CABF6 /* mainValues.swift in Sources */,
 				C72B99EB2A556A3300C5088E /* SceneDelegate.swift in Sources */,
+				C7C8C2472A56CB76005E6392 /* localNames.swift in Sources */,
 				C70AEB5B2A56A655006CABF6 /* WeatherResponce.swift in Sources */,
 				C70AEB692A56AC01006CABF6 /* NetworkManager.swift in Sources */,
 				C70AEB612A56A811006CABF6 /* wind.swift in Sources */,
 				C70AEB5D2A56A6B5006CABF6 /* weather.swift in Sources */,
+				C7C8C2452A56CA8F005E6392 /* GeoResponce.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
