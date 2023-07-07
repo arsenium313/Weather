@@ -25,6 +25,7 @@
 		C72B99F22A556A3500C5088E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C72B99F12A556A3500C5088E /* Assets.xcassets */; };
 		C72B99F52A556A3500C5088E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C72B99F32A556A3500C5088E /* LaunchScreen.storyboard */; };
 		C78549B52A56F97800F2E500 /* CityChooserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78549B42A56F97800F2E500 /* CityChooserVC.swift */; };
+		C78549BB2A57DBDE00F2E500 /* SuggestionCitiesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78549BA2A57DBDE00F2E500 /* SuggestionCitiesCell.swift */; };
 		C7C8C2452A56CA8F005E6392 /* GeoResponce.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C8C2442A56CA8F005E6392 /* GeoResponce.swift */; };
 		C7C8C2472A56CB76005E6392 /* localNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C8C2462A56CB76005E6392 /* localNames.swift */; };
 /* End PBXBuildFile section */
@@ -50,6 +51,7 @@
 		C72B99F42A556A3500C5088E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C72B99F62A556A3500C5088E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C78549B42A56F97800F2E500 /* CityChooserVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityChooserVC.swift; sourceTree = "<group>"; };
+		C78549BA2A57DBDE00F2E500 /* SuggestionCitiesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionCitiesCell.swift; sourceTree = "<group>"; };
 		C7C8C2442A56CA8F005E6392 /* GeoResponce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoResponce.swift; sourceTree = "<group>"; };
 		C7C8C2462A56CB76005E6392 /* localNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = localNames.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -68,9 +70,8 @@
 		C70AEB4B2A55C0F6006CABF6 /* VC */ = {
 			isa = PBXGroup;
 			children = (
-				C78549B82A57065900F2E500 /* Cells */,
+				C78549B92A57DA9B00F2E500 /* CityChooser */,
 				C72B99EC2A556A3300C5088E /* WeatherVC.swift */,
-				C78549B42A56F97800F2E500 /* CityChooserVC.swift */,
 			);
 			path = VC;
 			sourceTree = "<group>";
@@ -165,11 +166,13 @@
 			path = Weather;
 			sourceTree = "<group>";
 		};
-		C78549B82A57065900F2E500 /* Cells */ = {
+		C78549B92A57DA9B00F2E500 /* CityChooser */ = {
 			isa = PBXGroup;
 			children = (
+				C78549B42A56F97800F2E500 /* CityChooserVC.swift */,
+				C78549BA2A57DBDE00F2E500 /* SuggestionCitiesCell.swift */,
 			);
-			path = Cells;
+			path = CityChooser;
 			sourceTree = "<group>";
 		};
 		C7C8C2432A56CA4D005E6392 /* CItyCoordFinder */ = {
@@ -268,6 +271,7 @@
 				C70AEB692A56AC01006CABF6 /* NetworkManager.swift in Sources */,
 				C70AEB612A56A811006CABF6 /* wind.swift in Sources */,
 				C70AEB5D2A56A6B5006CABF6 /* weather.swift in Sources */,
+				C78549BB2A57DBDE00F2E500 /* SuggestionCitiesCell.swift in Sources */,
 				C7C8C2452A56CA8F005E6392 /* GeoResponce.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

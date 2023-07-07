@@ -27,8 +27,6 @@ class WeatherVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
-        
     }
     
     
@@ -41,7 +39,7 @@ class WeatherVC: UIViewController {
         configureCurrentWeatherIconImageView()
         configureCurrentWeatherColorView()
         configureIconAndColorStackView()
-        configureGoToChooseButtonItem()
+        configureGoToChooserButtonItem()
     }
     
     private func configureSelf() {
@@ -56,23 +54,16 @@ class WeatherVC: UIViewController {
                 self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.main.temp)
             }
         }
-        
-        networkManager.getCoordinateByName(cityName: "Гомель") { geoResponce in
-            DispatchQueue.main.async {
-                print(geoResponce)
-            }
-        }
-        
     }
     
     private func configureCityNameLabel() {
         cityNameLabel = UILabel()
-        cityNameLabel.text = "City name"
+        cityNameLabel.text = "-"
     }
     
     private func configureCurrentTemperatureLabel() {
         currentTemperatureLabel = UILabel()
-        currentTemperatureLabel.text = "Current Cº"
+        currentTemperatureLabel.text = "-"
     }
     
     private func configureCurrentWeatherIconImageView() {
@@ -82,7 +73,7 @@ class WeatherVC: UIViewController {
     
     private func configureCurrentWeatherColorView() {
         currentWeatherColorView = UIView()
-        currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: 2.99)
+        currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: 0)
         currentWeatherColorView.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -128,7 +119,7 @@ class WeatherVC: UIViewController {
         ])
     }
     
-    private func configureGoToChooseButtonItem() {
+    private func configureGoToChooserButtonItem() {
         goToCityChooserButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))
         self.navigationItem.rightBarButtonItem = goToCityChooserButton
     }

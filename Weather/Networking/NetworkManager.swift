@@ -36,7 +36,7 @@ class NetworkManager {
         let task = URLSession.shared.dataTask(with: url) { data, responce, error in
             guard error == nil else { return }
             guard let data = data else { return }
-            print(String(data: data, encoding: .utf8))
+  
             if responce is HTTPURLResponse {
                 let decode: [GeoResponce] = try! JSONDecoder().decode([GeoResponce].self, from: data)
                 completionHandler(decode)
