@@ -8,10 +8,16 @@
 import Foundation
 
 struct GeoResponce: Decodable {
-    let name: String?
-    let local_names: LocalNames?
-    let lat: Double?
-    let lon: Double?
+    let nameOfLocation: String?
+    let localizedNames: LocalNames?
+    let lat: Double
+    let lon: Double
     let country: String?
     let state: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case lat, lon, country, state
+        case nameOfLocation = "name"
+        case localizedNames = "local_names"
+    }
 }

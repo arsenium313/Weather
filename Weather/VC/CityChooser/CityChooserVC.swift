@@ -15,7 +15,8 @@ class CityChooserVC: UIViewController {
     private let networkManager = NetworkManager()
     private var cityInputTF: UITextField!
     private var citySuggestionTable: UITableView!
-
+    weak var delegate: CityChooserDelegate?
+    
     
     //MARK: - View Life Circle
     override func viewDidLoad() {
@@ -78,7 +79,7 @@ class CityChooserVC: UIViewController {
 extension CityChooserVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let userInput = textField.text else { return true }
-        networkManager.getCoordinateByName(cityName: userInput) { responces in
+        networkManager.getCoordinateByCityName(cityName: userInput) { responces in
             self.geoResponces = responces
             DispatchQueue.main.async {
                 self.citySuggestionTable.reloadData()
@@ -99,11 +100,15 @@ extension CityChooserVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
-        cell.primaryText = geoResponces[indexPath.row].name ?? "nill"
+        cell.primaryText = geoResponces[indexPath.row].nameOfLocation ?? "nill"
         cell.secondaryText = geoResponces[indexPath.row].state ?? "nill"
         cell.setupUI()
         return cell
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        delegate?.passGeoResponce(geoResponces[indexPath.row])
+        self.navigationController?.popViewController(animated: true)
+    }
     
 }

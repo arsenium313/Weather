@@ -22,8 +22,9 @@ class WeatherVC: UIViewController {
     
     private let networkManager = NetworkManager()
     private var weatherResponce: WeatherResponce!
+    private var geoResponce: GeoResponce!
     
-    //MARK: - VIew Life Circle
+    //MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -46,12 +47,12 @@ class WeatherVC: UIViewController {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.navigationItem.title = "Weather"
         
-        networkManager.getWeather(coord: Coord(lon: 52.43, lat: 30.97)) { weatherResponce in
+        networkManager.getWeather(for: Coordinates(lon: 52.43, lat: 30.97)) { weatherResponce in
             DispatchQueue.main.async {
                 self.weatherResponce = weatherResponce
-                self.cityNameLabel.text = weatherResponce.name
-                self.currentTemperatureLabel.text = String(weatherResponce.main.temp)
-                self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.main.temp)
+                self.cityNameLabel.text = " e"//weatherResponce.name
+                self.currentTemperatureLabel.text = String(weatherResponce.tempAndPressure!.temp!)
+                self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.tempAndPressure!.temp!)
             }
         }
     }
@@ -128,7 +129,24 @@ class WeatherVC: UIViewController {
     @objc
     private func goToCityChooserVC() {
         let vc = CityChooserVC()
+        vc.delegate = self
         self.navigationController?.pushViewController(vc, animated: true)
     }
 }
 
+
+//MARK: - Protocols
+extension WeatherVC: CityChooserDelegate {
+    func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию с поисковика
+        self.geoResponce = geo
+        networkManager.getWeather(for: Coordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
+            DispatchQueue.main.async {
+                self.weatherResponce = weatherResponce
+                self.cityNameLabel.text = "d"//weatherResponce.name
+                self.currentTemperatureLabel.text = String(weatherResponce.tempAndPressure!.temp!)
+                self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.tempAndPressure!.temp!)
+            }
+        }
+    }
+    
+}
