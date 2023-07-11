@@ -25,6 +25,12 @@ class WeatherVC: UIViewController {
     private var geoResponce: GeoResponce!
     
     //MARK: - View Life Circle
+    
+    override func loadView() {
+        let view = MainView()
+        self.view = view
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
