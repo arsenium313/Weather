@@ -9,7 +9,7 @@ import Foundation
 
 class NetworkManager {
     
-    let apiKey = "d1a7dc287df5a60b293bf2ac933cbf13"
+    let apiKey = ApiKey.apiKey
     
     func getWeather(for coord: Coordinates, _ completionHandler: @escaping (WeatherResponce) -> Void) {
         let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(coord.lat)&lon=\(coord.lon)&units=metric&appid=\(apiKey)")
