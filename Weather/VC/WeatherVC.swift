@@ -46,30 +46,21 @@ class WeatherVC: UIViewController {
     private func configureSelf() {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.navigationItem.title = "Weather"
-        
-        networkManager.getWeather(for: Coordinates(lon: 52.43, lat: 30.97)) { weatherResponce in
-            DispatchQueue.main.async {
-                self.weatherResponce = weatherResponce
-                self.cityNameLabel.text = " e"//weatherResponce.name
-                self.currentTemperatureLabel.text = String(weatherResponce.tempAndPressure!.temp!)
-                self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.tempAndPressure!.temp!)
-            }
-        }
     }
     
     private func configureCityNameLabel() {
         cityNameLabel = UILabel()
-        cityNameLabel.text = "-"
     }
     
     private func configureCurrentTemperatureLabel() {
         currentTemperatureLabel = UILabel()
-        currentTemperatureLabel.text = "-"
+        currentTemperatureLabel.text = "--"
     }
     
     private func configureCurrentWeatherIconImageView() {
-        let icon = UIImage(named: "15")
+        let icon = UIImage(named: "1")
         currentWeatherIconImageView = UIImageView(image: icon)
+        currentWeatherIconImageView.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
     }
     
     private func configureCurrentWeatherColorView() {
@@ -142,9 +133,17 @@ extension WeatherVC: CityChooserDelegate {
         networkManager.getWeather(for: Coordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
             DispatchQueue.main.async {
                 self.weatherResponce = weatherResponce
-                self.cityNameLabel.text = "d"//weatherResponce.name
+                self.cityNameLabel.text = geo.localizedNames?.en
                 self.currentTemperatureLabel.text = String(weatherResponce.tempAndPressure!.temp!)
                 self.currentWeatherColorView.backgroundColor = UIColor.getTemperatureColor(Cº: weatherResponce.tempAndPressure!.temp!)
+              
+            }
+            DispatchQueue.global(qos: .userInitiated).async {
+                let url = URL(string: "https://openweathermap.org/img/wn/\(weatherResponce.weatherDescription!.first!.iconId!)@2x.png")
+                let data = try? Data(contentsOf: url!)
+                DispatchQueue.main.async {
+                    self.currentWeatherIconImageView.image = UIImage(data: data!)
+                }
             }
         }
     }
