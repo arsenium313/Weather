@@ -24,8 +24,21 @@ class WeatherVC: UIViewController {
     private var weatherResponce: WeatherResponce!
     private var geoResponce: GeoResponce!
     
-    //MARK: - View Life Circle
+    //MARK: - Init
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        let coor = Coordinates(lon: 52, lat: 31)
+        networkManager.getWeather(for: coor) { responce in
+            self.weatherResponce = responce
+        }
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    //MARK: - View Life Circle
     override func loadView() {
         let view = RootView()
         self.view = view
