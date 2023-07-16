@@ -130,12 +130,20 @@ class WeatherVC: UIViewController {
         vc.delegate = self
         self.navigationController?.pushViewController(vc, animated: true)
     }
+    
+    //MARK: - Get weather and update UI
+    private func getWeather(geo: GeoResponce) {
+ 
+    }
+    
+    
 }
 
 
 //MARK: - Protocols
 extension WeatherVC: CityChooserDelegate {
-    func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию с поисковика
+    /// Получаем информацию о геопозиции искомого города
+    func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию о геопозиции искомого города
         self.geoResponce = geo
         networkManager.getWeather(for: Coordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
             DispatchQueue.main.async {
@@ -154,5 +162,8 @@ extension WeatherVC: CityChooserDelegate {
             }
         }
     }
+    
+    
+    
     
 }
