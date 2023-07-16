@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainView: UIView {
+class RootView: UIView {
     
     //MARK: Properties
     private let startColor = #colorLiteral(red: 0.2823529412, green: 0.2941176471, blue: 0.3568627451, alpha: 1)

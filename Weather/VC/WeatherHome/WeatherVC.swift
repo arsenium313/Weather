@@ -27,7 +27,7 @@ class WeatherVC: UIViewController {
     //MARK: - View Life Circle
     
     override func loadView() {
-        let view = MainView()
+        let view = RootView()
         self.view = view
     }
     
@@ -50,7 +50,8 @@ class WeatherVC: UIViewController {
     }
     
     private func configureSelf() {
-        self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         self.navigationItem.title = "Weather"
     }
     
