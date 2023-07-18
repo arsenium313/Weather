@@ -21,6 +21,7 @@ class NetworkManager {
             
             if response is HTTPURLResponse {
                 do {
+                    print(String(data: data, encoding: .utf8))
                     let decode: WeatherResponce = try JSONDecoder().decode(WeatherResponce.self, from: data)
                     completionHandler(decode)
                 } catch {

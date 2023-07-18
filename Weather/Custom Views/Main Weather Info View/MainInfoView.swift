@@ -18,19 +18,18 @@ class MainInfoView: UIView {
     private var feelsLikeLabel: FeelsLikeLabel!
     private var windLabel: WindLabel!
     
-    private let degree = 25 // из JSON
-    private let descriptionWeather = "partly Cloudy"// из JSON
-    private let minTemp = 21 // из JSON
-    private let maxTemp = 33 // из JSON
-    private let feelsLikeTemp = 27 // из JSON
-    private let windSpeed = 10 // из JSON
-    private let windDirection = 62 // из JSON
+    private var degree: Int! // = 25 // из JSON
+    private var descriptionWeather: String! = "partly Cloudy"// из JSON
+    private var minTemp: Int! //= 21 // из JSON
+    private var maxTemp: Int! //= 33 // из JSON
+    private var feelsLikeTemp: Int! // = 27 // из JSON
+    private var windSpeed: Int! //= 10 // из JSON
+    private var windDirection: Int! // = 62 // из JSON
     
     
     //MARK: - Init
-    override init(frame: CGRect) { // какие данные будут падать сюда? weatherResponce!
+    init() { // какие данные будут падать сюда? weatherResponce!
         super.init(frame: .zero)
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -39,7 +38,8 @@ class MainInfoView: UIView {
     
     
     //MARK: - SetupUI
-    private func setupUI() {
+    func setupUI(weatherResponce: MainInfoViewProtocol) {
+        parseWeatherResponce(weatherResponce)
         configureSelf()
         configureImageView()
         configureDegreesLabel()
@@ -118,5 +118,18 @@ class MainInfoView: UIView {
         ])
        // windLabel.backgroundColor = .purple
     }
+    
+    //MARK: - Parse JSON
+    private func parseWeatherResponce(_ responce: MainInfoViewProtocol) {
+        degree = responce.currentTemp
+        descriptionWeather = responce.description
+        minTemp = responce.minTemp
+        maxTemp = responce.maxTemp
+        feelsLikeTemp = responce.feelsLikeTemp
+        windSpeed = responce.windSpeed
+        windDirection = responce.windDirection
+        
+    }
+    
 }
 

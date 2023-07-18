@@ -25,5 +25,6 @@ struct TempAndPressure: Decodable {
         case tempMax = "temp_max"
         case seaLevelHPa = "sea_level"
         case grndLevelHPa = "grnd_level"
-    }
+    }    
 }
+
