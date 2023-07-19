@@ -10,8 +10,8 @@ import UIKit
 class SunAndArcView: UIView {
 
     //MARK: Properties
-    var startTimeStamp: Double = 0
-    var endTimeStamp: Double = 0
+    var startTimeStamp: Int = 0
+    var endTimeStamp: Int = 0
   
     private let arcView = ArcView()
     private let sunView = SunView()
@@ -51,7 +51,7 @@ class SunAndArcView: UIView {
         Рисуем положение солнца на дуге
         - Parameter angle: Угол от центра дуги в градусах, на котором отобразить солнце
     */
-    private func configurePositionOfSunFor(_ angle: Double) -> CGPoint {
+    private func configurePositionOfSunFor(_ angle: Int) -> CGPoint {
         // sin() и cos() принимают угол в радианах, в градусы переводим вручную
         let x = self.bounds.midX + radius * cos(CGFloat(angle) * (.pi / 180))
         let y = self.bounds.maxY - radius * sin(CGFloat(angle) * (.pi / 180))
@@ -60,11 +60,11 @@ class SunAndArcView: UIView {
     }
     
     /// Находим на каком угле от центра дуги нарисовать солнце в зависимости от текущего времени
-    private func findAngle(startTime: Double, endTime: Double) -> Double {
+    private func findAngle(startTime: Int, endTime: Int) -> Int {
         let now = Date.now.timeIntervalSince1970
         let totalInDay = endTime - startTime
         guard totalInDay > 0 else { return 0 }
-        let i = endTime - now
+        let i = endTime - Int(now)
         let ratio = i / totalInDay
         return 180 * ratio
     }

@@ -18,13 +18,13 @@ class MainInfoView: UIView {
     private var feelsLikeLabel: FeelsLikeLabel!
     private var windLabel: WindLabel!
     
-    private var degree: Int! // = 25 // из JSON
-    private var descriptionWeather: String! = "partly Cloudy"// из JSON
-    private var minTemp: Int! //= 21 // из JSON
-    private var maxTemp: Int! //= 33 // из JSON
-    private var feelsLikeTemp: Int! // = 27 // из JSON
-    private var windSpeed: Int! //= 10 // из JSON
-    private var windDirection: Int! // = 62 // из JSON
+    private var degree: Int!
+    private var descriptionWeather: String!
+    private var minTemp: Int!
+    private var maxTemp: Int!
+    private var feelsLikeTemp: Int!
+    private var windSpeed: Int!
+    private var windDirection: Int!
     
     
     //MARK: - Init
@@ -128,8 +128,7 @@ class MainInfoView: UIView {
         feelsLikeTemp = responce.feelsLikeTemp
         windSpeed = responce.windSpeed
         windDirection = responce.windDirection
-        
     }
-    
+
 }
 

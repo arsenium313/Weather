@@ -15,8 +15,8 @@ class SunriseSunsetBundleView: UIView {
     private var rightLabel: UILabel!
     let sunAndArcView = SunAndArcView()
 
-    let startTimeStamp: Double
-    let endTimeStamp: Double
+    let startTimeStamp: Int
+    let endTimeStamp: Int
  
     enum SunCase {
         case sunrise
@@ -24,9 +24,9 @@ class SunriseSunsetBundleView: UIView {
     }
     
     //MARK: - Init
-    init(startTimeStamp: Double, endTimeStamp: Double) {
-        self.startTimeStamp = startTimeStamp
-        self.endTimeStamp = endTimeStamp
+    init(weatherResponce: SunriseSunsetViewProtocol) {
+        self.startTimeStamp = weatherResponce.startTimeStamp
+        self.endTimeStamp = weatherResponce.endTimeStamp
         sunAndArcView.startTimeStamp = startTimeStamp
         sunAndArcView.endTimeStamp = endTimeStamp
         
@@ -132,8 +132,8 @@ class SunriseSunsetBundleView: UIView {
     
     
     //MARK: - Get Attributed string
-    private func getTimeStringFromTimeStamp(_ timeStamp: Double) -> String {
-        let date = Date(timeIntervalSince1970: timeStamp)
+    private func getTimeStringFromTimeStamp(_ timeStamp: Int) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(timeStamp))
         let formatted = date.formatted(date: .omitted, time: .shortened)
         return formatted
     }

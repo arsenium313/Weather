@@ -22,7 +22,7 @@ struct MainInfoForViewStruct: MainInfoViewProtocol {
         self.maxTemp = Int(responce.tempAndPressure?.tempMax?.rounded(.awayFromZero) ?? 0)
         self.feelsLikeTemp = Int(responce.tempAndPressure?.feelsLike?.rounded(.awayFromZero) ?? 0)
        
-        self.description = responce.weatherDescription?.description ?? "--"
+        self.description = responce.weatherDescription?.first?.description ?? "--"
         
         self.windSpeed = Int(responce.wind?.speed?.rounded(.awayFromZero) ?? 0)
         self.windDirection = responce.wind?.directionInDegrees ?? 0

@@ -33,6 +33,9 @@ class WeatherVC: UIViewController {
             }
         }
     }
+    // разделить методы на
+    // выполняются сразу
+    // выполняются когда получили responce
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
