@@ -28,8 +28,10 @@ class MainInfoView: UIView {
     
     
     //MARK: - Init
-    init() { // какие данные будут падать сюда? weatherResponce!
+    init(_ responce: MainInfoViewProtocol) { // какие данные будут падать сюда? weatherResponce!
         super.init(frame: .zero)
+        parseWeatherResponce(responce)
+        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -38,8 +40,7 @@ class MainInfoView: UIView {
     
     
     //MARK: - SetupUI
-    func setupUI(weatherResponce: MainInfoViewProtocol) {
-        parseWeatherResponce(weatherResponce)
+    func setupUI() {
         configureSelf()
         configureImageView()
         configureDegreesLabel()

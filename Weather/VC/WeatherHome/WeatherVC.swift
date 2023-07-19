@@ -11,7 +11,7 @@ class WeatherVC: UIViewController {
 
     //MARK: Properties
     private var mainInfoView: MainInfoView!
-    private var sunriseSunsetView: SunriseSunset!
+    private var sunriseSunsetView: SunriseSunsetBundleView!
     
     private var goToCityChooserButton: UIBarButtonItem!
     
@@ -21,21 +21,32 @@ class WeatherVC: UIViewController {
     private var weatherResponce: WeatherResponce!
     private var geoResponce: GeoResponce!
     
+    private var selfViewDidLoad = false
+    
     //MARK: - Init
     init() {
         super.init(nibName: nil, bundle: nil)
+        // 1- ищу в persistance город по умолчанию, в persistance уже хранится объект coord
         let coor = Coordinates(lon: 32, lat: 51)
+        
         networkManager.getWeather(for: coor) { responce in
             self.weatherResponce = responce
+            
             DispatchQueue.main.async {
-                let newResponce = MainInfoForViewStruct(responce: responce)
-                self.mainInfoView.setupUI(weatherResponce: newResponce)
+                // проверка если viewDidLoad выполнился, то запускаем setupUI()
+                if self.selfViewDidLoad {
+                    self.setupUIWhenGetResponce(responce)
+                } else {
+                    print("XYI!")
+                    fatalError()
+                }
             }
         }
     }
     // разделить методы на
     // выполняются сразу
     // выполняются когда получили responce
+    //   ВСЕ будет отображаться только после получения
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -50,26 +61,33 @@ class WeatherVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        selfViewDidLoad = true
         setupUI()
-        configureMainInfoView()
     }
     
     
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
-        configureMainInfoView()
         configureGoToChooserButtonItem()
     }
+    
+    private func setupUIWhenGetResponce(_ responce: WeatherResponce) {
+        let mainInfoResponce = MainInfoForViewStruct(responce: responce)
+        let sunriseSunsetResponce = SunriseSunsetStruct(weatherResponce: responce)
+        configureMainInfoView(mainInfoResponce)
+        configureSunriseSunsetView(sunriseSunsetResponce)
+    }
+    
     
     private func configureSelf() {
         navigationController?.navigationBar.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        self.navigationItem.title = "Weather"
+        self.navigationItem.title = "Гомель"
     }
     
-    private func configureMainInfoView() {
-        mainInfoView = MainInfoView()
+    private func configureMainInfoView(_ responce: MainInfoViewProtocol) {
+        mainInfoView = MainInfoView(responce)
         self.view.addSubview(mainInfoView)
         mainInfoView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -78,9 +96,19 @@ class WeatherVC: UIViewController {
             mainInfoView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             mainInfoView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.3)
         ])
-        
     }
    
+    private func configureSunriseSunsetView(_ responce: SunriseSunsetViewProtocol) {
+        sunriseSunsetView = SunriseSunsetBundleView(weatherResponce: responce)
+        self.view.addSubview(sunriseSunsetView)
+        sunriseSunsetView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            sunriseSunsetView.topAnchor.constraint(equalTo: mainInfoView.bottomAnchor, constant: 20),
+            sunriseSunsetView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            sunriseSunsetView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+            sunriseSunsetView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.3)
+        ])
+    }
     
     private func configureGoToChooserButtonItem() {
         goToCityChooserButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))
