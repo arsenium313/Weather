@@ -99,7 +99,7 @@ class WeatherVC: UIViewController {
     }
    
     private func configureSunriseSunsetView(_ responce: SunriseSunsetViewProtocol) {
-        sunriseSunsetView = SunriseSunsetView(weatherResponce: responce)
+        sunriseSunsetView = SunriseSunsetView(responce)
         self.view.addSubview(sunriseSunsetView)
         sunriseSunsetView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

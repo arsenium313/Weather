@@ -28,9 +28,9 @@ class MainInfoView: UIView {
     
     
     //MARK: - Init
-    init(_ responce: MainInfoViewProtocol) { // какие данные будут падать сюда? weatherResponce!
+    init(_ weather: MainInfoViewProtocol) { // какие данные будут падать сюда? weatherResponce!
         super.init(frame: .zero)
-        parseWeatherResponce(responce)
+        parseWeatherResponce(weather)
         setupUI()
     }
     

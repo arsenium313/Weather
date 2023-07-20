@@ -11,8 +11,8 @@ class SunriseSunsetView: UIView {
  
     //MARK: Properties
     private var titleLabel: UILabel!
-    private var leftLabel: UILabel!
-    private var rightLabel: UILabel!
+    private var leftLabel: UILabel! // вынести в отдельный класс
+    private var rightLabel: UILabel! // вынести в отдельный класс
     let sunAndArcView = SunAndArcView()
 
     let startTimeStamp: Int
@@ -24,9 +24,9 @@ class SunriseSunsetView: UIView {
     }
     
     //MARK: - Init
-    init(weatherResponce: SunriseSunsetViewProtocol) {
-        self.startTimeStamp = weatherResponce.startTimeStamp
-        self.endTimeStamp = weatherResponce.endTimeStamp
+    init(_ weather: SunriseSunsetViewProtocol) {
+        self.startTimeStamp = weather.startTimeStamp
+        self.endTimeStamp = weather.endTimeStamp
         sunAndArcView.startTimeStamp = startTimeStamp
         sunAndArcView.endTimeStamp = endTimeStamp
         

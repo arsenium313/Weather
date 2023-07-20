@@ -65,8 +65,9 @@ class SunAndArcView: UIView {
         let totalInDay = endTime - startTime
         guard totalInDay > 0 else { return 0 }
         let i = endTime - Int(now)
-        let ratio = i / totalInDay
-        return 180 * ratio
+        let ratio = Double(i) / Double(totalInDay)
+        let angle = 180 * ratio
+        return Int(angle)
     }
     
 }
