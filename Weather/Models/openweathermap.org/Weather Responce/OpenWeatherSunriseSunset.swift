@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct SunriseSunset: Decodable {
+struct OpenWeatherSunriseSunset: Decodable {
     let countryCode: String?
     let sunriseTime: Int?
     let sunsetTime: Int?

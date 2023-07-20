@@ -11,14 +11,14 @@ class WeatherVC: UIViewController {
 
     //MARK: Properties
     private var mainInfoView: MainInfoView!
-    private var sunriseSunsetView: SunriseSunsetBundleView!
+    private var sunriseSunsetView: SunriseSunsetView!
     
     private var goToCityChooserButton: UIBarButtonItem!
     
     private lazy var guide = self.view.layoutMarginsGuide
     
     private let networkManager = NetworkManager()
-    private var weatherResponce: WeatherResponce!
+    private var weatherResponce: OpenWeatherResponce!
     private var geoResponce: GeoResponce!
     
     private var selfViewDidLoad = false
@@ -27,7 +27,7 @@ class WeatherVC: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         // 1- ищу в persistance город по умолчанию, в persistance уже хранится объект coord
-        let coor = Coordinates(lon: 32, lat: 51)
+        let coor = OpenWeatherCoordinates(lon: 32, lat: 51)
         
         networkManager.getWeather(for: coor) { responce in
             self.weatherResponce = responce
@@ -72,9 +72,9 @@ class WeatherVC: UIViewController {
         configureGoToChooserButtonItem()
     }
     
-    private func setupUIWhenGetResponce(_ responce: WeatherResponce) {
-        let mainInfoResponce = MainInfoForViewStruct(responce: responce)
-        let sunriseSunsetResponce = SunriseSunsetStruct(weatherResponce: responce)
+    private func setupUIWhenGetResponce(_ responce: OpenWeatherResponce) {
+        let mainInfoResponce = MainInfoViewDataModel(responce: responce)
+        let sunriseSunsetResponce = SunriseSunsetViewDataModel(weatherResponce: responce)
         configureMainInfoView(mainInfoResponce)
         configureSunriseSunsetView(sunriseSunsetResponce)
     }
@@ -99,7 +99,7 @@ class WeatherVC: UIViewController {
     }
    
     private func configureSunriseSunsetView(_ responce: SunriseSunsetViewProtocol) {
-        sunriseSunsetView = SunriseSunsetBundleView(weatherResponce: responce)
+        sunriseSunsetView = SunriseSunsetView(weatherResponce: responce)
         self.view.addSubview(sunriseSunsetView)
         sunriseSunsetView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -137,7 +137,7 @@ extension WeatherVC: CityChooserDelegate {
     /// Получаем информацию о геопозиции искомого города
     func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию о геопозиции искомого города
         self.geoResponce = geo
-        networkManager.getWeather(for: Coordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
+        networkManager.getWeather(for: OpenWeatherCoordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
             DispatchQueue.main.async {
                 self.weatherResponce = weatherResponce
             }

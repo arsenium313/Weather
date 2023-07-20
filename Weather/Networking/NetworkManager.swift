@@ -11,7 +11,7 @@ class NetworkManager {
     
     let apiKey = ApiKey.apiKey
     
-    func getWeather(for coord: Coordinates, _ completionHandler: @escaping (WeatherResponce) -> Void) {
+    func getWeather(for coord: OpenWeatherCoordinates, _ completionHandler: @escaping (OpenWeatherResponce) -> Void) {
         let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(coord.lat)&lon=\(coord.lon)&units=metric&appid=\(apiKey)")
         guard let url = url else { return }
         
@@ -21,7 +21,7 @@ class NetworkManager {
             
             if response is HTTPURLResponse {
                 do {
-                    let decode: WeatherResponce = try JSONDecoder().decode(WeatherResponce.self, from: data)
+                    let decode: OpenWeatherResponce = try JSONDecoder().decode(OpenWeatherResponce.self, from: data)
                     completionHandler(decode)
                 } catch {
                     print(error.localizedDescription)

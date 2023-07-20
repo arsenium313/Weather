@@ -7,15 +7,15 @@
 
 import Foundation
 
-struct WeatherResponce: Decodable {
-    let coordinates: Coordinates?
-    let weatherDescription: [WeatherDescription]?
-    let tempAndPressure: TempAndPressure?
+struct OpenWeatherResponce: Decodable {
+    let coordinates: OpenWeatherCoordinates?
+    let weatherDescription: [OpenWeatherWeatherDescription]?
+    let tempAndPressure: OpenWeatherTempAndPressure?
     let visibility: Int?
-    let wind: Wind?
-    let rain: Rain?
-    let clouds: Clouds?
-    let sunriseSunset: SunriseSunset?
+    let wind: OpenWeatherWind?
+    let rain: OpenWeatherRain?
+    let clouds: OpenWeatherClouds?
+    let sunriseSunset: OpenWeatherSunriseSunset?
     
     enum CodingKeys: String, CodingKey {
         case visibility, wind, rain, clouds

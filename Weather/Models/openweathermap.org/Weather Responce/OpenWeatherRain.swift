@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Rain: Decodable {
+struct OpenWeatherRain: Decodable {
     let volumeLast1hour: Double?
     let volumeLast3hour: Double?
     

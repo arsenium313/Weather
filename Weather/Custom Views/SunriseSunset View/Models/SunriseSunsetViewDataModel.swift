@@ -7,11 +7,11 @@
 
 import Foundation
 
-struct SunriseSunsetStruct: SunriseSunsetViewProtocol {
+struct SunriseSunsetViewDataModel: SunriseSunsetViewProtocol {
     var startTimeStamp: Int
     var endTimeStamp: Int
     
-    init(weatherResponce: WeatherResponce) {
+    init(weatherResponce: OpenWeatherResponce) {
         self.startTimeStamp = weatherResponce.sunriseSunset?.sunriseTime ?? 0
         self.endTimeStamp = weatherResponce.sunriseSunset?.sunsetTime ?? 0
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct WeatherDescription: Decodable {
+struct OpenWeatherWeatherDescription: Decodable {
     let id: Int?
     let mainGroup: String?
     let description: String?

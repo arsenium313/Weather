@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Wind: Decodable {
+struct OpenWeatherWind: Decodable {
     let speed: Double?
     let directionInDegrees: Int?
     let gust: Double?

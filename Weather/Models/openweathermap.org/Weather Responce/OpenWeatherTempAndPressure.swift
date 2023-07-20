@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TempAndPressure: Decodable {
+struct OpenWeatherTempAndPressure: Decodable {
     let temp: Double?
     let feelsLike: Double?
     let tempMin: Double?

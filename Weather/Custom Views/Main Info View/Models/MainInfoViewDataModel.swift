@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MainInfoForViewStruct: MainInfoViewProtocol {
+struct MainInfoViewDataModel: MainInfoViewProtocol {
     let currentTemp: Int
     let minTemp: Int
     let maxTemp: Int
@@ -16,7 +16,7 @@ struct MainInfoForViewStruct: MainInfoViewProtocol {
     let windDirection: Int
     let description: String
     
-    init(responce:  WeatherResponce) {
+    init(responce:  OpenWeatherResponce) {
         self.currentTemp = Int(responce.tempAndPressure?.temp?.rounded(.awayFromZero) ?? 0)
         self.minTemp = Int(responce.tempAndPressure?.tempMin?.rounded(.awayFromZero) ?? 0)
         self.maxTemp = Int(responce.tempAndPressure?.tempMax?.rounded(.awayFromZero) ?? 0)

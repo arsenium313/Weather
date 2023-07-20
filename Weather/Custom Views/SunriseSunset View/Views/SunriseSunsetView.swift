@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SunriseSunsetBundleView: UIView {
+class SunriseSunsetView: UIView {
  
     //MARK: Properties
     private var titleLabel: UILabel!
