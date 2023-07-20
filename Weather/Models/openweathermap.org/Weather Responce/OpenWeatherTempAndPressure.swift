@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct TempAndPressure: Decodable {
+struct OpenWeatherTempAndPressure: Decodable {
     let temp: Double?
     let feelsLike: Double?
     let tempMin: Double?
@@ -25,5 +25,6 @@ struct TempAndPressure: Decodable {
         case tempMax = "temp_max"
         case seaLevelHPa = "sea_level"
         case grndLevelHPa = "grnd_level"
-    }
+    }    
 }
+

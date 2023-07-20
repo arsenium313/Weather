@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Clouds: Decodable {
+struct OpenWeatherClouds: Decodable {
     let persentageOfCloudiness: Int?
     
     enum CodingKeys: String, CodingKey {

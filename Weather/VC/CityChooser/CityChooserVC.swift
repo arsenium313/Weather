@@ -44,6 +44,7 @@ class CityChooserVC: UIViewController {
         cityInputTF.borderStyle = .roundedRect
         cityInputTF.keyboardType = .default
         cityInputTF.returnKeyType = .search
+        cityInputTF.clearsOnBeginEditing = true
         
         self.view.addSubview(cityInputTF)
         cityInputTF.translatesAutoresizingMaskIntoConstraints = false
@@ -89,6 +90,12 @@ extension CityChooserVC: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        self.geoResponces.removeAll()
+        self.citySuggestionTable.reloadData()
+        return true
+    }
 }
 
 //MARK: - Table delegate / dataSource
@@ -101,7 +108,7 @@ extension CityChooserVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
         cell.primaryText = geoResponces[indexPath.row].nameOfLocation ?? "nill"
-        cell.secondaryText = geoResponces[indexPath.row].state ?? "nill"
+        cell.secondaryText = "\(geoResponces[indexPath.row].state ?? "nil"). \(geoResponces[indexPath.row].country ?? "nil")"
         cell.setupUI()
         return cell
     }
