@@ -85,8 +85,7 @@ class SunriseSunsetView: UIView {
     }
     
     private func configureLeftLabel() {
-        let timeString = getTimeStringFromTimeStamp(startTimeStamp)
-        let attributedString = getAttributedStringForLabel(timeString, sunCase: .sunrise)
+        let attributedString = getAtrributedString(timeStamp: startTimeStamp, sunCase: .sunrise)
         leftLabel = UILabel()
         leftLabel.attributedText = attributedString
         leftLabel.numberOfLines = 2
@@ -103,8 +102,7 @@ class SunriseSunsetView: UIView {
     }
     
     private func configureRightLabel() {
-        let timeString = getTimeStringFromTimeStamp(endTimeStamp)
-        let attributedString = getAttributedStringForLabel(timeString, sunCase: .sunset)
+        let attributedString = getAtrributedString(timeStamp: endTimeStamp, sunCase: .sunset)
         rightLabel = UILabel()
         rightLabel.attributedText = attributedString
         rightLabel.numberOfLines = 2
@@ -132,6 +130,13 @@ class SunriseSunsetView: UIView {
     
     
     //MARK: - Get Attributed string
+    /// Возвращает готовую строку c атрибутами в UIlabel
+    private func getAtrributedString(timeStamp: Int, sunCase: SunCase) -> NSMutableAttributedString {
+        let timeString = getTimeStringFromTimeStamp(timeStamp)
+        let attributedString = getAttributedStringFromTimeString(timeString, sunCase: sunCase)
+        return attributedString
+    }
+    ///Конвертирует timeStamp в  строку формата HH:MM
     private func getTimeStringFromTimeStamp(_ timeStamp: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(timeStamp))
         let formatted = date.formatted(date: .omitted, time: .shortened)
@@ -141,38 +146,29 @@ class SunriseSunsetView: UIView {
      - Parameter timeString: Строка в формате HH:MM
      - Parameter sunCase: Определяет какую дополнительную строку вернет метод
      */
-    private func getAttributedStringForLabel(_ timeString: String, sunCase: SunCase) -> NSMutableAttributedString {
-        let attributedText = NSMutableAttributedString(string: timeString)
-        let timeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        let additionalColor = #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1)
-        let timeStringRange = NSRange(location: 0, length: 5) // Сделать динамически
-        
-        let attributedStringRange = {
-            switch sunCase {
-            case .sunrise : return NSRange(location: 6, length: 7) // Сделать динамически
-            case .sunset : return NSRange(location: 6, length: 6) // Сделать динамически
-            }
-        }()
-        
+    private func getAttributedStringFromTimeString(_ timeString: String, sunCase: SunCase) -> NSMutableAttributedString {
         let additionalString = {
             switch sunCase {
-            case .sunrise : return NSMutableAttributedString(string: "\nSunrise")
-            case .sunset : return NSMutableAttributedString(string: "\nSunset")
+            case .sunrise : return "\nSunrise"
+            case .sunset : return "\nSunset"
             }
         }()
-        attributedText.append(additionalString)
         
-        let timeAttributes: [NSAttributedString.Key : Any] = [
-            NSAttributedString.Key.foregroundColor : timeColor,
-            NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 25)
-        ]
-        attributedText.addAttributes(timeAttributes, range: timeStringRange)
+        let attributedText = NSMutableAttributedString()
+        let timeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        let additionalColor = #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1)
+      
+        let timeAtrributedString = NSAttributedString(string: timeString, attributes: [
+            NSAttributedString.Key.foregroundColor : timeColor
+        ])
         
-        let additionalStringAttributes: [NSAttributedString.Key : Any] = [
+        let additionalAttributedString = NSAttributedString(string: additionalString, attributes: [
             NSAttributedString.Key.foregroundColor : additionalColor,
             NSAttributedString.Key.kern : 1.5
-        ]
-        attributedText.addAttributes(additionalStringAttributes, range: attributedStringRange)
+        ])
+        
+        attributedText.append(timeAtrributedString)
+        attributedText.append(additionalAttributedString)
 
         return attributedText
     }
