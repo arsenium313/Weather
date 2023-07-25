@@ -59,12 +59,11 @@ class IndexLabel: UILabel {
     
     func getAqiCategoryFor(_ index: Int) -> String {
         switch index {
-        case 0...50: return "Good"
-        case 51...100: return "Moderate"
-        case 101...150: return "Unhealthy for Sensitive Groups"
-        case 151...200: return "Unhealthy"
-        case 201...300: return "Very Unhealthy"
-        case 301...500: return "Hazardous"
+        case 1: return "Good"
+        case 2: return "Fair"
+        case 3: return "Moderate"
+        case 4: return "Poor"
+        case 5: return "Very Poor"
         default: return "nil"
         }
     }

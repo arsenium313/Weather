@@ -13,7 +13,7 @@ import Foundation
 struct AirQualityViewDataModel: AirQualityViewProtocol {
     let index: Int
     
-    init() {
-        self.index = 10
+    init(responce: OpenWeatherAirPollutionResponce) {
+        self.index = responce.list?.first?.main?.aqi ?? 0
     }
 }

@@ -29,7 +29,8 @@ class WeatherVC: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         // 1- ищу в persistance город по умолчанию, в persistance уже хранится объект coord
-        let coor = Coordinates(lon: 32, lat: 51)
+        let coor = Coordinates(lon: 31, lat: 52.26)
+        
         networkManager.getWeather(for: coor) { responce in
             self.weatherResponce = responce
             DispatchQueue.main.async {
@@ -37,14 +38,22 @@ class WeatherVC: UIViewController {
                 if self.selfViewDidLoad {
                     self.setupUIWhenGetOpenWeatherResponce(responce)
                 } else {
-                    print("XYI!")
+                    print("☹️")
                     fatalError()
                 }
             }
         }
         
-
-        
+        networkManager.getAirPollution(for: coor) { responce in
+            DispatchQueue.main.async {
+                if self.selfViewDidLoad {
+                    self.setupUIWhenGetAqiResponce(responce)
+                } else {
+                    print("☹️")
+                    fatalError()
+                }
+            }
+        }
         
     }
     // разделить методы на
@@ -82,11 +91,10 @@ class WeatherVC: UIViewController {
         let sunriseSunsetResponce = SunriseSunsetViewDataModel(weatherResponce: responce)
         configureMainInfoView(mainInfoResponce)
         configureSunriseSunsetView(sunriseSunsetResponce)
-        setupUIWhenGetAqiResponce(10)
     }
     
-    private func setupUIWhenGetAqiResponce(_ responce: Int) {
-        let aqiResponce = AirQualityViewDataModel()
+    private func setupUIWhenGetAqiResponce(_ responce: OpenWeatherAirPollutionResponce) {
+        let aqiResponce = AirQualityViewDataModel(responce: responce)
         configureAirQualityView(aqiResponce)
     }
     

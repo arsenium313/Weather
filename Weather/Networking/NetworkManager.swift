@@ -33,7 +33,27 @@ class NetworkManager {
         task.resume()
     }
     
-
+    func getAirPollution(for coord: Coordinates, _ completionHandler: @escaping (OpenWeatherAirPollutionResponce) -> Void) {
+        let url = URL(string: "https://api.openweathermap.org/data/2.5/air_pollution?lat=\(coord.lat)&lon=\(coord.lon)&appid=\(ApiKeys.openWeatherApiKey)")
+        guard let url = url else { return }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, responce, error in
+            guard error == nil else { return }
+            guard let data = data else { return }
+     
+            if responce is HTTPURLResponse {
+                do {
+                    let decode: OpenWeatherAirPollutionResponce = try JSONDecoder().decode(OpenWeatherAirPollutionResponce.self, from: data)
+                    completionHandler(decode)
+                } catch {
+                    print(error.localizedDescription)
+                    print("Не удалось распарсить JSON 🙁")
+                    // уведомление что не получилось распарсить
+                }
+            }
+        }
+        task.resume()
+    }
     
     func getCoordinateByCityName(cityName: String, _ completionHandler: @escaping ([GeoResponce]) -> Void) {
         let stringUrl = "https://api.openweathermap.org/geo/1.0/direct?q=\(cityName)&limit=10&appid=\(apiKey)".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
@@ -50,7 +70,7 @@ class NetworkManager {
                     completionHandler(decode)
                 } catch {
                     print(error.localizedDescription)
-                    print("Не удалось распарсить JSON(")
+                    print("Не удалось распарсить JSON ☹️")
                     // уведомление что не получилось распарсить
                 }
             }

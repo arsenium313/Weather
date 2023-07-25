@@ -45,7 +45,7 @@ class CircleView: UIView {
         colorCircleLayer.path = path.cgPath
         colorCircleLayer.strokeColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         colorCircleLayer.strokeStart = 0
-        colorCircleLayer.strokeEnd = index / 200 // выявлено методом научного тыка
+        colorCircleLayer.strokeEnd = index * 0.2 // выявлено методом научного тыка
         colorCircleLayer.lineCap = .round
         colorCircleLayer.fillColor = #colorLiteral(red: 0.1215686277, green: 0.01176470611, blue: 0.4235294163, alpha: 0)
         colorCircleLayer.lineWidth = rect.width / 20 // выявлено методом научного тыка
