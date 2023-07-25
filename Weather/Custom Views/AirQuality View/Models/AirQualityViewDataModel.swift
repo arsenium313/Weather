@@ -13,7 +13,7 @@ import Foundation
 struct AirQualityViewDataModel: AirQualityViewProtocol {
     let index: Int
     
-    init(responce: AqicnResponce) {
+    init() {
         self.index = 10
     }
 }

@@ -46,17 +46,6 @@
 		C7D04F0D2A6F8857006FA195 /* IndexLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F0A2A6F8857006FA195 /* IndexLabel.swift */; };
 		C7D04F0E2A6F8857006FA195 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F0B2A6F8857006FA195 /* CircleView.swift */; };
 		C7D04F0F2A6F8857006FA195 /* AirQualityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F0C2A6F8857006FA195 /* AirQualityView.swift */; };
-		C7D04F122A6FA21D006FA195 /* AqicnResponce.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F112A6FA21D006FA195 /* AqicnResponce.swift */; };
-		C7D04F142A6FB416006FA195 /* AqicnData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F132A6FB416006FA195 /* AqicnData.swift */; };
-		C7D04F162A6FB458006FA195 /* AqicnTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F152A6FB458006FA195 /* AqicnTime.swift */; };
-		C7D04F182A6FB4AD006FA195 /* AqicnCity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F172A6FB4AD006FA195 /* AqicnCity.swift */; };
-		C7D04F1A2A6FB701006FA195 /* AqicnAttributions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F192A6FB701006FA195 /* AqicnAttributions.swift */; };
-		C7D04F1C2A6FB772006FA195 /* AqicnIaqi.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F1B2A6FB772006FA195 /* AqicnIaqi.swift */; };
-		C7D04F1E2A6FB7AA006FA195 /* AqicnV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F1D2A6FB7AA006FA195 /* AqicnV.swift */; };
-		C7D04F202A6FB867006FA195 /* AqicnDebug.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F1F2A6FB867006FA195 /* AqicnDebug.swift */; };
-		C7D04F222A6FB8E7006FA195 /* AqicnForecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F212A6FB8E7006FA195 /* AqicnForecast.swift */; };
-		C7D04F242A6FB945006FA195 /* AqicnDaily.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F232A6FB945006FA195 /* AqicnDaily.swift */; };
-		C7D04F262A6FB9BE006FA195 /* AqicnDailyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D04F252A6FB9BE006FA195 /* AqicnDailyValue.swift */; };
 		C7EEB92A2A684B8F00F40354 /* SunriseSunsetViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EEB9292A684B8F00F40354 /* SunriseSunsetViewProtocol.swift */; };
 		C7EEB92C2A684C6400F40354 /* SunriseSunsetViewDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EEB92B2A684C6400F40354 /* SunriseSunsetViewDataModel.swift */; };
 		C7EEB9362A69275F00F40354 /* AirQualityViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7EEB9352A69275F00F40354 /* AirQualityViewProtocol.swift */; };
@@ -105,17 +94,6 @@
 		C7D04F0A2A6F8857006FA195 /* IndexLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexLabel.swift; sourceTree = "<group>"; };
 		C7D04F0B2A6F8857006FA195 /* CircleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		C7D04F0C2A6F8857006FA195 /* AirQualityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirQualityView.swift; sourceTree = "<group>"; };
-		C7D04F112A6FA21D006FA195 /* AqicnResponce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnResponce.swift; sourceTree = "<group>"; };
-		C7D04F132A6FB416006FA195 /* AqicnData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnData.swift; sourceTree = "<group>"; };
-		C7D04F152A6FB458006FA195 /* AqicnTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnTime.swift; sourceTree = "<group>"; };
-		C7D04F172A6FB4AD006FA195 /* AqicnCity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnCity.swift; sourceTree = "<group>"; };
-		C7D04F192A6FB701006FA195 /* AqicnAttributions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnAttributions.swift; sourceTree = "<group>"; };
-		C7D04F1B2A6FB772006FA195 /* AqicnIaqi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnIaqi.swift; sourceTree = "<group>"; };
-		C7D04F1D2A6FB7AA006FA195 /* AqicnV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnV.swift; sourceTree = "<group>"; };
-		C7D04F1F2A6FB867006FA195 /* AqicnDebug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnDebug.swift; sourceTree = "<group>"; };
-		C7D04F212A6FB8E7006FA195 /* AqicnForecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnForecast.swift; sourceTree = "<group>"; };
-		C7D04F232A6FB945006FA195 /* AqicnDaily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnDaily.swift; sourceTree = "<group>"; };
-		C7D04F252A6FB9BE006FA195 /* AqicnDailyValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AqicnDailyValue.swift; sourceTree = "<group>"; };
 		C7EEB9292A684B8F00F40354 /* SunriseSunsetViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunriseSunsetViewProtocol.swift; sourceTree = "<group>"; };
 		C7EEB92B2A684C6400F40354 /* SunriseSunsetViewDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SunriseSunsetViewDataModel.swift; sourceTree = "<group>"; };
 		C7EEB9352A69275F00F40354 /* AirQualityViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirQualityViewProtocol.swift; sourceTree = "<group>"; };
@@ -160,7 +138,6 @@
 			isa = PBXGroup;
 			children = (
 				C70AEB582A56A602006CABF6 /* Coordinates.swift */,
-				C7D04F102A6FA1DF006FA195 /* aqicn.org */,
 				C70AEB572A56A4A6006CABF6 /* openweathermap.org */,
 				C70AEB522A55C335006CABF6 /* TemperatureColor */,
 			);
@@ -300,24 +277,6 @@
 				C7C8C2442A56CA8F005E6392 /* GeoResponce.swift */,
 			);
 			path = CItyCoordFinder;
-			sourceTree = "<group>";
-		};
-		C7D04F102A6FA1DF006FA195 /* aqicn.org */ = {
-			isa = PBXGroup;
-			children = (
-				C7D04F112A6FA21D006FA195 /* AqicnResponce.swift */,
-				C7D04F132A6FB416006FA195 /* AqicnData.swift */,
-				C7D04F152A6FB458006FA195 /* AqicnTime.swift */,
-				C7D04F172A6FB4AD006FA195 /* AqicnCity.swift */,
-				C7D04F192A6FB701006FA195 /* AqicnAttributions.swift */,
-				C7D04F1B2A6FB772006FA195 /* AqicnIaqi.swift */,
-				C7D04F1D2A6FB7AA006FA195 /* AqicnV.swift */,
-				C7D04F1F2A6FB867006FA195 /* AqicnDebug.swift */,
-				C7D04F212A6FB8E7006FA195 /* AqicnForecast.swift */,
-				C7D04F232A6FB945006FA195 /* AqicnDaily.swift */,
-				C7D04F252A6FB9BE006FA195 /* AqicnDailyValue.swift */,
-			);
-			path = aqicn.org;
 			sourceTree = "<group>";
 		};
 		C7EEB92D2A68E2FC00F40354 /* Weather Responce */ = {
@@ -477,20 +436,15 @@
 				C70AEB652A56A9F3006CABF6 /* OpenWeatherClouds.swift in Sources */,
 				C78D88372A647C3000B646AF /* FeelsLikeLabel.swift in Sources */,
 				C70AEB592A56A602006CABF6 /* Coordinates.swift in Sources */,
-				C7D04F182A6FB4AD006FA195 /* AqicnCity.swift in Sources */,
 				C70AEB542A55C399006CABF6 /* TemperatureParser.swift in Sources */,
 				C78D88382A647C3000B646AF /* DescriptionWeatherLabel.swift in Sources */,
-				C7D04F1C2A6FB772006FA195 /* AqicnIaqi.swift in Sources */,
-				C7D04F222A6FB8E7006FA195 /* AqicnForecast.swift in Sources */,
 				C70AEB562A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift in Sources */,
 				C7400EEA2A5CCEFB0081EF70 /* ApiKeys.swift in Sources */,
 				C78D88362A647C3000B646AF /* MainInfoView.swift in Sources */,
 				C70AEB672A56AA3E006CABF6 /* OpenWeatherSunriseSunset.swift in Sources */,
 				C78D883E2A667C0C00B646AF /* MainInfoViewDataModel.swift in Sources */,
 				C78D88392A647C3000B646AF /* DegreesLabel.swift in Sources */,
-				C7D04F242A6FB945006FA195 /* AqicnDaily.swift in Sources */,
 				C7EEB92A2A684B8F00F40354 /* SunriseSunsetViewProtocol.swift in Sources */,
-				C7D04F202A6FB867006FA195 /* AqicnDebug.swift in Sources */,
 				C7EEB9382A692A6900F40354 /* AirQualityViewDataModel.swift in Sources */,
 				C72B99ED2A556A3300C5088E /* WeatherVC.swift in Sources */,
 				C7EEB9362A69275F00F40354 /* AirQualityViewProtocol.swift in Sources */,
@@ -507,23 +461,17 @@
 				C70AEB5F2A56A75B006CABF6 /* OpenWeatherTempAndPressure.swift in Sources */,
 				C72B99EB2A556A3300C5088E /* SceneDelegate.swift in Sources */,
 				C7C8C2472A56CB76005E6392 /* localNames.swift in Sources */,
-				C7D04F162A6FB458006FA195 /* AqicnTime.swift in Sources */,
-				C7D04F1E2A6FB7AA006FA195 /* AqicnV.swift in Sources */,
-				C7D04F1A2A6FB701006FA195 /* AqicnAttributions.swift in Sources */,
 				C70AEB5B2A56A655006CABF6 /* OpenWeatherResponce.swift in Sources */,
 				C7D04F0D2A6F8857006FA195 /* IndexLabel.swift in Sources */,
 				C70AEB692A56AC01006CABF6 /* NetworkManager.swift in Sources */,
 				C788A9392A63DA3C00C104B6 /* SunView.swift in Sources */,
-				C7D04F142A6FB416006FA195 /* AqicnData.swift in Sources */,
 				C78549C02A57FF5900F2E500 /* OpenWeatherRain.swift in Sources */,
 				C7EEB92C2A684C6400F40354 /* SunriseSunsetViewDataModel.swift in Sources */,
-				C7D04F262A6FB9BE006FA195 /* AqicnDailyValue.swift in Sources */,
 				C70AEB612A56A811006CABF6 /* OpenWeatherWind.swift in Sources */,
 				C7B474A62A5D305D00490FF1 /* RootView.swift in Sources */,
 				C70AEB5D2A56A6B5006CABF6 /* OpenWeatherWeatherDescription.swift in Sources */,
 				C78D88352A647C3000B646AF /* WindLabel.swift in Sources */,
 				C78549BB2A57DBDE00F2E500 /* SuggestionCitiesCell.swift in Sources */,
-				C7D04F122A6FA21D006FA195 /* AqicnResponce.swift in Sources */,
 				C7C8C2452A56CA8F005E6392 /* GeoResponce.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

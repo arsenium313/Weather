@@ -33,27 +33,7 @@ class NetworkManager {
         task.resume()
     }
     
-    func getAqi(for coord: Coordinates, _ completionHandler: @escaping (AqicnResponce) -> Void) {
-        let url = URL(string: "https://api.waqi.info/feed/geo:\(coord.lat);\(coord.lon)/?token=\(ApiKeys.airQualityApiKey)")
-        guard let url = url else { return }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, responce, error in
-            guard error == nil else { return }
-            guard let data = data else { return }
-            
-            if responce is HTTPURLResponse {
-                do {
-                    let decode: AqicnResponce = try JSONDecoder().decode(AqicnResponce.self, from: data)
-                    completionHandler(decode)
-                } catch {
-                    print(error.localizedDescription)
-                    print("Не удалось распарсить JSON ☹️")
-                    // уведомление что не получилось распарсить
-                }
-            }
-        }
-        task.resume()
-    }
+
     
     func getCoordinateByCityName(cityName: String, _ completionHandler: @escaping ([GeoResponce]) -> Void) {
         let stringUrl = "https://api.openweathermap.org/geo/1.0/direct?q=\(cityName)&limit=10&appid=\(apiKey)".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)

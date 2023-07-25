@@ -43,9 +43,7 @@ class WeatherVC: UIViewController {
             }
         }
         
-        networkManager.getAqi(for: coor) { responce in
-            print(responce)
-        }
+
         
         
     }
@@ -76,6 +74,7 @@ class WeatherVC: UIViewController {
     private func setupUI() {
         configureSelf()
         configureGoToChooserButtonItem()
+        
     }
     
     private func setupUIWhenGetOpenWeatherResponce(_ responce: OpenWeatherResponce) {
@@ -83,10 +82,11 @@ class WeatherVC: UIViewController {
         let sunriseSunsetResponce = SunriseSunsetViewDataModel(weatherResponce: responce)
         configureMainInfoView(mainInfoResponce)
         configureSunriseSunsetView(sunriseSunsetResponce)
+        setupUIWhenGetAqiResponce(10)
     }
     
-    private func setupUIWhenGetAqiResponce(_ responce: AqicnResponce) {
-        let aqiResponce = AirQualityViewDataModel(responce: responce)
+    private func setupUIWhenGetAqiResponce(_ responce: Int) {
+        let aqiResponce = AirQualityViewDataModel()
         configureAirQualityView(aqiResponce)
     }
     
