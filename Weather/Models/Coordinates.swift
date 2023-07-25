@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct OpenWeatherCoordinates: Decodable {
+struct Coordinates: Decodable {
     let lon: Double
     let lat: Double
 }

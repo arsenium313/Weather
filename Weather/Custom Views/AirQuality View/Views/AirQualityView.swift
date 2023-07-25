@@ -17,8 +17,8 @@ class AirQualityView: UIView {
     private var nameLabel: UILabel!
     
     //MARK: - Init
-    init(index: Int) { // принимает протокол со свойством индекс
-        self.index = CGFloat(index)
+    init(responce: AirQualityViewDataModel) { // принимает протокол со свойством индекс
+        self.index = CGFloat(responce.index)
         super.init(frame: .zero)
         setupUI()
     }

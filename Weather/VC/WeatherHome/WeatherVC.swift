@@ -29,23 +29,25 @@ class WeatherVC: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         // 1- ищу в persistance город по умолчанию, в persistance уже хранится объект coord
-        let coor = OpenWeatherCoordinates(lon: 32, lat: 51)
-        print("d")
+        let coor = Coordinates(lon: 32, lat: 51)
         networkManager.getWeather(for: coor) { responce in
             self.weatherResponce = responce
-            
             DispatchQueue.main.async {
                 // проверка если viewDidLoad выполнился, то запускаем setupUI()
                 if self.selfViewDidLoad {
-                    print("x")
-                    print(responce)
-                    self.setupUIWhenGetResponce(responce)
+                    self.setupUIWhenGetOpenWeatherResponce(responce)
                 } else {
                     print("XYI!")
                     fatalError()
                 }
             }
         }
+        
+        networkManager.getAqi(for: coor) { responce in
+            print(responce)
+        }
+        
+        
     }
     // разделить методы на
     // выполняются сразу
@@ -76,15 +78,17 @@ class WeatherVC: UIViewController {
         configureGoToChooserButtonItem()
     }
     
-    private func setupUIWhenGetResponce(_ responce: OpenWeatherResponce) {
+    private func setupUIWhenGetOpenWeatherResponce(_ responce: OpenWeatherResponce) {
         let mainInfoResponce = MainInfoViewDataModel(responce: responce)
         let sunriseSunsetResponce = SunriseSunsetViewDataModel(weatherResponce: responce)
         configureMainInfoView(mainInfoResponce)
         configureSunriseSunsetView(sunriseSunsetResponce)
-        
-        configureAirQualityView()
     }
     
+    private func setupUIWhenGetAqiResponce(_ responce: AqicnResponce) {
+        let aqiResponce = AirQualityViewDataModel(responce: responce)
+        configureAirQualityView(aqiResponce)
+    }
     
     private func configureSelf() {
         navigationController?.navigationBar.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
@@ -116,8 +120,8 @@ class WeatherVC: UIViewController {
         ])
     }
     
-    private func configureAirQualityView() {
-        airQualityView = AirQualityView(index: 100)
+    private func configureAirQualityView(_ responce: AirQualityViewDataModel) {
+        airQualityView = AirQualityView(responce: responce)
         self.view.addSubview(airQualityView)
         airQualityView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -156,7 +160,7 @@ extension WeatherVC: CityChooserDelegate {
     /// Получаем информацию о геопозиции искомого города
     func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию о геопозиции искомого города
         self.geoResponce = geo
-        networkManager.getWeather(for: OpenWeatherCoordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
+        networkManager.getWeather(for: Coordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
             DispatchQueue.main.async {
                 self.weatherResponce = weatherResponce
             }

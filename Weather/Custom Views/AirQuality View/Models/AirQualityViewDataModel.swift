@@ -6,9 +6,14 @@
 //
 
 import Foundation
-
+/**
+ AirQualityView принимает эту модель в своём инициализаторе.
+ В инициализатор принимает модели с разных сайтов
+*/
 struct AirQualityViewDataModel: AirQualityViewProtocol {
-    var index: Int
+    let index: Int
     
-    // прописать инит
+    init(responce: AqicnResponce) {
+        self.index = 10
+    }
 }
