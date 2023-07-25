@@ -8,7 +8,7 @@
 import Foundation
 
 struct OpenWeatherResponce: Decodable {
-    let coordinates: OpenWeatherCoordinates?
+    let coordinates: Coordinates?
     let weatherDescription: [OpenWeatherWeatherDescription]?
     let tempAndPressure: OpenWeatherTempAndPressure?
     let visibility: Int?
