@@ -12,6 +12,7 @@ class WeatherVC: UIViewController {
     //MARK: Properties
     private var mainInfoView: MainInfoView!
     private var sunriseSunsetView: SunriseSunsetView!
+    private var airQualityView: AirQualityView!
     
     private var goToCityChooserButton: UIBarButtonItem!
     
@@ -23,18 +24,21 @@ class WeatherVC: UIViewController {
     
     private var selfViewDidLoad = false
     
+    
     //MARK: - Init
     init() {
         super.init(nibName: nil, bundle: nil)
         // 1- ищу в persistance город по умолчанию, в persistance уже хранится объект coord
         let coor = OpenWeatherCoordinates(lon: 32, lat: 51)
-        
+        print("d")
         networkManager.getWeather(for: coor) { responce in
             self.weatherResponce = responce
             
             DispatchQueue.main.async {
                 // проверка если viewDidLoad выполнился, то запускаем setupUI()
                 if self.selfViewDidLoad {
+                    print("x")
+                    print(responce)
                     self.setupUIWhenGetResponce(responce)
                 } else {
                     print("XYI!")
@@ -77,6 +81,8 @@ class WeatherVC: UIViewController {
         let sunriseSunsetResponce = SunriseSunsetViewDataModel(weatherResponce: responce)
         configureMainInfoView(mainInfoResponce)
         configureSunriseSunsetView(sunriseSunsetResponce)
+        
+        configureAirQualityView()
     }
     
     
@@ -109,6 +115,19 @@ class WeatherVC: UIViewController {
             sunriseSunsetView.heightAnchor.constraint(equalTo: guide.heightAnchor, multiplier: 0.3)
         ])
     }
+    
+    private func configureAirQualityView() {
+        airQualityView = AirQualityView(index: 100)
+        self.view.addSubview(airQualityView)
+        airQualityView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            airQualityView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            airQualityView.topAnchor.constraint(equalTo: sunriseSunsetView.bottomAnchor, constant: 20),
+            airQualityView.heightAnchor.constraint(equalTo: guide.widthAnchor, multiplier: 0.48),
+            airQualityView.heightAnchor.constraint(equalTo: airQualityView.widthAnchor)
+        ])
+    }
+    
     
     private func configureGoToChooserButtonItem() {
         goToCityChooserButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))

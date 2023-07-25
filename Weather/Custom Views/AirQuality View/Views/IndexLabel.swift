@@ -1,0 +1,72 @@
+//
+//  IndexLabel.swift
+//  GradientTest
+//
+//  Created by Арсений Кухарев on 20.07.2023.
+//
+
+import UIKit
+
+class IndexLabel: UILabel {
+
+    //MARK: Properties
+    let index: Int
+    
+    
+    //MARK: - Init
+    init(index: Int) {
+        self.index = index
+        super.init(frame: .zero)
+        setupUI()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - SetupUI
+    private func setupUI() {
+        configureSelf()
+    }
+    
+    private func configureSelf() {
+        self.textAlignment = .center
+        self.attributedText = getAttributedStringFor(index)
+        self.numberOfLines = 0
+        self.adjustsFontSizeToFitWidth = true
+    }
+    
+    
+    //MARK: - Work with attributed string
+    func getAttributedStringFor(_ index: Int) -> NSMutableAttributedString {
+        let indexString = String(index) + "\n"
+        let indexAttributedString = NSAttributedString(string: indexString, attributes: [
+            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1),
+            NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 50) // Сделать автоматически
+        ])
+        
+        let categoryString = getAqiCategoryFor(index)
+        let categoryAttributedString = NSAttributedString(string: categoryString, attributes: [
+            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1),
+            NSAttributedString.Key.font : UIFont(name: "Avenir-Light", size: 30)! // Сделать автоматически
+        ])
+        
+        let totalString = NSMutableAttributedString()
+        totalString.append(indexAttributedString)
+        totalString.append(categoryAttributedString)
+        return totalString
+    }
+    
+    func getAqiCategoryFor(_ index: Int) -> String {
+        switch index {
+        case 0...50: return "Good"
+        case 51...100: return "Moderate"
+        case 101...150: return "Unhealthy for Sensitive Groups"
+        case 151...200: return "Unhealthy"
+        case 201...300: return "Very Unhealthy"
+        case 301...500: return "Hazardous"
+        default: return "nil"
+        }
+    }
+    
+}

@@ -86,9 +86,9 @@ class SunriseSunsetView: UIView {
     
     private func configureLeftLabel() {
         let timeString = getTimeStringFromTimeStamp(startTimeStamp)
-        let attributedString = getAttributedStringForLabel(timeString, sunCase: .sunrise)
+    //    let attributedString = getAttributedStringForLabel(timeString, sunCase: .sunrise)
         leftLabel = UILabel()
-        leftLabel.attributedText = attributedString
+      //  leftLabel.attributedText = attributedString
         leftLabel.numberOfLines = 2
         leftLabel.textAlignment = .center
         leftLabel.adjustsFontSizeToFitWidth = true
@@ -104,9 +104,9 @@ class SunriseSunsetView: UIView {
     
     private func configureRightLabel() {
         let timeString = getTimeStringFromTimeStamp(endTimeStamp)
-        let attributedString = getAttributedStringForLabel(timeString, sunCase: .sunset)
+      //  let attributedString = getAttributedStringForLabel(timeString, sunCase: .sunset)
         rightLabel = UILabel()
-        rightLabel.attributedText = attributedString
+      //  rightLabel.attributedText = attributedString
         rightLabel.numberOfLines = 2
         rightLabel.textAlignment = .center
         rightLabel.adjustsFontSizeToFitWidth = true
