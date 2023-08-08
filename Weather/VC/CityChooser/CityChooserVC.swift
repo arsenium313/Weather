@@ -7,15 +7,22 @@
 
 import UIKit
 
-class CityChooserVC: UIViewController {
+class CityChooserVC: UITableViewController {
 
     //MARK: Properties
     private lazy var guide = self.view.layoutMarginsGuide
     private var geoResponces: [GeoResponce] = []
     private let networkManager = NetworkManager()
-    private var cityInputTF: UITextField!
-    private var citySuggestionTable: UITableView!
+
     weak var delegate: CityChooserDelegate?
+    
+    private let savedCities = [GeoResponce(nameOfLocation: "Гомель", localizedNames: nil, lat: 52.36, lon: 31, country: "РБ", state: "Гомельская область"),
+                               GeoResponce(nameOfLocation: "Тель-Авив", localizedNames: nil, lat: 32.04, lon: 34.46, country: "Израиль", state: "nil"),
+                               GeoResponce(nameOfLocation: "Санкт-Петербург", localizedNames: nil, lat: 59.9, lon: 30.3, country: "РФ", state: "Ленинградская область")]
+    
+    private var searchController: UISearchController!
+    private var resultController: ResultsTableVC!
+    
     
     
     //MARK: - View Life Circle
@@ -28,93 +35,51 @@ class CityChooserVC: UIViewController {
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
-        configureCityInputTF()
-        configureSuggestionTable()
+        configureSearchController()
     }
     
     private func configureSelf() {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.navigationItem.title = "Choose city"
+        tableView.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
     }
     
-    private func configureCityInputTF() {
-        cityInputTF = UITextField()
-        cityInputTF.delegate = self
-        cityInputTF.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        cityInputTF.borderStyle = .roundedRect
-        cityInputTF.keyboardType = .default
-        cityInputTF.returnKeyType = .search
-        cityInputTF.clearsOnBeginEditing = true
-        
-        self.view.addSubview(cityInputTF)
-        cityInputTF.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            cityInputTF.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-            cityInputTF.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
-            cityInputTF.topAnchor.constraint(equalTo: guide.topAnchor),
-            cityInputTF.heightAnchor.constraint(equalToConstant: 50)
-        ])
-    }
+
     
-    private func configureSuggestionTable() {
-        citySuggestionTable = UITableView()
-        self.view.addSubview(citySuggestionTable)
-        citySuggestionTable.delegate = self
-        citySuggestionTable.dataSource = self
-        citySuggestionTable.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
-        citySuggestionTable.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        citySuggestionTable.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            citySuggestionTable.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-            citySuggestionTable.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
-            citySuggestionTable.topAnchor.constraint(equalTo: cityInputTF.bottomAnchor, constant: 15),
-            citySuggestionTable.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
-        ])
+   
+    
+    private func configureSearchController() {
+        resultController = ResultsTableVC()
+        searchController = UISearchController(searchResultsController: resultController)
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.searchBar.searchBarStyle = .minimal
+        searchController.searchBar.tintColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
         
     }
     
-}
-
-
-//MARK: - TF Delegate
-extension CityChooserVC: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let userInput = textField.text else { return true }
-        networkManager.getCoordinateByCityName(cityName: userInput) { responces in
-            self.geoResponces = responces
-            DispatchQueue.main.async {
-                self.citySuggestionTable.reloadData()
-            }
-        }
-        // запуск кольца ожидания
-        textField.resignFirstResponder()
-        return true
-    }
     
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        self.geoResponces.removeAll()
-        self.citySuggestionTable.reloadData()
-        return true
-    }
+    
 }
+
 
 //MARK: - Table delegate / dataSource
-extension CityChooserVC: UITableViewDelegate, UITableViewDataSource {
+extension CityChooserVC {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return geoResponces.count
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return savedCities.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
-        cell.primaryText = geoResponces[indexPath.row].nameOfLocation ?? "nill"
-        cell.secondaryText = "\(geoResponces[indexPath.row].state ?? "nil"). \(geoResponces[indexPath.row].country ?? "nil")"
+        cell.primaryText = savedCities[indexPath.row].nameOfLocation ?? "nill"
+        cell.secondaryText = "\(savedCities[indexPath.row].state ?? "nil"). \(savedCities[indexPath.row].country ?? "nil")"
         cell.setupUI()
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.passGeoResponce(geoResponces[indexPath.row])
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        delegate?.passGeoResponce(savedCities[indexPath.row])
         self.navigationController?.popViewController(animated: true)
     }
     

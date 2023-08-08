@@ -20,6 +20,7 @@ class WeatherVC: UIViewController {
     
     private let networkManager = NetworkManager()
     private var weatherResponce: OpenWeatherResponce!
+    private var airQualityResponce: OpenWeatherAirPollutionResponce!
     private var geoResponce: GeoResponce!
     
     private var selfViewDidLoad = false
@@ -168,13 +169,27 @@ extension WeatherVC: CityChooserDelegate {
     /// Получаем информацию о геопозиции искомого города
     func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию о геопозиции искомого города
         self.geoResponce = geo
+        self.title = geo.nameOfLocation
+        let myGroup = DispatchGroup()
+        
+        myGroup.enter()
         networkManager.getWeather(for: Coordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
-            DispatchQueue.main.async {
-                self.weatherResponce = weatherResponce
-            }
-            DispatchQueue.global(qos: .userInitiated).async {
-                
-            }
+            self.weatherResponce = weatherResponce
+            myGroup.leave()
+        }
+        
+        myGroup.enter()
+        networkManager.getAirPollution(for: Coordinates(lon: geo.lon, lat: geo.lat)) { weatherResponce in
+            self.airQualityResponce = weatherResponce
+            myGroup.leave()
+        }
+        
+        myGroup.notify(queue: .main) {
+            self.mainInfoView.removeFromSuperview()
+            self.sunriseSunsetView.removeFromSuperview()
+            self.setupUIWhenGetOpenWeatherResponce(self.weatherResponce)
+            self.airQualityView.removeFromSuperview()
+            self.setupUIWhenGetAqiResponce(self.airQualityResponce)
         }
     }
 }

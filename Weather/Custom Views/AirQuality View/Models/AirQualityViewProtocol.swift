@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 /// Список обязательных свойст для создания AirQualityView
 protocol AirQualityViewProtocol {
     var index: Int { get }

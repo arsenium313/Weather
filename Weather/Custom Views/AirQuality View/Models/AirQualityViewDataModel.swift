@@ -8,7 +8,7 @@
 import Foundation
 /**
  AirQualityView принимает эту модель в своём инициализаторе.
- В инициализатор принимает модели с разных сайтов
+ Под каждый сайт делать отдельный инициализатор
 */
 struct AirQualityViewDataModel: AirQualityViewProtocol {
     let index: Int
