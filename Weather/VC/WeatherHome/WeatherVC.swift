@@ -10,57 +10,61 @@ import UIKit
 class WeatherVC: UIViewController {
 
     //MARK: Properties
+    // Views
     private var mainInfoView: MainInfoView!
     private var sunriseSunsetView: SunriseSunsetView!
     private var airQualityView: AirQualityView!
-    
-    private var goToCityChooserButton: UIBarButtonItem!
-    
-    private lazy var guide = self.view.layoutMarginsGuide
-    
+    // Responces
     private let networkManager = NetworkManager()
     private var weatherResponce: OpenWeatherResponce!
     private var airQualityResponce: OpenWeatherAirPollutionResponce!
     private var geoResponce: GeoResponce!
+
+    private var goToCityChooserButton: UIBarButtonItem!
+    private lazy var guide = self.view.layoutMarginsGuide
     
-    private var selfViewDidLoad = false
+    var savedCities = PublicGeoArray().savedCities
     
     
     //MARK: - Init
-    init() {
+    /// По умолчанию скачивает погоду для первого города в списке сохраненных
+    init(geoResponce: GeoResponce? = nil) {
         super.init(nibName: nil, bundle: nil)
-        // 1- ищу в persistance город по умолчанию, в persistance уже хранится объект coord
-        let coor = Coordinates(lon: 31, lat: 52.26)
+        var coordinates: Coordinates!
         
-        networkManager.getWeather(for: coor) { responce in
+        if let geoResponce = geoResponce {
+            coordinates = Coordinates(lon: geoResponce.lon,
+                                      lat: geoResponce.lat)
+            self.navigationItem.title = geoResponce.nameOfLocation
+        } else {
+            coordinates = Coordinates(lon: savedCities.first?.lon ?? 0,
+                                  lat: savedCities.first?.lat ?? 0)
+            self.navigationItem.title = savedCities.first?.nameOfLocation ?? "nil"
+        }
+        let myGroup = DispatchGroup()
+        
+        myGroup.enter()
+        networkManager.getWeather(for: coordinates) { responce in
             self.weatherResponce = responce
-            DispatchQueue.main.async {
-                // проверка если viewDidLoad выполнился, то запускаем setupUI()
-                if self.selfViewDidLoad {
-                    self.setupUIWhenGetOpenWeatherResponce(responce)
-                } else {
-                    print("☹️")
-                    fatalError()
-                }
-            }
+            myGroup.leave()
         }
         
-        networkManager.getAirPollution(for: coor) { responce in
-            DispatchQueue.main.async {
-                if self.selfViewDidLoad {
-                    self.setupUIWhenGetAqiResponce(responce)
-                } else {
-                    print("☹️")
-                    fatalError()
-                }
-            }
+        myGroup.enter()
+        networkManager.getAirPollution(for: coordinates) { responce in
+            self.airQualityResponce = responce
+            myGroup.leave()
         }
         
+        myGroup.notify(queue: .main) { [self] in
+            setupUIWhenGetOpenWeatherResponce(weatherResponce)
+            setupUIWhenGetAqiResponce(airQualityResponce)
+        }
     }
-    // разделить методы на
-    // выполняются сразу
-    // выполняются когда получили responce
-    //   ВСЕ будет отображаться только после получения
+    
+    /// Для resultsTable
+//    init(geo: GeoResponce) {
+//        super.init(nibName: nil, bundle: nil)
+//    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -75,10 +79,14 @@ class WeatherVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        selfViewDidLoad = true
         setupUI()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
+    }
     
     //MARK: - SetupUI
     private func setupUI() {
@@ -100,9 +108,6 @@ class WeatherVC: UIViewController {
     }
     
     private func configureSelf() {
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        self.navigationItem.title = "Гомель"
     }
     
     private func configureMainInfoView(_ responce: MainInfoViewProtocol) {
@@ -152,23 +157,17 @@ class WeatherVC: UIViewController {
     private func goToCityChooserVC() {
         let vc = CityChooserVC()
         vc.delegate = self
+        vc.resultController?.delegate = self
         self.navigationController?.pushViewController(vc, animated: true)
     }
-    
-    //MARK: - Get weather and update UI
-    private func getWeather(geo: GeoResponce) {
- 
-    }
-    
-    
+
 }
 
 
 //MARK: - Protocols
 extension WeatherVC: CityChooserDelegate {
-    /// Получаем информацию о геопозиции искомого города
+    /// Получаем информацию о геопозиции искомого города, для отправки запроса
     func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию о геопозиции искомого города
-        self.geoResponce = geo
         self.title = geo.nameOfLocation
         let myGroup = DispatchGroup()
         

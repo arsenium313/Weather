@@ -26,6 +26,7 @@
 		C72B99F52A556A3500C5088E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C72B99F32A556A3500C5088E /* LaunchScreen.storyboard */; };
 		C7400EEA2A5CCEFB0081EF70 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7400EE92A5CCEFB0081EF70 /* ApiKeys.swift */; };
 		C77F0E1B2A813AA700DA4BC0 /* ResultsTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77F0E1A2A813AA700DA4BC0 /* ResultsTableVC.swift */; };
+		C77F0E1D2A82501D00DA4BC0 /* PublicGeoArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = C77F0E1C2A82501D00DA4BC0 /* PublicGeoArray.swift */; };
 		C78549B52A56F97800F2E500 /* CityChooserVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78549B42A56F97800F2E500 /* CityChooserVC.swift */; };
 		C78549BB2A57DBDE00F2E500 /* SuggestionCitiesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78549BA2A57DBDE00F2E500 /* SuggestionCitiesCell.swift */; };
 		C78549BE2A57EC6F00F2E500 /* CityChooserDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C78549BD2A57EC6F00F2E500 /* CityChooserDelegate.swift */; };
@@ -79,6 +80,7 @@
 		C72B99F62A556A3500C5088E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C7400EE92A5CCEFB0081EF70 /* ApiKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
 		C77F0E1A2A813AA700DA4BC0 /* ResultsTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsTableVC.swift; sourceTree = "<group>"; };
+		C77F0E1C2A82501D00DA4BC0 /* PublicGeoArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicGeoArray.swift; sourceTree = "<group>"; };
 		C78549B42A56F97800F2E500 /* CityChooserVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityChooserVC.swift; sourceTree = "<group>"; };
 		C78549BA2A57DBDE00F2E500 /* SuggestionCitiesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionCitiesCell.swift; sourceTree = "<group>"; };
 		C78549BD2A57EC6F00F2E500 /* CityChooserDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CityChooserDelegate.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				C70AEB582A56A602006CABF6 /* Coordinates.swift */,
 				C70AEB572A56A4A6006CABF6 /* openweathermap.org */,
 				C70AEB522A55C335006CABF6 /* TemperatureColor */,
+				C77F0E1C2A82501D00DA4BC0 /* PublicGeoArray.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -460,6 +463,7 @@
 				C78D88372A647C3000B646AF /* FeelsLikeLabel.swift in Sources */,
 				C70AEB592A56A602006CABF6 /* Coordinates.swift in Sources */,
 				C70AEB542A55C399006CABF6 /* TemperatureParser.swift in Sources */,
+				C77F0E1D2A82501D00DA4BC0 /* PublicGeoArray.swift in Sources */,
 				C78D88382A647C3000B646AF /* DescriptionWeatherLabel.swift in Sources */,
 				C70AEB562A55C6B7006CABF6 /* UIColor+GetTemperatureColor.swift in Sources */,
 				C7400EEA2A5CCEFB0081EF70 /* ApiKeys.swift in Sources */,

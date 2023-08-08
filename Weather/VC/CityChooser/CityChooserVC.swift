@@ -11,18 +11,15 @@ class CityChooserVC: UITableViewController {
 
     //MARK: Properties
     private lazy var guide = self.view.layoutMarginsGuide
-    private var geoResponces: [GeoResponce] = []
+   // private var geoResponces: [GeoResponce] = []
     private let networkManager = NetworkManager()
 
     weak var delegate: CityChooserDelegate?
-    
-    private let savedCities = [GeoResponce(nameOfLocation: "Гомель", localizedNames: nil, lat: 52.36, lon: 31, country: "РБ", state: "Гомельская область"),
-                               GeoResponce(nameOfLocation: "Тель-Авив", localizedNames: nil, lat: 32.04, lon: 34.46, country: "Израиль", state: "nil"),
-                               GeoResponce(nameOfLocation: "Санкт-Петербург", localizedNames: nil, lat: 59.9, lon: 30.3, country: "РФ", state: "Ленинградская область")]
-    
+    var savedCities = PublicGeoArray().savedCities
     private var searchController: UISearchController!
-    private var resultController: ResultsTableVC!
+    var resultController: ResultsTableVC?
     
+    private var searchWorkItem: DispatchWorkItem?
     
     
     //MARK: - View Life Circle
@@ -31,6 +28,12 @@ class CityChooserVC: UITableViewController {
         setupUI()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+    }
+    
     
     //MARK: - SetupUI
     private func setupUI() {
@@ -44,22 +47,15 @@ class CityChooserVC: UITableViewController {
         tableView.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
     }
     
-
-    
-   
-    
     private func configureSearchController() {
         resultController = ResultsTableVC()
         searchController = UISearchController(searchResultsController: resultController)
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
-        searchController.searchBar.searchBarStyle = .minimal
         searchController.searchBar.tintColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
-        
+        searchController.searchResultsUpdater = self
     }
-    
-    
-    
+
 }
 
 
@@ -82,5 +78,23 @@ extension CityChooserVC {
         delegate?.passGeoResponce(savedCities[indexPath.row])
         self.navigationController?.popViewController(animated: true)
     }
-    
+}
+
+
+//MARK: - Search Updater
+extension CityChooserVC: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        searchWorkItem?.cancel()
+        let workItem = DispatchWorkItem {
+            let cityName = searchController.searchBar.text
+            self.networkManager.getCoordinateByCityName(cityName: cityName ?? "") { responces in
+                DispatchQueue.main.async {
+                    self.resultController?.responces = responces
+                    self.resultController?.tableView.reloadData()
+                }
+            }
+        }
+        searchWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
+    }
 }
