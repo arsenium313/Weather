@@ -23,12 +23,12 @@ class WeatherVC: UIViewController {
     private var goToCityChooserButton: UIBarButtonItem!
     private lazy var guide = self.view.layoutMarginsGuide
     
-    var savedCities = PublicGeoArray().savedCities
+    var savedCities = PublicGeoArray.savedCities
     
     
     //MARK: - Init
     /// По умолчанию скачивает погоду для первого города в списке сохраненных
-    init(geoResponce: GeoResponce? = nil) {
+    init(geoResponce: GeoResponce? = nil, isModal: Bool = false) {
         super.init(nibName: nil, bundle: nil)
         var coordinates: Coordinates!
         
@@ -59,13 +59,16 @@ class WeatherVC: UIViewController {
             setupUIWhenGetOpenWeatherResponce(weatherResponce)
             setupUIWhenGetAqiResponce(airQualityResponce)
         }
+        
+        if isModal {
+            let button = UIBarButtonItem(title: "Добавить", style: .plain, target: self, action: nil)
+            self.navigationItem.rightBarButtonItem = button
+        }
+        
+        modalPresentationStyle = .formSheet
+        
     }
-    
-    /// Для resultsTable
-//    init(geo: GeoResponce) {
-//        super.init(nibName: nil, bundle: nil)
-//    }
-    
+        
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -92,7 +95,6 @@ class WeatherVC: UIViewController {
     private func setupUI() {
         configureSelf()
         configureGoToChooserButtonItem()
-        
     }
     
     private func setupUIWhenGetOpenWeatherResponce(_ responce: OpenWeatherResponce) {
@@ -145,7 +147,6 @@ class WeatherVC: UIViewController {
             airQualityView.heightAnchor.constraint(equalTo: airQualityView.widthAnchor)
         ])
     }
-    
     
     private func configureGoToChooserButtonItem() {
         goToCityChooserButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))

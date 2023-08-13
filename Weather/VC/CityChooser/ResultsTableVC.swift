@@ -47,7 +47,9 @@ class ResultsTableVC: UITableViewController {
     //MARK: - TableView Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.passGeoResponce(responces[indexPath.row])
-        present(WeatherVC(geoResponce: responces[indexPath.row]), animated: true)
+        let vc = WeatherVC(geoResponce: responces[indexPath.row], isModal: true)
+        let navVC = UINavigationController(rootViewController: vc)
+        present(navVC, animated: true)
     }
     
 }

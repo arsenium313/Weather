@@ -10,17 +10,14 @@ import UIKit
 class CityChooserVC: UITableViewController {
 
     //MARK: Properties
-    private lazy var guide = self.view.layoutMarginsGuide
-   // private var geoResponces: [GeoResponce] = []
     private let networkManager = NetworkManager()
-
     weak var delegate: CityChooserDelegate?
-    var savedCities = PublicGeoArray().savedCities
     private var searchController: UISearchController!
     var resultController: ResultsTableVC?
-    
     private var searchWorkItem: DispatchWorkItem?
     
+    private lazy var guide = self.view.layoutMarginsGuide
+    var savedCities = PublicGeoArray.savedCities
     
     //MARK: - View Life Circle
     override func viewDidLoad() {
@@ -33,7 +30,7 @@ class CityChooserVC: UITableViewController {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
     }
-    
+
     
     //MARK: - SetupUI
     private func setupUI() {
