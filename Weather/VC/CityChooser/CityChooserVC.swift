@@ -12,13 +12,14 @@ class CityChooserVC: UITableViewController {
     //MARK: Properties
     private let networkManager = NetworkManager()
     weak var delegate: CityChooserDelegate?
-    private var searchController: UISearchController!
+    var searchController: UISearchController!
     var resultController: ResultsTableVC?
     private var searchWorkItem: DispatchWorkItem?
     
     private lazy var guide = self.view.layoutMarginsGuide
     var savedCities = PublicGeoArray.savedCities
     
+
     //MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +31,18 @@ class CityChooserVC: UITableViewController {
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
         navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
     }
-
+    
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        print("City Chooser init")
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("City Chooser deinit")
+    }
     
     //MARK: - SetupUI
     private func setupUI() {
@@ -46,6 +58,7 @@ class CityChooserVC: UITableViewController {
     
     private func configureSearchController() {
         resultController = ResultsTableVC()
+        resultController?.parentTest = self
         searchController = UISearchController(searchResultsController: resultController)
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
@@ -60,20 +73,21 @@ class CityChooserVC: UITableViewController {
 extension CityChooserVC {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return savedCities.count
+        return PublicGeoArray.savedCities.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
-        cell.primaryText = savedCities[indexPath.row].nameOfLocation ?? "nill"
-        cell.secondaryText = "\(savedCities[indexPath.row].state ?? "nil"). \(savedCities[indexPath.row].country ?? "nil")"
+        cell.primaryText = PublicGeoArray.savedCities[indexPath.row].nameOfLocation ?? "nill"
+        cell.secondaryText = "\(PublicGeoArray.savedCities[indexPath.row].state ?? "nil"). \(PublicGeoArray.savedCities[indexPath.row].country ?? "nil")"
         cell.setupUI()
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.passGeoResponce(savedCities[indexPath.row])
-        self.navigationController?.popViewController(animated: true)
+        delegate?.passGeoResponce(PublicGeoArray.savedCities[indexPath.row])
+//        self.navigationController?.popViewController(animated: true)
+        self.navigationController?.popToRootViewController(animated: true)
     }
 }
 

@@ -18,9 +18,15 @@ class WeatherVC: UIViewController {
     private let networkManager = NetworkManager()
     private var weatherResponce: OpenWeatherResponce!
     private var airQualityResponce: OpenWeatherAirPollutionResponce!
-    private var geoResponce: GeoResponce!
+   // private var geoResponce: GeoResponce!
 
     private var goToCityChooserButton: UIBarButtonItem!
+    var addCityInUserDefaultsButton: UIBarButtonItem!
+    private var isModal: Bool
+    private var geoResponceToSave: GeoResponce?
+    
+    private var cityChooserVC: CityChooserVC!
+    
     private lazy var guide = self.view.layoutMarginsGuide
     
     var savedCities = PublicGeoArray.savedCities
@@ -29,10 +35,12 @@ class WeatherVC: UIViewController {
     //MARK: - Init
     /// По умолчанию скачивает погоду для первого города в списке сохраненных
     init(geoResponce: GeoResponce? = nil, isModal: Bool = false) {
+        self.isModal = isModal
         super.init(nibName: nil, bundle: nil)
         var coordinates: Coordinates!
         
         if let geoResponce = geoResponce {
+            self.geoResponceToSave = geoResponce
             coordinates = Coordinates(lon: geoResponce.lon,
                                       lat: geoResponce.lat)
             self.navigationItem.title = geoResponce.nameOfLocation
@@ -59,14 +67,6 @@ class WeatherVC: UIViewController {
             setupUIWhenGetOpenWeatherResponce(weatherResponce)
             setupUIWhenGetAqiResponce(airQualityResponce)
         }
-        
-        if isModal {
-            let button = UIBarButtonItem(title: "Добавить", style: .plain, target: self, action: nil)
-            self.navigationItem.rightBarButtonItem = button
-        }
-        
-        modalPresentationStyle = .formSheet
-        
     }
         
     required init?(coder: NSCoder) {
@@ -94,7 +94,12 @@ class WeatherVC: UIViewController {
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
-        configureGoToChooserButtonItem()
+        configureCityChooserVC()
+        if isModal {
+            configureAddCityInUserDefaults()
+        } else {
+            configureGoToChooserButtonItem()
+        }
     }
     
     private func setupUIWhenGetOpenWeatherResponce(_ responce: OpenWeatherResponce) {
@@ -148,9 +153,19 @@ class WeatherVC: UIViewController {
         ])
     }
     
+    private func configureCityChooserVC() {
+//        cityChooserVC = CityChooserVC()
+//        cityChooserVC.delegate = self
+    }
+    
     private func configureGoToChooserButtonItem() {
         goToCityChooserButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))
         self.navigationItem.rightBarButtonItem = goToCityChooserButton
+    }
+    
+    private func configureAddCityInUserDefaults() {
+//        addCityInUserDefaultsButton = UIBarButtonItem(title: "Добавить", style: .plain, target: self, action: #selector(addCityInUserDefaults))
+//        self.navigationItem.rightBarButtonItem = addCityInUserDefaultsButton
     }
     
     //MARK: - Selectors
@@ -158,16 +173,25 @@ class WeatherVC: UIViewController {
     private func goToCityChooserVC() {
         let vc = CityChooserVC()
         vc.delegate = self
-        vc.resultController?.delegate = self
         self.navigationController?.pushViewController(vc, animated: true)
     }
 
+    @objc
+    private func addCityInUserDefaults() {
+     //   cityChooserVC.searchController.isActive = false
+//        PublicGeoArray.savedCities.append(geoResponceToSave!)
+//        navigationController?.dismiss(animated: true)
+        // переход на CityChoser
+      
+       // navigationController?.pushViewController(vc, animated: true)
+      //  navigationController?.popToRootViewController(animated: true)
+    }
 }
 
 
 //MARK: - Protocols
 extension WeatherVC: CityChooserDelegate {
-    /// Получаем информацию о геопозиции искомого города, для отправки запроса
+    /// Получаем информацию о геопозиции города из таблицы сохраненных, для отправки запроса
     func passGeoResponce(_ geo: GeoResponce) { //принимаем информацию о геопозиции искомого города
         self.title = geo.nameOfLocation
         let myGroup = DispatchGroup()

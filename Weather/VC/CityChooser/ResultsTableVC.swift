@@ -11,8 +11,10 @@ class ResultsTableVC: UITableViewController {
 
     //MARK: Properties
     var responces: [GeoResponce] = []
-    weak var delegate: CityChooserDelegate?
-    
+   // weak var delegate: CityChooserDelegate?
+    var navVC: UINavigationController!
+    var parentTest: CityChooserVC!
+    var geoResponceToShare: GeoResponce!
     //MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +30,17 @@ class ResultsTableVC: UITableViewController {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         tableView.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
     }
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        print("Results VC init")
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    deinit {
+        print("resultVC deinit")
+    }
     
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -46,10 +58,21 @@ class ResultsTableVC: UITableViewController {
     
     //MARK: - TableView Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.passGeoResponce(responces[indexPath.row])
+      //  delegate?.passGeoResponce(responces[indexPath.row])
         let vc = WeatherVC(geoResponce: responces[indexPath.row], isModal: true)
-        let navVC = UINavigationController(rootViewController: vc)
+        self.geoResponceToShare = responces[indexPath.row]
+        vc.addCityInUserDefaultsButton = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(test))
+        vc.navigationItem.rightBarButtonItem = vc.addCityInUserDefaultsButton
+        
+        self.navVC = UINavigationController(rootViewController: vc)
         present(navVC, animated: true)
     }
     
+    @objc func test() {
+        print("Test")
+        PublicGeoArray.savedCities.append(geoResponceToShare)
+        parentTest.tableView.reloadData()
+        parentTest.searchController.isActive = false
+        navVC?.dismiss(animated: true)
+    }
 }
