@@ -18,14 +18,12 @@ class WeatherVC: UIViewController {
     private let networkManager = NetworkManager()
     private var weatherResponce: OpenWeatherResponce!
     private var airQualityResponce: OpenWeatherAirPollutionResponce!
-   // private var geoResponce: GeoResponce!
-
-    private var goToCityChooserButton: UIBarButtonItem!
-    var addCityInUserDefaultsButton: UIBarButtonItem!
-    private var isModal: Bool
-    private var geoResponceToSave: GeoResponce?
+    // Other
+    public var addCityInUserDefaultsBarButton: UIBarButtonItem!
+    private var goToCityChooserBarButton: UIBarButtonItem!
+    private var isPresentedFromSearchVC: Bool
     
-    private var cityChooserVC: CityChooserVC!
+    private var cityChooserVC = CityChooserVC()
     
     private lazy var guide = self.view.layoutMarginsGuide
     
@@ -33,14 +31,19 @@ class WeatherVC: UIViewController {
     
     
     //MARK: - Init
-    /// По умолчанию скачивает погоду для первого города в списке сохраненных
-    init(geoResponce: GeoResponce? = nil, isModal: Bool = false) {
-        self.isModal = isModal
+    /**
+     - Parameter geoResponce: Координаты города который нужно найти
+     - Parameter isPresentedFromSearchVC: От параметра зависит какая кнопка будет в rightBarButtonItem
+     */
+    init(geoResponce: GeoResponce? = nil, isPresentedFromSearchVC: Bool = false) {
+        print("Weather VC Init")
+        self.isPresentedFromSearchVC = isPresentedFromSearchVC
         super.init(nibName: nil, bundle: nil)
         var coordinates: Coordinates!
+        let myGroup = DispatchGroup()
         
+        // Если не передали координаты в инициализатор, то из UserDefaults берет первый в списке город
         if let geoResponce = geoResponce {
-            self.geoResponceToSave = geoResponce
             coordinates = Coordinates(lon: geoResponce.lon,
                                       lat: geoResponce.lat)
             self.navigationItem.title = geoResponce.nameOfLocation
@@ -49,7 +52,6 @@ class WeatherVC: UIViewController {
                                   lat: savedCities.first?.lat ?? 0)
             self.navigationItem.title = savedCities.first?.nameOfLocation ?? "nil"
         }
-        let myGroup = DispatchGroup()
         
         myGroup.enter()
         networkManager.getWeather(for: coordinates) { responce in
@@ -73,6 +75,9 @@ class WeatherVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        print("Weather VC deinit")
+    }
     
     //MARK: - View Life Circle
     override func loadView() {
@@ -85,21 +90,27 @@ class WeatherVC: UIViewController {
         setupUI()
     }
     
+    // Из-за разных фонов WeatherVC и CityChoserVC нужно вручную менять цвет акцента верхнего navigationBar
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.navigationBar.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
     }
     
+    
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
-        configureCityChooserVC()
-        if isModal {
-            configureAddCityInUserDefaults()
+        
+        if isPresentedFromSearchVC {
+            configureAddCityInUserDefaultsBarButton()
         } else {
-            configureGoToChooserButtonItem()
+            configureGoToChooserBarButton()
         }
+    }
+    
+    private func configureSelf() {
+        cityChooserVC.delegate = self
     }
     
     private func setupUIWhenGetOpenWeatherResponce(_ responce: OpenWeatherResponce) {
@@ -114,9 +125,8 @@ class WeatherVC: UIViewController {
         configureAirQualityView(aqiResponce)
     }
     
-    private func configureSelf() {
-    }
-    
+  
+    //MARK: Configure Views
     private func configureMainInfoView(_ responce: MainInfoViewProtocol) {
         mainInfoView = MainInfoView(responce)
         self.view.addSubview(mainInfoView)
@@ -153,31 +163,28 @@ class WeatherVC: UIViewController {
         ])
     }
     
-    private func configureCityChooserVC() {
-//        cityChooserVC = CityChooserVC()
-//        cityChooserVC.delegate = self
+    //MARK: Configure Bar Buttons
+    private func configureGoToChooserBarButton() {
+        goToCityChooserBarButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))
+        self.navigationItem.rightBarButtonItem = goToCityChooserBarButton
     }
     
-    private func configureGoToChooserButtonItem() {
-        goToCityChooserButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(goToCityChooserVC))
-        self.navigationItem.rightBarButtonItem = goToCityChooserButton
-    }
-    
-    private func configureAddCityInUserDefaults() {
+    private func configureAddCityInUserDefaultsBarButton() {
 //        addCityInUserDefaultsButton = UIBarButtonItem(title: "Добавить", style: .plain, target: self, action: #selector(addCityInUserDefaults))
 //        self.navigationItem.rightBarButtonItem = addCityInUserDefaultsButton
+        addCityInUserDefaultsBarButton = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addCityInUserDefaultsBarButtonAction))
+        navigationItem.rightBarButtonItem = addCityInUserDefaultsBarButton
+        
     }
     
     //MARK: - Selectors
     @objc
     private func goToCityChooserVC() {
-        let vc = CityChooserVC()
-        vc.delegate = self
-        self.navigationController?.pushViewController(vc, animated: true)
+        self.navigationController?.pushViewController(cityChooserVC, animated: true)
     }
 
     @objc
-    private func addCityInUserDefaults() {
+    private func addCityInUserDefaultsBarButtonAction() {
      //   cityChooserVC.searchController.isActive = false
 //        PublicGeoArray.savedCities.append(geoResponceToSave!)
 //        navigationController?.dismiss(animated: true)
@@ -185,6 +192,15 @@ class WeatherVC: UIViewController {
       
        // navigationController?.pushViewController(vc, animated: true)
       //  navigationController?.popToRootViewController(animated: true)
+        print("Test")
+       // PublicGeoArray.savedCities.append(geoResponceToShare)
+        cityChooserVC.tableView.reloadData()
+        cityChooserVC.searchController.isActive = false
+        cityChooserVC.resultsTableVC?.navigationVC.dismiss(animated: true)
+       // navigationVC?.dismiss(animated: true)
+        
+        
+        
     }
 }
 
@@ -209,6 +225,7 @@ extension WeatherVC: CityChooserDelegate {
         }
         
         myGroup.notify(queue: .main) {
+            print("passGeo")
             self.mainInfoView.removeFromSuperview()
             self.sunriseSunsetView.removeFromSuperview()
             self.setupUIWhenGetOpenWeatherResponce(self.weatherResponce)

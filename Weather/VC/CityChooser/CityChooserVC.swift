@@ -13,25 +13,14 @@ class CityChooserVC: UITableViewController {
     private let networkManager = NetworkManager()
     weak var delegate: CityChooserDelegate?
     var searchController: UISearchController!
-    var resultController: ResultsTableVC?
+    var resultsTableVC: ResultsTableVC?
     private var searchWorkItem: DispatchWorkItem?
     
     private lazy var guide = self.view.layoutMarginsGuide
     var savedCities = PublicGeoArray.savedCities
     
-
-    //MARK: - View Life Circle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
-    }
     
+    //MARK: - Init
     init() {
         super.init(nibName: nil, bundle: nil)
         print("City Chooser init")
@@ -44,6 +33,21 @@ class CityChooserVC: UITableViewController {
         print("City Chooser deinit")
     }
     
+    
+    //MARK: - View Life Circle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+    }
+    
+    // Из-за разных фонов WeatherVC и CityChoserVC нужно вручную менять цвет акцента верхнего navigationBar
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+    }
+    
+
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
@@ -57,9 +61,9 @@ class CityChooserVC: UITableViewController {
     }
     
     private func configureSearchController() {
-        resultController = ResultsTableVC()
-        resultController?.parentTest = self
-        searchController = UISearchController(searchResultsController: resultController)
+        resultsTableVC = ResultsTableVC()
+        resultsTableVC?.parentTest = self
+        searchController = UISearchController(searchResultsController: resultsTableVC)
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         searchController.searchBar.tintColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
@@ -100,8 +104,8 @@ extension CityChooserVC: UISearchResultsUpdating {
             let cityName = searchController.searchBar.text
             self.networkManager.getCoordinateByCityName(cityName: cityName ?? "") { responces in
                 DispatchQueue.main.async {
-                    self.resultController?.responces = responces
-                    self.resultController?.tableView.reloadData()
+                    self.resultsTableVC?.responces = responces
+                    self.resultsTableVC?.tableView.reloadData()
                 }
             }
         }

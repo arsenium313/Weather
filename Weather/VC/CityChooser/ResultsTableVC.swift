@@ -10,17 +10,35 @@ import UIKit
 class ResultsTableVC: UITableViewController {
 
     //MARK: Properties
-    var responces: [GeoResponce] = []
+    public var responces: [GeoResponce] = []
+    public var parentTest: CityChooserVC!
    // weak var delegate: CityChooserDelegate?
-    var navVC: UINavigationController!
-    var parentTest: CityChooserVC!
-    var geoResponceToShare: GeoResponce!
+    public  var navigationVC: UINavigationController!
+    private var geoResponceToShare: GeoResponce!
+    
+    
     //MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
     }
 
+    
+    //MARK: - Init
+    init() {
+        super.init(nibName: nil, bundle: nil)
+        print("Results VC init")
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("resultVC deinit")
+    }
+    
+    
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
@@ -30,17 +48,7 @@ class ResultsTableVC: UITableViewController {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         tableView.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
     }
-    init() {
-        super.init(nibName: nil, bundle: nil)
-        print("Results VC init")
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    deinit {
-        print("resultVC deinit")
-    }
+
     
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -59,20 +67,20 @@ class ResultsTableVC: UITableViewController {
     //MARK: - TableView Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
       //  delegate?.passGeoResponce(responces[indexPath.row])
-        let vc = WeatherVC(geoResponce: responces[indexPath.row], isModal: true)
+        let vc = WeatherVC(geoResponce: responces[indexPath.row], isPresentedFromSearchVC: true)
         self.geoResponceToShare = responces[indexPath.row]
-        vc.addCityInUserDefaultsButton = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(test))
-        vc.navigationItem.rightBarButtonItem = vc.addCityInUserDefaultsButton
+        PublicGeoArray.savedCities.append(geoResponceToShare)
+//        vc.addCityInUserDefaultsBarButton = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addCityInUserDefaultsBarButtonAction))
+//        vc.navigationItem.rightBarButtonItem = vc.addCityInUserDefaultsBarButton
         
-        self.navVC = UINavigationController(rootViewController: vc)
-        present(navVC, animated: true)
+        self.navigationVC = UINavigationController(rootViewController: vc)
+        present(navigationVC, animated: true)
     }
     
-    @objc func test() {
-        print("Test")
-        PublicGeoArray.savedCities.append(geoResponceToShare)
-        parentTest.tableView.reloadData()
-        parentTest.searchController.isActive = false
-        navVC?.dismiss(animated: true)
+    @objc func addCityInUserDefaultsBarButtonAction() {
+//        print("Test")
+//        parentTest.tableView.reloadData()
+//        parentTest.searchController.isActive = false
+//        navigationVC?.dismiss(animated: true)
     }
 }

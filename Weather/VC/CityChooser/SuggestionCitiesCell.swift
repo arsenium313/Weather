@@ -11,9 +11,9 @@ class SuggestionCitiesCell: UITableViewCell {
 
     //MARK: Properties
     static let identifier = "SuggestionCitiesCell"
+    public var primaryText = "" { willSet { listConfig.text = newValue } }
+    public var secondaryText = "" { willSet { listConfig.secondaryText = newValue } }
     private var listConfig = UIListContentConfiguration.subtitleCell()
-    var primaryText = "" { willSet { listConfig.text = newValue } }
-    var secondaryText = "" { willSet { listConfig.secondaryText = newValue } }
 
     
     //MARK: - SetupUI
