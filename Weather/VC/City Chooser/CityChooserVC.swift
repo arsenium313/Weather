@@ -10,14 +10,13 @@ import UIKit
 class CityChooserVC: UITableViewController {
 
     //MARK: Properties
+    public var searchController: UISearchController!
+    public var resultsTableVC: ResultsTableVC?
+    public weak var delegate: CityChooserDelegate?
     private let networkManager = NetworkManager()
-    weak var delegate: CityChooserDelegate?
-    var searchController: UISearchController!
-    var resultsTableVC: ResultsTableVC?
     private var searchWorkItem: DispatchWorkItem?
-    
-    private lazy var guide = self.view.layoutMarginsGuide
-    var savedCities = PublicGeoArray.savedCities
+
+    var savedCities = PublicGeoArray.savedCities // В будущем из UserDefaults или CoreData
     
     
     //MARK: - Init
@@ -90,7 +89,6 @@ extension CityChooserVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         delegate?.passGeoResponce(PublicGeoArray.savedCities[indexPath.row])
-//        self.navigationController?.popViewController(animated: true)
         self.navigationController?.popToRootViewController(animated: true)
     }
 }
@@ -100,6 +98,7 @@ extension CityChooserVC {
 extension CityChooserVC: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         searchWorkItem?.cancel()
+        
         let workItem = DispatchWorkItem {
             let cityName = searchController.searchBar.text
             self.networkManager.getCoordinateByCityName(cityName: cityName ?? "") { responces in
@@ -109,6 +108,7 @@ extension CityChooserVC: UISearchResultsUpdating {
                 }
             }
         }
+        
         searchWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
     }

@@ -6,14 +6,21 @@
 //
 
 import Foundation
+
+/// Список обязательных свойст для создания AirQualityView
+protocol AirQualityViewProtocol {
+    var index: Int { get }
+}
+
+
 /**
  AirQualityView принимает эту модель в своём инициализаторе.
- Под каждый сайт делать отдельный инициализатор
+ Под каждый api с данными делать отдельный инициализатор
 */
 struct AirQualityViewDataModel: AirQualityViewProtocol {
     let index: Int
-    
-    init(responce: OpenWeatherAirPollutionResponce) {
+
+    init(openWeatherResponce responce: OpenWeatherAirPollutionResponce) {
         self.index = responce.list?.first?.main?.aqi ?? 0
     }
 }

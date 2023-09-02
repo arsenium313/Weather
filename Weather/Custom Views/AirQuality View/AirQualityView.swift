@@ -16,9 +16,10 @@ class AirQualityView: UIView {
     private var circleView: CircleView! // цветной круг
     private var nameLabel: UILabel!
     
+    
     //MARK: - Init
-    init(responce: AirQualityViewDataModel) { // принимает протокол со свойством индекс
-        self.index = CGFloat(responce.index)
+    init(dataModel: AirQualityViewDataModel) {
+        self.index = CGFloat(dataModel.index)
         super.init(frame: .zero)
         setupUI()
     }

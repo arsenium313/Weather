@@ -7,6 +7,22 @@
 
 import Foundation
 
+/// Список обязательных свойст для создания MainInfoView
+protocol MainInfoViewProtocol {
+    var currentTemp: Int { get }
+    var minTemp: Int { get }
+    var maxTemp: Int { get }
+    var feelsLikeTemp: Int { get }
+    var windSpeed: Int { get }
+    var windDirection: Int { get }
+    var description: String { get }
+}
+
+
+/**
+ MainInfoView принимает эту модель в своём инициализаторе.
+ Под каждый api с данными делать отдельный инициализатор в модели
+*/
 struct MainInfoViewDataModel: MainInfoViewProtocol {
     let currentTemp: Int
     let minTemp: Int
@@ -16,7 +32,7 @@ struct MainInfoViewDataModel: MainInfoViewProtocol {
     let windDirection: Int
     let description: String
     
-    init(responce:  OpenWeatherResponce) {
+    init(openWeatherResponce responce: OpenWeatherResponce) {
         self.currentTemp = Int(responce.tempAndPressure?.temp?.rounded(.awayFromZero) ?? 0)
         self.minTemp = Int(responce.tempAndPressure?.tempMin?.rounded(.awayFromZero) ?? 0)
         self.maxTemp = Int(responce.tempAndPressure?.tempMax?.rounded(.awayFromZero) ?? 0)
@@ -27,6 +43,5 @@ struct MainInfoViewDataModel: MainInfoViewProtocol {
         self.windSpeed = Int(responce.wind?.speed?.rounded(.awayFromZero) ?? 0)
         self.windDirection = responce.wind?.directionInDegrees ?? 0
     }
-    
-    // для каждого сайта писать свой инит
+
 }

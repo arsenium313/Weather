@@ -12,9 +12,6 @@ class ResultsTableVC: UITableViewController {
     //MARK: Properties
     public var responces: [GeoResponce] = []
     public var parentTest: CityChooserVC!
-   // weak var delegate: CityChooserDelegate?
-    public  var navigationVC: UINavigationController!
-    private var geoResponceToShare: GeoResponce!
     
     
     //MARK: - View Life Circle
@@ -50,15 +47,16 @@ class ResultsTableVC: UITableViewController {
     }
 
     
-    // MARK: - Table view data source
+    // MARK: - TableView DataSource
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return responces.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let geo = responces[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
-        cell.primaryText = responces[indexPath.row].nameOfLocation ?? "nil"
-        cell.secondaryText = "\(responces[indexPath.row].state ?? "nil"). \(responces[indexPath.row].country ?? "nil")"
+        cell.primaryText = geo.nameOfLocation ?? "nil"
+        cell.secondaryText = "\(geo.state ?? "nil"). \(geo.country ?? "nil")"
         cell.setupUI()
         return cell
     }
@@ -66,21 +64,9 @@ class ResultsTableVC: UITableViewController {
     
     //MARK: - TableView Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-      //  delegate?.passGeoResponce(responces[indexPath.row])
-        let vc = WeatherVC(geoResponce: responces[indexPath.row], isPresentedFromSearchVC: true)
-        self.geoResponceToShare = responces[indexPath.row]
-        PublicGeoArray.savedCities.append(geoResponceToShare)
-//        vc.addCityInUserDefaultsBarButton = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(addCityInUserDefaultsBarButtonAction))
-//        vc.navigationItem.rightBarButtonItem = vc.addCityInUserDefaultsBarButton
-        
-        self.navigationVC = UINavigationController(rootViewController: vc)
+        let geo = responces[indexPath.row]
+        let vc = WeatherModalVC(geoResponce: geo, cityChoserVC: parentTest)
+        let navigationVC = UINavigationController(rootViewController: vc)
         present(navigationVC, animated: true)
-    }
-    
-    @objc func addCityInUserDefaultsBarButtonAction() {
-//        print("Test")
-//        parentTest.tableView.reloadData()
-//        parentTest.searchController.isActive = false
-//        navigationVC?.dismiss(animated: true)
     }
 }

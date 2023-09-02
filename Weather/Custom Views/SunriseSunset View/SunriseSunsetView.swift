@@ -24,7 +24,7 @@ class SunriseSunsetView: UIView {
     }
     
     //MARK: - Init
-    init(_ weather: SunriseSunsetViewProtocol) {
+    init(_ weather: SunriseSunsetViewDataModel) { // переименовать weather
         self.startTimeStamp = weather.startTimeStamp
         self.endTimeStamp = weather.endTimeStamp
         sunAndArcView.startTimeStamp = startTimeStamp
