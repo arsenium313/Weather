@@ -24,38 +24,22 @@ class WeatherHomeVC: UIViewController {
     init(geoResponce geo: GeoResponce? = nil) {
         print("Weather VC Init")
         super.init(nibName: nil, bundle: nil)
-        var coordinates: Coordinates!
-        let dispatchGroup = DispatchGroup()
         
-        // Если не передали координаты в инициализатор, то из UserDefaults берет первый в списке город
-        if let geo = geo {
-            coordinates = Coordinates(lon: geo.lon,
-                                      lat: geo.lat)
+        if let geo = geo { // Если передали с CityChoserVC
+            let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
+            downloadAndSetupUI(coordinates)
             self.navigationItem.title = geo.nameOfLocation
-        } else {
-            coordinates = Coordinates(lon: savedCities.first?.lon ?? 0,
-                                  lat: savedCities.first?.lat ?? 0)
-            self.navigationItem.title = savedCities.first?.nameOfLocation ?? "nil"
-        }
-        
-        var weatherResponce: OpenWeatherResponce!
-        var airQualityResponce: OpenWeatherAirPollutionResponce!
-        
-        dispatchGroup.enter()
-        networkManager.getWeather(for: coordinates) { responce in
-            weatherResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.enter()
-        networkManager.getAirPollution(for: coordinates) { responce in
-            airQualityResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            self.bundleView.setupUI(using: weatherResponce, airQualityResponce)
             
+        } else if DataManager.shared.fetchSavedCities().count > 0 { // Сразу после запуска, если есть сохраненные значения в CD
+            let savedCities = DataManager.shared.fetchSavedCities() // потом сделать предикат по флагу и только один вариант
+            let first = savedCities.first
+            let coordinates = Coordinates(lon: first?.lon ?? 0,
+                                  lat: first?.lat ?? 0)
+            downloadAndSetupUI(coordinates)
+            self.navigationItem.title = first?.nameOfLocation ?? "nil"
+            
+        } else { // Сразу после запуска, если сохраненных городов нет
+            self.navigationItem.title = "Нет городов"
         }
     }
         
@@ -111,7 +95,32 @@ class WeatherHomeVC: UIViewController {
         ])
     }
     
-    //MARK: - Configure Bar Buttons
+    
+    // MARK: - Downloading
+    private func downloadAndSetupUI(_ coordinates: Coordinates) {
+        var weatherResponce: OpenWeatherResponce!
+        var airQualityResponce: OpenWeatherAirPollutionResponce!
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
+        networkManager.getWeather(for: coordinates) { responce in
+            weatherResponce = responce
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        networkManager.getAirPollution(for: coordinates) { responce in
+            airQualityResponce = responce
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.bundleView.setupUI(using: weatherResponce, airQualityResponce)
+        }
+    }
+    
+    
+    // MARK: - Configure Bar Buttons
     private func configureGoToCityChooserVCBarButton() {
         let image = UIImage(systemName: "list.bullet")
         let barButton = UIBarButtonItem(image: image, style: .plain, target: self,

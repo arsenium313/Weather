@@ -20,6 +20,7 @@ class WeatherModalVC: UIViewController {
     // MARK: - Init
     /**
      - Parameter geoResponce: Координаты города который нужно найти
+     - Parameter cityChoserVC: Предыдущий экран, нужен здесь для обновления его таблицы (этот экран в своем Navigation stack)
      */
     init(geoResponce geo: GeoResponce, cityChoserVC: CityChooserVC) {
         print("WeatherModalVC Init")
@@ -96,7 +97,8 @@ class WeatherModalVC: UIViewController {
     // MARK: - @objc
     @objc
     private func addCityBarButtonAction() {
-        PublicGeoArray.savedCities.append(geoResponceToSave)
+        DataManager.shared.createGeoEntity(geo: geoResponceToSave)
+        cityChoserVC.updateSavedCiries()
         cityChoserVC.tableView.reloadData()
         cityChoserVC.searchController.isActive = false
         dismiss(animated: true)

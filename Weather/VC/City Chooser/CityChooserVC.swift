@@ -15,8 +15,7 @@ class CityChooserVC: UITableViewController {
     public weak var delegate: CityChooserDelegate?
     private let networkManager = NetworkManager()
     private var searchWorkItem: DispatchWorkItem?
-
-    var savedCities = PublicGeoArray.savedCities // В будущем из UserDefaults или CoreData
+    private var savedCities: [GeoResponce] = []
     
     
     //MARK: - Init
@@ -49,6 +48,7 @@ class CityChooserVC: UITableViewController {
 
     //MARK: - SetupUI
     private func setupUI() {
+        updateSavedCiries()
         configureSelf()
         configureSearchController()
     }
@@ -68,7 +68,11 @@ class CityChooserVC: UITableViewController {
         searchController.searchBar.tintColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
         searchController.searchResultsUpdater = self
     }
-
+    
+    func updateSavedCiries() {
+        savedCities = DataManager.shared.fetchSavedCities()
+    }
+    
 }
 
 
@@ -76,19 +80,20 @@ class CityChooserVC: UITableViewController {
 extension CityChooserVC {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return PublicGeoArray.savedCities.count
+        return savedCities.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let geo = savedCities[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
-        cell.primaryText = PublicGeoArray.savedCities[indexPath.row].nameOfLocation ?? "nill"
-        cell.secondaryText = "\(PublicGeoArray.savedCities[indexPath.row].state ?? "nil"). \(PublicGeoArray.savedCities[indexPath.row].country ?? "nil")"
+        cell.primaryText = geo.nameOfLocation ?? "nill"
+        cell.secondaryText = "\(geo.state ?? "nil"). \(geo.country ?? "nil")"
         cell.setupUI()
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.passGeoResponce(PublicGeoArray.savedCities[indexPath.row])
+        delegate?.passGeoResponce(savedCities[indexPath.row])
         self.navigationController?.popToRootViewController(animated: true)
     }
 }

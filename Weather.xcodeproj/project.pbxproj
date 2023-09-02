@@ -21,6 +21,8 @@
 		C70AEB692A56AC01006CABF6 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70AEB682A56AC01006CABF6 /* NetworkManager.swift */; };
 		C729E7EF2AA1C19700C034F5 /* BundleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C729E7EE2AA1C19700C034F5 /* BundleView.swift */; };
 		C729E7F22AA1FBCD00C034F5 /* WeatherModalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C729E7F12AA1FBCD00C034F5 /* WeatherModalVC.swift */; };
+		C729E7F52AA31F5F00C034F5 /* GeoModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C729E7F32AA31F5F00C034F5 /* GeoModel.xcdatamodeld */; };
+		C729E7F82AA3295900C034F5 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C729E7F72AA3295900C034F5 /* DataManager.swift */; };
 		C72B99E92A556A3300C5088E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99E82A556A3300C5088E /* AppDelegate.swift */; };
 		C72B99EB2A556A3300C5088E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99EA2A556A3300C5088E /* SceneDelegate.swift */; };
 		C72B99ED2A556A3300C5088E /* WeatherHomeVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C72B99EC2A556A3300C5088E /* WeatherHomeVC.swift */; };
@@ -72,6 +74,8 @@
 		C70AEB682A56AC01006CABF6 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		C729E7EE2AA1C19700C034F5 /* BundleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleView.swift; sourceTree = "<group>"; };
 		C729E7F12AA1FBCD00C034F5 /* WeatherModalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModalVC.swift; sourceTree = "<group>"; };
+		C729E7F42AA31F5F00C034F5 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		C729E7F72AA3295900C034F5 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		C72B99E52A556A3300C5088E /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C72B99E82A556A3300C5088E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C72B99EA2A556A3300C5088E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -190,6 +194,15 @@
 			path = openweathermap.org;
 			sourceTree = "<group>";
 		};
+		C729E7F62AA31F8100C034F5 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				C729E7F32AA31F5F00C034F5 /* GeoModel.xcdatamodeld */,
+				C729E7F72AA3295900C034F5 /* DataManager.swift */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		C72B99DC2A556A3300C5088E = {
 			isa = PBXGroup;
 			children = (
@@ -209,6 +222,7 @@
 		C72B99E72A556A3300C5088E /* Weather */ = {
 			isa = PBXGroup;
 			children = (
+				C729E7F62AA31F8100C034F5 /* CoreData */,
 				C788A9312A63D97400C104B6 /* Custom Views */,
 				C78549BC2A57EC1200F2E500 /* Protocols */,
 				C70AEB4F2A55C154006CABF6 /* Extensions */,
@@ -433,8 +447,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C70AEB652A56A9F3006CABF6 /* OpenWeatherClouds.swift in Sources */,
+				C729E7F52AA31F5F00C034F5 /* GeoModel.xcdatamodeld in Sources */,
 				C78D88372A647C3000B646AF /* FeelsLikeLabel.swift in Sources */,
 				C70AEB592A56A602006CABF6 /* Coordinates.swift in Sources */,
+				C729E7F82AA3295900C034F5 /* DataManager.swift in Sources */,
 				C70AEB542A55C399006CABF6 /* TemperatureParser.swift in Sources */,
 				C77F0E1D2A82501D00DA4BC0 /* PublicGeoArray.swift in Sources */,
 				C78D88382A647C3000B646AF /* DescriptionWeatherLabel.swift in Sources */,
@@ -692,6 +708,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		C729E7F32AA31F5F00C034F5 /* GeoModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				C729E7F42AA31F5F00C034F5 /* Model.xcdatamodel */,
+			);
+			currentVersion = C729E7F42AA31F5F00C034F5 /* Model.xcdatamodel */;
+			path = GeoModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C72B99DD2A556A3300C5088E /* Project object */;
 }
