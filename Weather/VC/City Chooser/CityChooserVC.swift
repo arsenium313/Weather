@@ -69,8 +69,10 @@ class CityChooserVC: UITableViewController {
         searchController.searchResultsUpdater = self
     }
     
+    /// Обновляет таблицу скачивая из CD все объекты 
     func updateSavedCiries() {
         savedCities = DataManager.shared.fetchSavedCities()
+        tableView.reloadData()
     }
     
 }
@@ -93,8 +95,40 @@ extension CityChooserVC {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        delegate?.passGeoResponce(savedCities[indexPath.row])
+        let geo = savedCities[indexPath.row]
+        // меняет в CD объект и добавляет ему флаг "первый" убирает флаг со всех остальных
+        
+        // фетч только тех что с флагом, менять фдлги и сохранять
+        // фетч два - один уже с флагом и один которы по лат и лон сходится с (savedCities[indexPath.row])
+        // func convertAndFetch(geo: GeoResponce) -> GeoResponceCD?  найти ту что нужно флаг поменять
+        
+        // снимаем флаг у прошлого нажатого
+        DataManager.shared.removeIsFirstToShowFlag()
+        
+        // меняем флаг у нажатого
+        let cd = DataManager.shared.convertAndFetch(geo: geo)
+        cd?.isFirstToShow = true
+        print("\(cd?.nameOfLocation) is now showing first")
+        DataManager.shared.saveContext()
+        
+        
+        delegate?.passGeoResponce(geo)
         self.navigationController?.popToRootViewController(animated: true)
+    }
+
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { action, view, completionHandler in
+       
+            let cityToDelete = self.savedCities[indexPath.row]
+            let cityToDeleteCD = DataManager.shared.convertAndFetch(geo: cityToDelete)
+        
+            DataManager.shared.delete(cityToDeleteCD)
+            self.savedCities.removeAll { $0.lat == cityToDelete.lat && $0.lon == cityToDelete.lon }
+            self.tableView.reloadData()
+            completionHandler(true)
+        }
+        
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
 

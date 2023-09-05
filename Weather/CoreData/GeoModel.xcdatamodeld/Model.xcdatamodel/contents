@@ -3,8 +3,8 @@
     <entity name="GeoResponceCD" representedClassName=".GeoResponceCD" syncable="YES" codeGenerationType="class">
         <attribute name="country" optional="YES" attributeType="String"/>
         <attribute name="isFirstToShow" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="lon" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="lat" attributeType="Double" usesScalarValueType="YES" preserveAfterDeletion="YES"/>
+        <attribute name="lon" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="nameOfLocation" optional="YES" attributeType="String"/>
         <attribute name="state" optional="YES" attributeType="String"/>
     </entity>

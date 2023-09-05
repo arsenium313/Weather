@@ -15,13 +15,16 @@ protocol SunriseSunsetViewProtocol {
 
 
 /**
- SunriseSunsetView принимает эту модель в своём инициализаторе.
- Под каждый api с данными делать отдельный инициализатор в модели
-*/
+ SunriseSunsetView принимает объект этой модели для инициализации.
+ - Note: Под каждый api  делать отдельный инициализатор
+ */
 struct SunriseSunsetViewDataModel: SunriseSunsetViewProtocol {
-    var startTimeStamp: Int
-    var endTimeStamp: Int
+    let startTimeStamp: Int
+    let endTimeStamp: Int
     
+    /**
+     Для сайта https://openweathermap.org
+     */
     init(openWeatherResponce responce: OpenWeatherResponce) {
         self.startTimeStamp = responce.sunriseSunset?.sunriseTime ?? 0
         self.endTimeStamp = responce.sunriseSunset?.sunsetTime ?? 0

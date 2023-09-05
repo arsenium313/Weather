@@ -20,9 +20,9 @@ class WeatherModalVC: UIViewController {
     // MARK: - Init
     /**
      - Parameter geoResponce: Координаты города который нужно найти
-     - Parameter cityChoserVC: Предыдущий экран, нужен здесь для обновления его таблицы (этот экран в своем Navigation stack)
+     - Parameter cityChoserVC : Предыдущий экран, нужен здесь для обновления его таблицы (экран в своем Navigation stack)
      */
-    init(geoResponce geo: GeoResponce, cityChoserVC: CityChooserVC) {
+    init(geoResponce geo: GeoResponce, cityChoserVC: CityChooserVC) { // создать отдельный nav bar чтоб не вновом nacControllere отображаться
         print("WeatherModalVC Init")
         self.geoResponceToSave = geo
         self.cityChoserVC = cityChoserVC
@@ -31,26 +31,7 @@ class WeatherModalVC: UIViewController {
         self.navigationItem.title = geo.nameOfLocation
 
         let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-        let dispatchGroup = DispatchGroup()
-        
-        var openWeatherResponce: OpenWeatherResponce!
-        var openWeatherAirPollutionResponce: OpenWeatherAirPollutionResponce!
-        
-        dispatchGroup.enter()
-        networkManager.getWeather(for: coordinates) { responce in
-            openWeatherResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.enter()
-        networkManager.getAirPollution(for: coordinates) { responce in
-            openWeatherAirPollutionResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            self.bundleView.setupUI(using: openWeatherResponce, openWeatherAirPollutionResponce)
-        }
+        networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
     }
     
     required init?(coder: NSCoder) {
@@ -70,11 +51,16 @@ class WeatherModalVC: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureAddCityBarButton()
-        configureBundleView()
+        setupUI()
     }
+    
 
     //MARK: - SetupUI
+    private func setupUI() {
+        configureBundleView()
+        configureAddCityBarButton()
+    }
+    
     private func configureBundleView() {
         self.view.addSubview(bundleView)
         bundleView.translatesAutoresizingMaskIntoConstraints = false
@@ -88,18 +74,24 @@ class WeatherModalVC: UIViewController {
     }
     
     private func configureAddCityBarButton() {
-        let barButton = UIBarButtonItem(title: "Add", style: .done,
+        let image = UIImage(systemName: "square.and.arrow.down")
+        let barButton = UIBarButtonItem(image: image, style: .plain,
                                            target: self,
                                            action: #selector(addCityBarButtonAction))
+        
+        barButton.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        navigationController?.navigationBar.titleTextAttributes =
+        [NSAttributedString.Key.foregroundColor : UIColor.white]
+
         self.navigationItem.rightBarButtonItem = barButton
     }
-    
+        
+
     // MARK: - @objc
     @objc
     private func addCityBarButtonAction() {
         DataManager.shared.createGeoEntity(geo: geoResponceToSave)
         cityChoserVC.updateSavedCiries()
-        cityChoserVC.tableView.reloadData()
         cityChoserVC.searchController.isActive = false
         dismiss(animated: true)
     }

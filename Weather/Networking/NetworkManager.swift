@@ -11,7 +11,7 @@ class NetworkManager {
     
     let apiKey = ApiKeys.openWeatherApiKey
     
-    func getWeather(for coord: Coordinates, _ completionHandler: @escaping (OpenWeatherResponce) -> Void) {
+    public func getWeather(for coord: Coordinates, _ completionHandler: @escaping (OpenWeatherResponce) -> Void) {
         let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(coord.lat)&lon=\(coord.lon)&units=metric&appid=\(ApiKeys.openWeatherApiKey)")
         guard let url = url else { return }
         
@@ -33,7 +33,7 @@ class NetworkManager {
         task.resume()
     }
     
-    func getAirPollution(for coord: Coordinates, _ completionHandler: @escaping (OpenWeatherAirPollutionResponce) -> Void) {
+    public func getAirPollution(for coord: Coordinates, _ completionHandler: @escaping (OpenWeatherAirPollutionResponce) -> Void) {
         let url = URL(string: "https://api.openweathermap.org/data/2.5/air_pollution?lat=\(coord.lat)&lon=\(coord.lon)&appid=\(ApiKeys.openWeatherApiKey)")
         guard let url = url else { return }
         
@@ -55,7 +55,7 @@ class NetworkManager {
         task.resume()
     }
     
-    func getCoordinateByCityName(cityName: String, _ completionHandler: @escaping ([GeoResponce]) -> Void) {
+    public func getCoordinateByCityName(cityName: String, _ completionHandler: @escaping ([GeoResponce]) -> Void) {
         let stringUrl = "https://api.openweathermap.org/geo/1.0/direct?q=\(cityName)&limit=20&appid=\(apiKey)".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         let url = URL(string: stringUrl ?? "")
         guard let url = url else { return }
@@ -77,4 +77,28 @@ class NetworkManager {
         }
         task.resume()
     }
+    
+    /// Скачиваем погодные условия для указанных координат и обновляем указанный BundleView
+    public func downloadAndSetupUI(_ coordinates: Coordinates, forView bundleView: BundleView) {
+        var weatherResponce: OpenWeatherResponce!
+        var airQualityResponce: OpenWeatherAirPollutionResponce!
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
+        getWeather(for: coordinates) { responce in
+            weatherResponce = responce
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.enter()
+        getAirPollution(for: coordinates) { responce in
+            airQualityResponce = responce
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            bundleView.setupUI(using: weatherResponce, airQualityResponce)
+        }
+    }
+    
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-/// Содержит в себе все subview с погодой
+/// Содержит subviews с погодой
 class BundleView: UIView {
     
     // MARK: Properties
@@ -19,7 +19,6 @@ class BundleView: UIView {
     // MARK: - Init
     init() {
         super.init(frame: .zero)
-       // self.backgroundColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
         print("Bundle Weather View init")
     }
     
@@ -33,6 +32,7 @@ class BundleView: UIView {
     
     
     //MARK: - SetupUI
+    /// Убирает все subview с BundleView, и делает subview nil
     public func viewReset() {
         mainInfoView?.removeFromSuperview()
         sunriseSunsetView?.removeFromSuperview()
@@ -43,13 +43,14 @@ class BundleView: UIView {
         airQualityView = nil
     }
     
+    /// Создаёт и добавляет subviews на BundleView используя указанные responce
     public func setupUI(using weatherResponce: OpenWeatherResponce, _ airQualityResponce: OpenWeatherAirPollutionResponce) {
-        // Перегоняем голый responce в модели что пойдут в инициализаторы view
+        // Создаём объекты для создания view используя переданный responce
         let mainInfoViewDataModel = MainInfoViewDataModel(openWeatherResponce: weatherResponce)
         let sunriseSunsetViewDataModel = SunriseSunsetViewDataModel(openWeatherResponce: weatherResponce)
         let airQualityViewDataModel = AirQualityViewDataModel(openWeatherResponce: airQualityResponce)
         
-        // создаем views
+        // создаем view
         configureMainInfoView(withModel: mainInfoViewDataModel)
         configureSunriseSunsetView(withModel: sunriseSunsetViewDataModel)
         configureAirQualityView(withModel: airQualityViewDataModel)

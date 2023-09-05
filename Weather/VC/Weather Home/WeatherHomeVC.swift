@@ -27,7 +27,7 @@ class WeatherHomeVC: UIViewController {
         
         if let geo = geo { // Если передали с CityChoserVC
             let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-            downloadAndSetupUI(coordinates)
+            networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
             self.navigationItem.title = geo.nameOfLocation
             
         } else if DataManager.shared.fetchSavedCities().count > 0 { // Сразу после запуска, если есть сохраненные значения в CD
@@ -35,7 +35,7 @@ class WeatherHomeVC: UIViewController {
             let first = savedCities.first
             let coordinates = Coordinates(lon: first?.lon ?? 0,
                                   lat: first?.lat ?? 0)
-            downloadAndSetupUI(coordinates)
+            networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
             self.navigationItem.title = first?.nameOfLocation ?? "nil"
             
         } else { // Сразу после запуска, если сохраненных городов нет
@@ -96,30 +96,6 @@ class WeatherHomeVC: UIViewController {
     }
     
     
-    // MARK: - Downloading
-    private func downloadAndSetupUI(_ coordinates: Coordinates) {
-        var weatherResponce: OpenWeatherResponce!
-        var airQualityResponce: OpenWeatherAirPollutionResponce!
-        let dispatchGroup = DispatchGroup()
-        
-        dispatchGroup.enter()
-        networkManager.getWeather(for: coordinates) { responce in
-            weatherResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.enter()
-        networkManager.getAirPollution(for: coordinates) { responce in
-            airQualityResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            self.bundleView.setupUI(using: weatherResponce, airQualityResponce)
-        }
-    }
-    
-    
     // MARK: - Configure Bar Buttons
     private func configureGoToCityChooserVCBarButton() {
         let image = UIImage(systemName: "list.bullet")
@@ -139,32 +115,12 @@ class WeatherHomeVC: UIViewController {
 
 //MARK: - Protocols
 extension WeatherHomeVC: CityChooserDelegate {
-    /// Получаем гео инфо из таблицы CityChoserVC, для отправки запроса
+    /// Обновляем UI для переданного GeoResponce
     func passGeoResponce(_ geo: GeoResponce) {
+        self.bundleView.viewReset()
         self.title = geo.nameOfLocation
-       
-        let dispatchGroup = DispatchGroup()
         let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-
-        var weatherResponce: OpenWeatherResponce!
-        var airQualityResponce: OpenWeatherAirPollutionResponce!
-        
-        dispatchGroup.enter()
-        networkManager.getWeather(for: coordinates) { responce in
-            weatherResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.enter()
-        networkManager.getAirPollution(for: coordinates) { responce in
-            airQualityResponce = responce
-            dispatchGroup.leave()
-        }
-        
-        dispatchGroup.notify(queue: .main) {
-            self.bundleView.viewReset()
-            self.bundleView.setupUI(using: weatherResponce, airQualityResponce)
-        }
+        networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
     }
 }
 

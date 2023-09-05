@@ -8,6 +8,7 @@
 import Foundation
 
 struct GeoResponce: Decodable {
+    
     let nameOfLocation: String?
     let localizedNames: LocalNames?
     let lat: Double

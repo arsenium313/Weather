@@ -14,12 +14,15 @@ protocol AirQualityViewProtocol {
 
 
 /**
- AirQualityView принимает эту модель в своём инициализаторе.
- Под каждый api с данными делать отдельный инициализатор
+ AirQualityView принимает объект этой модели для инициализации.
+ - Note: Под каждый api  делать отдельный инициализатор
 */
 struct AirQualityViewDataModel: AirQualityViewProtocol {
     let index: Int
-
+    
+    /**
+     Для сайта https://openweathermap.org
+     */
     init(openWeatherResponce responce: OpenWeatherAirPollutionResponce) {
         self.index = responce.list?.first?.main?.aqi ?? 0
     }

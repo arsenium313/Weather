@@ -33,7 +33,11 @@ class DataManager {
             }
         }
     }
-    
+
+    /**
+     Удаляет объект из CD
+     - Important: Перед удалением UI объекта, его нужно конвертировать в CD объект
+     */
     func delete<T>(_ object: T) {
         let context = persistentContainer.viewContext
         guard let object = object as? NSManagedObject else {return}
@@ -44,6 +48,7 @@ class DataManager {
     
     
     //MARK: - Create Entity
+    /// Создает объект  CD идентичный указанному GeoResponce и сохраняет его
     func createGeoEntity(geo: GeoResponce) {
         let entity = GeoResponceCD(context: persistentContainer.viewContext)
         entity.nameOfLocation = geo.nameOfLocation
@@ -56,6 +61,10 @@ class DataManager {
     
     
     // MARK: - Fetch Entity
+    /**
+     Достаёт из CD все сохраненные объекты и конвертирует в UI объекты
+     - Returns: Массив GeoResponce
+     */
     func fetchSavedCities() -> [GeoResponce] {
         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
         var geoEntities: [GeoResponceCD] = []
@@ -66,10 +75,68 @@ class DataManager {
             print("Не удалось fetch from CD 😢 \n \(error)")
         }
         
-        var geoResponces: [GeoResponce] = geoConverter(geoEntities: geoEntities)
+        let geoResponces: [GeoResponce] = geoConverter(geoEntities: geoEntities)
         return geoResponces
     }
     
+    func fetchFirstCity() {
+        
+    }
+    
+    /**
+     Возвращает CD объект для указанного GeoResponce
+     - Parameter geo: Объект который нужно найти в CD
+     - Returns: CD объект для изменения или удаления
+     - Note: т.к. UI не работает с моделями из CD, то нужно вручную конвертировать объекты из UI в CD
+     */
+    func convertAndFetch(geo: GeoResponce) -> GeoResponceCD? {
+        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
+        let predicate = NSCompoundPredicate(type: .and, subpredicates: [
+            NSPredicate(format: "lat == %@", NSNumber(floatLiteral: geo.lat)),
+            NSPredicate(format: "lon == %@", NSNumber(floatLiteral: geo.lon))
+        ])
+        request.predicate = predicate
+        
+        var fetchedGeo: [GeoResponceCD] = []
+        do {
+            fetchedGeo = try persistentContainer.viewContext.fetch(request)
+        } catch let error {
+            print("Не удалось fetch from CD 😢 \n \(error)")
+        }
+        
+        return fetchedGeo.first
+    }
+    
+    /// Возвращает массив объектов CD с флагом isFirstToShow
+    public func fetchIsFirstToShow() -> [GeoResponceCD] {
+        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
+        let predicate = NSPredicate(format: "isFirstToShow == true")
+        request.predicate = predicate
+        
+        var geoEntities: [GeoResponceCD] = []
+        
+        do {
+            geoEntities = try persistentContainer.viewContext.fetch(request)
+        } catch let error {
+            print("Не удалось fetch from CD 😢 \n \(error)")
+        }
+        
+        return geoEntities
+    }
+    
+    /// Удаляет флаг в сохрананнёный объектах
+    public func removeIsFirstToShowFlag() {
+        let entities = fetchIsFirstToShow()
+        entities.forEach { $0.isFirstToShow = false }
+        saveContext()
+    }
+    
+    /**
+     Возвращает массив GeoResponce для указанного массива объектов CD
+     - Parameter geoEntities: Массив объектов CD который нужно конвертировать
+     - Returns: Массив объектов GeoResponce
+     - Note: т.к. UI не работает с моделями из CD, то нужно вручную конвертировать объекты из CD в UI
+     */
     private func geoConverter(geoEntities: [GeoResponceCD]) -> [GeoResponce] {
         var geoResponces: [GeoResponce] = []
         

@@ -20,8 +20,8 @@ protocol MainInfoViewProtocol {
 
 
 /**
- MainInfoView принимает эту модель в своём инициализаторе.
- Под каждый api с данными делать отдельный инициализатор в модели
+ MainInfoView принимает объект этой модели для инициализации.
+ - Note: Под каждый api  делать отдельный инициализатор
 */
 struct MainInfoViewDataModel: MainInfoViewProtocol {
     let currentTemp: Int
@@ -32,14 +32,15 @@ struct MainInfoViewDataModel: MainInfoViewProtocol {
     let windDirection: Int
     let description: String
     
+    /**
+     Для сайта https://openweathermap.org
+     */
     init(openWeatherResponce responce: OpenWeatherResponce) {
         self.currentTemp = Int(responce.tempAndPressure?.temp?.rounded(.awayFromZero) ?? 0)
         self.minTemp = Int(responce.tempAndPressure?.tempMin?.rounded(.awayFromZero) ?? 0)
         self.maxTemp = Int(responce.tempAndPressure?.tempMax?.rounded(.awayFromZero) ?? 0)
         self.feelsLikeTemp = Int(responce.tempAndPressure?.feelsLike?.rounded(.awayFromZero) ?? 0)
-       
         self.description = responce.weatherDescription?.first?.description ?? "--"
-        
         self.windSpeed = Int(responce.wind?.speed?.rounded(.awayFromZero) ?? 0)
         self.windDirection = responce.wind?.directionInDegrees ?? 0
     }

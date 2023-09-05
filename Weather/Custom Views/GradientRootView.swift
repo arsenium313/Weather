@@ -10,7 +10,7 @@ import UIKit
 class GradientRootView: UIView {
     
     //MARK: Properties
-    private let startColor = #colorLiteral(red: 0.2823529412, green: 0.2941176471, blue: 0.3568627451, alpha: 1)
+    private let startColor = #colorLiteral(red: 0.2831242383, green: 0.2937351763, blue: 0.3573759198, alpha: 1)
     private let endColor = #colorLiteral(red: 0.1725490196, green: 0.1764705882, blue: 0.2078431373, alpha: 1)
     private lazy var colors = [startColor.cgColor, endColor.cgColor] as CFArray
     
