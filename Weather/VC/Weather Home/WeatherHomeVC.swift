@@ -28,7 +28,7 @@ class WeatherHomeVC: UIViewController {
         // надо поменять чтобы при инициализации принимать уже готовый респонс
         
         
-        // Если передали с CityChoserVC
+        // Если передали с CityChoserVC (тут поменять на приняти тупла респонса)
         if let geo = geo {
             let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
             networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
@@ -119,12 +119,19 @@ class WeatherHomeVC: UIViewController {
 
 //MARK: - Protocols
 extension WeatherHomeVC: CityChooserDelegate {
-    /// Обновляем bundleView  из указанного GeoResponce
-    func passGeoResponce(_ geo: GeoResponce) {
+    func passResponces(_ geo: GeoResponce, responceTuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)) {
         self.bundleView.viewReset()
         self.title = geo.nameOfLocation
-        let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-        networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
+        self.bundleView.setupUI(using: responceTuple.0, responceTuple.1)
+    }
+    
+
+    /// Обновляем bundleView  из указанного GeoResponce
+    func passGeoResponce(_ geo: GeoResponce) {
+//        self.bundleView.viewReset()
+//        self.title = geo.nameOfLocation
+//        let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
+//        networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
     }
 }
 

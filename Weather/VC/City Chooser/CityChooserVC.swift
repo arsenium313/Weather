@@ -16,12 +16,14 @@ class CityChooserVC: UITableViewController {
     private let networkManager = NetworkManager()
     private var searchWorkItem: DispatchWorkItem?
     private var savedCities: [GeoResponce] = []
+    private var savedResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
     
     
     //MARK: - Init
     init() {
         super.init(nibName: nil, bundle: nil)
         print("City Chooser init")
+        updateResponces()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -75,6 +77,12 @@ class CityChooserVC: UITableViewController {
         tableView.reloadData()
     }
     
+    func updateResponces() {
+        networkManager.downloadResponces(for: savedCities) {
+            self.savedResponces = $0
+        }
+    }
+    
 }
 
 
@@ -96,9 +104,10 @@ extension CityChooserVC {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let geo = savedCities[indexPath.row]
+        let responce = savedResponces[indexPath.row]
         DataManager.shared.removeIsFirstToShowFlag()
         DataManager.shared.setIsFirstToShowFlag(geo: geo)
-        delegate?.passGeoResponce(geo)
+        delegate?.passResponces(geo, responceTuple: responce )
         self.navigationController?.popToRootViewController(animated: true)
     }
 

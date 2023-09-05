@@ -8,5 +8,5 @@
 import Foundation
 
 protocol CityChooserDelegate: AnyObject {
-    func passGeoResponce(_ geo: GeoResponce)
+    func passResponces(_ geo: GeoResponce, responceTuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce))
 }

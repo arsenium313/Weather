@@ -105,4 +105,39 @@ class NetworkManager {
         }
     }
     
+    public func downloadResponces(for geoResponces: [GeoResponce], _ completionHandler: @escaping ([(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) -> Void) {
+        var responces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
+        let outerGroup = DispatchGroup()
+        
+        for geo in geoResponces {
+            outerGroup.enter()
+            let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
+            var weatherResponce: OpenWeatherResponce!
+            var airQualityResponce: OpenWeatherAirPollutionResponce!
+            
+            let innerGroup = DispatchGroup()
+            innerGroup.enter()
+            self.getWeather(for: coordinates) { responce in
+                weatherResponce = responce
+                innerGroup.leave()
+            }
+            
+            innerGroup.enter()
+            self.getAirPollution(for: coordinates) { responce in
+                airQualityResponce = responce
+                innerGroup.leave()
+            }
+            
+            innerGroup.notify(queue: .global()) {
+                responces.append((weatherResponce, airQualityResponce))
+                outerGroup.leave()
+            }
+        }
+        
+        outerGroup.notify(queue: .main) {
+            completionHandler(responces)
+        }
+    }
+    
+    
 }
