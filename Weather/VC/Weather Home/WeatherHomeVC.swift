@@ -25,6 +25,9 @@ class WeatherHomeVC: UIViewController {
         print("Weather VC Init")
         super.init(nibName: nil, bundle: nil)
         
+        // надо поменять чтобы при инициализации принимать уже готовый респонс
+        
+        
         // Если передали с CityChoserVC
         if let geo = geo {
             let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
