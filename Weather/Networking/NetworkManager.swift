@@ -78,7 +78,11 @@ class NetworkManager {
         task.resume()
     }
     
-    /// Скачиваем погодные условия для указанных координат и обновляем указанный BundleView
+    /**
+     Скачиваем погодные условия для указанных координат и обновляем указанный BundleView
+     - Parameter coordinates: Координаты по которым искать погодные условия
+     - Parameter bundleView: View которое нужно обновить новыми погодными условиями
+     */
     public func downloadAndSetupUI(_ coordinates: Coordinates, forView bundleView: BundleView) {
         var weatherResponce: OpenWeatherResponce!
         var airQualityResponce: OpenWeatherAirPollutionResponce!

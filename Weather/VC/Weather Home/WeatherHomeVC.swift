@@ -25,24 +25,25 @@ class WeatherHomeVC: UIViewController {
         print("Weather VC Init")
         super.init(nibName: nil, bundle: nil)
         
-        if let geo = geo { // Если передали с CityChoserVC
+        // Если передали с CityChoserVC
+        if let geo = geo {
             let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
             networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
             self.navigationItem.title = geo.nameOfLocation
             
-        } else if DataManager.shared.fetchSavedCities().count > 0 { // Сразу после запуска, если есть сохраненные значения в CD
-            let savedCities = DataManager.shared.fetchSavedCities() // потом сделать предикат по флагу и только один вариант
-            let first = savedCities.first
-            let coordinates = Coordinates(lon: first?.lon ?? 0,
-                                  lat: first?.lat ?? 0)
+            // Сразу после запуска, если есть сохраненные значения в CD
+        } else if DataManager.shared.fetchSavedCities().count > 0 {
+            let geo = DataManager.shared.fetchFirstToShow()
+            let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
             networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
-            self.navigationItem.title = first?.nameOfLocation ?? "nil"
+            self.navigationItem.title = geo.nameOfLocation ?? "nil"
             
-        } else { // Сразу после запуска, если сохраненных городов нет
+            // Сразу после запуска, если сохраненных городов нет
+        } else {
             self.navigationItem.title = "Нет городов"
         }
     }
-        
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -115,7 +116,7 @@ class WeatherHomeVC: UIViewController {
 
 //MARK: - Protocols
 extension WeatherHomeVC: CityChooserDelegate {
-    /// Обновляем UI для переданного GeoResponce
+    /// Обновляем bundleView  из указанного GeoResponce
     func passGeoResponce(_ geo: GeoResponce) {
         self.bundleView.viewReset()
         self.title = geo.nameOfLocation

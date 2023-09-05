@@ -106,10 +106,7 @@ extension CityChooserVC {
         DataManager.shared.removeIsFirstToShowFlag()
         
         // меняем флаг у нажатого
-        let cd = DataManager.shared.convertAndFetch(geo: geo)
-        cd?.isFirstToShow = true
-        print("\(cd?.nameOfLocation) is now showing first")
-        DataManager.shared.saveContext()
+        DataManager.shared.setIsFirstToShowFlag(geo: geo)
         
         
         delegate?.passGeoResponce(geo)

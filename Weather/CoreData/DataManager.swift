@@ -79,17 +79,13 @@ class DataManager {
         return geoResponces
     }
     
-    func fetchFirstCity() {
-        
-    }
-    
     /**
      Возвращает CD объект для указанного GeoResponce
      - Parameter geo: Объект который нужно найти в CD
      - Returns: CD объект для изменения или удаления
      - Note: т.к. UI не работает с моделями из CD, то нужно вручную конвертировать объекты из UI в CD
      */
-    func convertAndFetch(geo: GeoResponce) -> GeoResponceCD? {
+    func convertAndFetch(geo: GeoResponce) -> GeoResponceCD {
         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
         let predicate = NSCompoundPredicate(type: .and, subpredicates: [
             NSPredicate(format: "lat == %@", NSNumber(floatLiteral: geo.lat)),
@@ -97,40 +93,73 @@ class DataManager {
         ])
         request.predicate = predicate
         
-        var fetchedGeo: [GeoResponceCD] = []
+        var entities: [GeoResponceCD] = []
         do {
-            fetchedGeo = try persistentContainer.viewContext.fetch(request)
+            entities = try persistentContainer.viewContext.fetch(request)
         } catch let error {
             print("Не удалось fetch from CD 😢 \n \(error)")
         }
         
-        return fetchedGeo.first
+        return entities.first!
     }
     
-    /// Возвращает массив объектов CD с флагом isFirstToShow
-    public func fetchIsFirstToShow() -> [GeoResponceCD] {
-        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
-        let predicate = NSPredicate(format: "isFirstToShow == true")
-        request.predicate = predicate
-        
-        var geoEntities: [GeoResponceCD] = []
-        
-        do {
-            geoEntities = try persistentContainer.viewContext.fetch(request)
-        } catch let error {
-            print("Не удалось fetch from CD 😢 \n \(error)")
-        }
-        
-        return geoEntities
-    }
+ 
     
+    // Индекс сделать от таблицы! tableview.row для последующего изменения порядка
+    
+    
+    // MARK: - Work with isFirstToShow Flag
     /// Удаляет флаг в сохрананнёный объектах
     public func removeIsFirstToShowFlag() {
-        let entities = fetchIsFirstToShow()
+        let entities = fetchIsFirstToShowArray()
         entities.forEach { $0.isFirstToShow = false }
         saveContext()
     }
     
+    /// Устанавливает флаг для указанного GeoResponce
+    public func setIsFirstToShowFlag(geo: GeoResponce) {
+        let entity = convertAndFetch(geo: geo)
+        entity.isFirstToShow = true
+        saveContext()
+    }
+    
+    /**
+     Возвращает GeoResponce города который был выбран для показа
+     - Returns: Если есть сохранённых город с флагом, вернет его.
+     Если нет (например выбрали город для показа и удалили его не выбрав другой), то вернет первый в списке сохранённых
+     */
+    public func fetchFirstToShow() -> GeoResponce {
+        let entities = fetchIsFirstToShowArray()
+        let geoArray = geoConverter(geoEntities: entities)
+     
+        // Нашли город с флагом
+        if let geo = geoArray.first {
+            return geo
+            
+            // Не нашли город с флагом
+        } else {
+            let geo = fetchSavedCities()
+            return geo.first!
+        }
+    }
+    
+    /// Возвращает массив объектов CD с флагом isFirstToShow
+    private func fetchIsFirstToShowArray() -> [GeoResponceCD] {
+        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
+        let predicate = NSPredicate(format: "isFirstToShow == true")
+        request.predicate = predicate
+        
+        var entities: [GeoResponceCD] = []
+        do {
+            entities = try persistentContainer.viewContext.fetch(request)
+        } catch let error {
+            print("Не удалось fetch from CD 😢 \n \(error)")
+        }
+        return entities
+    }
+    
+    
+    // MARK: - Converter
     /**
      Возвращает массив GeoResponce для указанного массива объектов CD
      - Parameter geoEntities: Массив объектов CD который нужно конвертировать
