@@ -10,7 +10,7 @@ import Foundation
 class NetworkManager {
     
     let apiKey = ApiKeys.openWeatherApiKey
-    
+  
     public func getWeather(for coord: Coordinates, _ completionHandler: @escaping (OpenWeatherResponce) -> Void) {
         let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?lat=\(coord.lat)&lon=\(coord.lon)&units=metric&appid=\(ApiKeys.openWeatherApiKey)")
         guard let url = url else { return }
@@ -78,12 +78,14 @@ class NetworkManager {
         task.resume()
     }
     
+    // MARK: - Download from GeoResponce
     /**
-     Скачиваем погодные условия для указанных координат и обновляем указанный BundleView
-     - Parameter coordinates: Координаты по которым искать погодные условия
-     - Parameter bundleView: View которое нужно обновить новыми погодными условиями
+     Скачиваем погодные условия для указанных координат их в кортеже
+     - Parameter for: GeoResponce для которого нужно скачать погодные условия
+     - Returns completionHandler:  скачанный responce
      */
-    public func downloadAndSetupUI(_ coordinates: Coordinates, forView bundleView: BundleView) {
+    public func downloadWeatherCondition(for geo: GeoResponce, _ completionHandler: @escaping ((OpenWeatherResponce, OpenWeatherAirPollutionResponce )) -> Void) {
+        let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
         var weatherResponce: OpenWeatherResponce!
         var airQualityResponce: OpenWeatherAirPollutionResponce!
         let dispatchGroup = DispatchGroup()
@@ -101,15 +103,24 @@ class NetworkManager {
         }
         
         dispatchGroup.notify(queue: .main) {
-            bundleView.setupUI(using: weatherResponce, airQualityResponce)
+            completionHandler((weatherResponce, airQualityResponce))
         }
     }
     
-    public func downloadResponces(for geoResponces: [GeoResponce], _ completionHandler: @escaping ([(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) -> Void) {
+    
+    /**
+     Скачиваем погодные условия для указанных координат и возвращаем их в массиве
+     - Parameter for: Массив GeoResponce для которого нужно скачать погодные условия
+     - Returns completionHandler: Массив скачанных responce
+     - Note: Используется для обновления погодных условий сразу на всех городах
+     */
+    public func downloadWeatherConditionArray(for geo: [GeoResponce], _ completionHandler: @escaping ([(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) -> Void) {
         var responces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
         let outerGroup = DispatchGroup()
+        let queue = DispatchQueue.global()
         
-        for geo in geoResponces {
+        for (i, geo) in geo.enumerated() {
+            print("iteration == \(i)")
             outerGroup.enter()
             let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
             var weatherResponce: OpenWeatherResponce!
@@ -128,13 +139,15 @@ class NetworkManager {
                 innerGroup.leave()
             }
             
-            innerGroup.notify(queue: .global()) {
+            innerGroup.notify(queue: queue) {
                 responces.append((weatherResponce, airQualityResponce))
+                print("InnerGroup notify \(i)")
                 outerGroup.leave()
             }
         }
         
         outerGroup.notify(queue: .main) {
+            print("outerGroup responces.count == \(responces.count)")
             completionHandler(responces)
         }
     }

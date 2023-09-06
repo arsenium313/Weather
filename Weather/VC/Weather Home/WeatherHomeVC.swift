@@ -18,27 +18,16 @@ class WeatherHomeVC: UIViewController {
     
     
     //MARK: - Init
-    /**
-     - Parameter geoResponce: Координаты города который нужно найти
-     */
-    init(geoResponce geo: GeoResponce? = nil) {
+    init() {
         print("Weather VC Init")
         super.init(nibName: nil, bundle: nil)
         
-        // надо поменять чтобы при инициализации принимать уже готовый респонс
-        
-        
-        // Если передали с CityChoserVC (тут поменять на приняти тупла респонса)
-        if let geo = geo {
-            let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-            networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
-            self.navigationItem.title = geo.nameOfLocation
-            
-            // Сразу после запуска, если есть сохраненные значения в CD
-        } else if DataManager.shared.fetchSavedCities().count > 0 {
+        // Сразу после запуска, если есть сохраненные значения в CD
+        if DataManager.shared.fetchSavedCities().count > 0 {
             let geo = DataManager.shared.fetchFirstToShow()
-            let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-            networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
+            networkManager.downloadWeatherCondition(for: geo) {
+                self.bundleView.setupUI(using: $0.0, $0.1)
+            }
             self.navigationItem.title = geo.nameOfLocation ?? "nil"
             
             // Сразу после запуска, если сохраненных городов нет
@@ -119,20 +108,13 @@ class WeatherHomeVC: UIViewController {
 
 //MARK: - Protocols
 extension WeatherHomeVC: CityChooserDelegate {
+    /// Обновляем bundleView  из указанных pesponce и обновляем title из указанного GeoResponce
     func passResponces(_ geo: GeoResponce, responceTuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)) {
         self.bundleView.viewReset()
         self.title = geo.nameOfLocation
         self.bundleView.setupUI(using: responceTuple.0, responceTuple.1)
     }
-    
 
-    /// Обновляем bundleView  из указанного GeoResponce
-    func passGeoResponce(_ geo: GeoResponce) {
-//        self.bundleView.viewReset()
-//        self.title = geo.nameOfLocation
-//        let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-//        networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
-    }
 }
 
 

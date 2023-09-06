@@ -16,13 +16,14 @@ class CityChooserVC: UITableViewController {
     private let networkManager = NetworkManager()
     private var searchWorkItem: DispatchWorkItem?
     private var savedCities: [GeoResponce] = []
-    private var savedResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
+    public var savedResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
     
     
     //MARK: - Init
     init() {
         super.init(nibName: nil, bundle: nil)
         print("City Chooser init")
+        updateSavedCities()
         updateResponces()
     }
     required init?(coder: NSCoder) {
@@ -37,6 +38,7 @@ class CityChooserVC: UITableViewController {
     //MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("CityChoser ViewDidLoad")
         setupUI()
     }
     
@@ -50,7 +52,6 @@ class CityChooserVC: UITableViewController {
 
     //MARK: - SetupUI
     private func setupUI() {
-        updateSavedCiries()
         configureSelf()
         configureSearchController()
     }
@@ -71,14 +72,14 @@ class CityChooserVC: UITableViewController {
         searchController.searchResultsUpdater = self
     }
     
-    /// Обновляет таблицу скачивая из CD все объекты 
-    func updateSavedCiries() {
+    /// Скачивает из CD все объекты
+    func updateSavedCities() {
         savedCities = DataManager.shared.fetchSavedCities()
-        tableView.reloadData()
     }
     
+    /// Возвращает в замыкании массив responce необходимыми для создания view
     func updateResponces() {
-        networkManager.downloadResponces(for: savedCities) {
+        networkManager.downloadWeatherConditionArray(for: savedCities) {
             self.savedResponces = $0
         }
     }
@@ -95,9 +96,10 @@ extension CityChooserVC {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let geo = savedCities[indexPath.row]
+        let responce = savedResponces[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
         cell.primaryText = geo.nameOfLocation ?? "nill"
-        cell.secondaryText = "\(geo.state ?? "nil"). \(geo.country ?? "nil")"
+        cell.secondaryText = "\(responce.0.tempAndPressure?.temp ?? -100). \(responce.0.weatherDescription?.first?.description ?? "nil")"
         cell.setupUI()
         return cell
     }
@@ -113,6 +115,7 @@ extension CityChooserVC {
 
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { action, view, completionHandler in
+            self.savedResponces.remove(at: indexPath.row)
             let cityToDelete = self.savedCities[indexPath.row]
             let cityToDeleteCD = DataManager.shared.convertAndFetch(geo: cityToDelete)
             DataManager.shared.delete(cityToDeleteCD)

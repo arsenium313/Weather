@@ -15,7 +15,7 @@ class WeatherModalVC: UIViewController {
     private let networkManager = NetworkManager()
     private let cityChoserVC: CityChooserVC
     private var geoResponceToSave: GeoResponce // чтоб сохранить его в UD или CoreData
-    
+    var tuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)!
     
     // MARK: - Init
     /**
@@ -30,9 +30,11 @@ class WeatherModalVC: UIViewController {
         
         self.navigationItem.title = geo.nameOfLocation
 
-        let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
-        networkManager.downloadAndSetupUI(coordinates, forView: bundleView)
-    }
+        networkManager.downloadWeatherCondition(for: geo) {
+            self.bundleView.setupUI(using: $0.0, $0.1)
+            self.tuple = $0
+        }
+    } 
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -91,7 +93,12 @@ class WeatherModalVC: UIViewController {
     @objc
     private func addCityBarButtonAction() {
         DataManager.shared.createGeoEntity(geo: geoResponceToSave)
-        cityChoserVC.updateSavedCiries()
+        
+        // отправить два респонса на сити чузер
+        cityChoserVC.updateSavedCities()
+//        cityChoserVC.updateResponces()
+        cityChoserVC.savedResponces.append(tuple)
+        cityChoserVC.tableView.reloadData()
         cityChoserVC.searchController.isActive = false
         dismiss(animated: true)
     }
