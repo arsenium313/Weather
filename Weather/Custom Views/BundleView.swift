@@ -11,7 +11,9 @@ import UIKit
 class BundleView: UIView {
     
     // MARK: Properties
-    private var mainInfoView: MainInfoView?
+    // опционалы потомучто экран может быть загружен пустым, может вынести в опционал сам dundleVIew???
+    private var cityNameLabel: UILabel?
+    private var temperatureView: TemperatureView?
     private var sunriseSunsetView: SunriseSunsetView?
     private var airQualityView: AirQualityView?
     
@@ -33,38 +35,58 @@ class BundleView: UIView {
     
     //MARK: - SetupUI
     /// Убирает все subview с BundleView, и делает subview nil
-    public func viewReset() {
-        mainInfoView?.removeFromSuperview()
+    public func viewReset() { // а нужно ли будет это в итоге?
+        cityNameLabel?.removeFromSuperview()
+        temperatureView?.removeFromSuperview()
         sunriseSunsetView?.removeFromSuperview()
         airQualityView?.removeFromSuperview()
         
-        mainInfoView = nil
+        cityNameLabel = nil
+        temperatureView = nil
         sunriseSunsetView = nil
         airQualityView = nil
     }
     
     /// Создаёт и добавляет subviews на BundleView используя указанные responce
-    public func setupUI(using weatherResponce: OpenWeatherResponce, _ airQualityResponce: OpenWeatherAirPollutionResponce) {
+    public func setupUI(forGeo geo: GeoResponce, using weatherResponce: OpenWeatherResponce, _ airQualityResponce: OpenWeatherAirPollutionResponce) {
         // Создаём объекты для создания view используя переданный responce
-        let mainInfoViewDataModel = MainInfoViewDataModel(openWeatherResponce: weatherResponce)
+        let mainInfoViewDataModel = TemperatureViewDataModel(openWeatherResponce: weatherResponce)
         let sunriseSunsetViewDataModel = SunriseSunsetViewDataModel(openWeatherResponce: weatherResponce)
         let airQualityViewDataModel = AirQualityViewDataModel(openWeatherResponce: airQualityResponce)
         
         // создаем view
-        configureMainInfoView(withModel: mainInfoViewDataModel)
+        configureCityNameLabel(withGeo: geo)
+        configureTemperatureView(withModel: mainInfoViewDataModel)
         configureSunriseSunsetView(withModel: sunriseSunsetViewDataModel)
         configureAirQualityView(withModel: airQualityViewDataModel)
     }
    
     
     // MARK: - Create and Configure Views
-    private func configureMainInfoView(withModel model: MainInfoViewDataModel) {
-        mainInfoView = MainInfoView(model)
-        guard let view = mainInfoView else { return }
+    private func configureCityNameLabel(withGeo geo: GeoResponce) {
+        cityNameLabel = UILabel()
+        guard let label = cityNameLabel else { return }
+        self.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: self.topAnchor),
+            label.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+          //  label.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.15)
+        ])
+        
+        label.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+        label.layer.borderWidth = 0.5
+        label.text = geo.nameOfLocation ?? "☹️"
+    }
+    
+    private func configureTemperatureView(withModel model: TemperatureViewDataModel) {
+        temperatureView = TemperatureView(model)
+        guard let view = temperatureView else { return }
         self.addSubview(view)
         view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: self.topAnchor),
+            view.topAnchor.constraint(equalTo: cityNameLabel!.bottomAnchor), //________________
             view.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             view.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3)
@@ -77,7 +99,7 @@ class BundleView: UIView {
         self.addSubview(view)
         view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: mainInfoView!.bottomAnchor, constant: 10),
+            view.topAnchor.constraint(equalTo: temperatureView!.bottomAnchor, constant: 10),
             view.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             view.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3)

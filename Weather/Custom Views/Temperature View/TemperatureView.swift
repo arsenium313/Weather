@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MainInfoView: UIView {
+class TemperatureView: UIView {
 
     //MARK: - Properties
     private lazy var guide = self.layoutMarginsGuide
@@ -28,7 +28,7 @@ class MainInfoView: UIView {
     
     
     //MARK: - Init
-    init(_ weather: MainInfoViewDataModel) { // какие данные будут падать сюда? weatherResponce!
+    init(_ weather: TemperatureViewDataModel) { // какие данные будут падать сюда? weatherResponce!
         super.init(frame: .zero)
         parseWeatherResponce(weather) // переименовать weather
         setupUI()
@@ -51,8 +51,8 @@ class MainInfoView: UIView {
     
     private func configureSelf() {
         self.backgroundColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 0)
-//        self.layer.borderColor = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1)
-//        self.layer.borderWidth = 3
+        self.layer.borderColor = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1)
+        self.layer.borderWidth = 1
     }
     
     private func configureImageView() {
@@ -121,7 +121,7 @@ class MainInfoView: UIView {
     }
     
     //MARK: - Parse JSON
-    private func parseWeatherResponce(_ responce: MainInfoViewProtocol) {
+    private func parseWeatherResponce(_ responce: TemperatureViewProtocol) {
         degree = responce.currentTemp
         descriptionWeather = responce.description
         minTemp = responce.minTemp

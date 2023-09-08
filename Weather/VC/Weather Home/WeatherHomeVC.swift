@@ -10,11 +10,9 @@ import UIKit
 class WeatherHomeVC: UIViewController {
 
     //MARK: Properties
-    private let bundleView = BundleView()
-    private let networkManager = NetworkManager()
-    private var cityChooserVC = CityChooserVC()
-    
-    var savedCities = PublicGeoArray.savedCities // В будущем из UserDefaults или CoreData
+    public let bundleView = BundleView()
+    private let networkManager = NetworkManager() // не нужно будет, этот экран ничего не загружает
+ //   private var cityChooserVC = CityChooserVC()
     
     
     //MARK: - Init
@@ -23,17 +21,20 @@ class WeatherHomeVC: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         // Сразу после запуска, если есть сохраненные значения в CD
-        if DataManager.shared.fetchSavedCities().count > 0 {
-            let geo = DataManager.shared.fetchFirstToShow()
-            networkManager.downloadWeatherCondition(for: geo) {
-                self.bundleView.setupUI(using: $0.0, $0.1)
-            }
-            self.navigationItem.title = geo.nameOfLocation ?? "nil"
-            
-            // Сразу после запуска, если сохраненных городов нет
-        } else {
-            self.navigationItem.title = "Нет городов"
-        }
+        
+        // что показываать больше не его дело вообще, а дело pageVC, он только должен принять в инит респонс и нарисоваться
+        
+//        if DataManager.shared.fetchSavedCities().count > 0 {
+//            let geo = DataManager.shared.fetchFirstToShow()
+//            networkManager.downloadWeatherCondition(for: geo) {
+//                self.bundleView.setupUI(using: $0.0, $0.1)
+//            }
+//            self.navigationItem.title = geo.nameOfLocation ?? "nil"
+//
+//            // Сразу после запуска, если сохраненных городов нет
+//        } else { // не нужно будет в итоге
+//            self.navigationItem.title = "Нет городов"
+//        }
     }
     
     required init?(coder: NSCoder) {
@@ -73,7 +74,7 @@ class WeatherHomeVC: UIViewController {
     }
     
     private func configureSelf() {
-        cityChooserVC.delegate = self
+       // cityChooserVC.delegate = self
     }
     
     private func configureBundleView() {
@@ -101,18 +102,18 @@ class WeatherHomeVC: UIViewController {
     //MARK: - Selectors
     @objc
     private func goToCityChooserVC() {
-        self.navigationController?.pushViewController(cityChooserVC, animated: true)
+       // self.navigationController?.pushViewController(cityChooserVC, animated: true)
     }
 }
 
 
 //MARK: - Protocols
-extension WeatherHomeVC: CityChooserDelegate {
+extension WeatherHomeVC: CityChooserDelegate { // не нужно будет, все уже будут загружени и при нажатии в таблице переходить а уже готовый
     /// Обновляем bundleView  из указанных pesponce и обновляем title из указанного GeoResponce
     func passResponces(_ geo: GeoResponce, responceTuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)) {
         self.bundleView.viewReset()
         self.title = geo.nameOfLocation
-        self.bundleView.setupUI(using: responceTuple.0, responceTuple.1)
+       // self.bundleView.setupUI(using: responceTuple.0, responceTuple.1)
     }
 
 }

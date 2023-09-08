@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let rootVC = WeatherHomeVC()
+        let rootVC = PageVC(transitionStyle: .scroll, navigationOrientation: .horizontal)
         let navVC = UINavigationController(rootViewController: rootVC)
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = navVC

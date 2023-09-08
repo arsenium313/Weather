@@ -31,7 +31,7 @@ class WeatherModalVC: UIViewController {
         self.navigationItem.title = geo.nameOfLocation
 
         networkManager.downloadWeatherCondition(for: geo) {
-            self.bundleView.setupUI(using: $0.0, $0.1)
+            self.bundleView.setupUI(forGeo: geo, using: $0.0, $0.1)
             self.tuple = $0
         }
     } 

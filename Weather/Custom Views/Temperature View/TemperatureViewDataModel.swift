@@ -7,8 +7,8 @@
 
 import Foundation
 
-/// Список обязательных свойст для создания MainInfoView
-protocol MainInfoViewProtocol {
+/// Список обязательных свойст для создания TemperatureView
+protocol TemperatureViewProtocol {
     var currentTemp: Int { get }
     var minTemp: Int { get }
     var maxTemp: Int { get }
@@ -20,10 +20,10 @@ protocol MainInfoViewProtocol {
 
 
 /**
- MainInfoView принимает объект этой модели для инициализации.
+ TemperatureView принимает объект этой модели для инициализации.
  - Note: Под каждый api  делать отдельный инициализатор
 */
-struct MainInfoViewDataModel: MainInfoViewProtocol {
+struct TemperatureViewDataModel: TemperatureViewProtocol {
     let currentTemp: Int
     let minTemp: Int
     let maxTemp: Int

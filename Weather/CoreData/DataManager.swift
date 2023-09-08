@@ -67,17 +67,33 @@ class DataManager {
      */
     func fetchSavedCities() -> [GeoResponce] {
         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
-        var geoEntities: [GeoResponceCD] = []
+        var entities: [GeoResponceCD] = []
         
         do {
-           try geoEntities = persistentContainer.viewContext.fetch(request)
+           try entities = persistentContainer.viewContext.fetch(request)
         } catch let error {
             print("Не удалось fetch from CD 😢 \n \(error)")
         }
         
-        let geoResponces: [GeoResponce] = geoConverter(geoEntities: geoEntities)
+        let geoResponces: [GeoResponce] = geoConverter(geoEntities: entities)
         return geoResponces
     }
+    
+    
+    func fetch(_ completionHandler: ([GeoResponce]) -> Void) {
+        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
+        var entities: [GeoResponceCD] = []
+        
+        do {
+           try entities = persistentContainer.viewContext.fetch(request)
+        } catch let error {
+            print("Не удалось fetch from CD 😢 \n \(error)")
+        }
+        
+        let geoResponces: [GeoResponce] = geoConverter(geoEntities: entities)
+        completionHandler(geoResponces)
+    }
+    
     
     /**
      Возвращает CD объект для указанного GeoResponce
