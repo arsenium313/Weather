@@ -15,16 +15,26 @@ class CityChooserVC: UITableViewController {
     public weak var delegate: CityChooserDelegate?
     private let networkManager = NetworkManager()
     private var searchWorkItem: DispatchWorkItem?
+    
     private var savedCities: [GeoResponce] = []
     public var savedResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
     
     
     //MARK: - Init
-    init() {
+    init(geoResponces: [GeoResponce], weatherResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) {
         super.init(nibName: nil, bundle: nil)
         print("City Chooser init")
-        updateSavedCities()
-        updateResponces()
+//        DataManager.shared.fetchSavedCities { geoResponces in
+//            self.savedCities = geoResponces
+//        }
+       // updateSavedCities()
+//        updateResponces()
+        
+        self.savedCities = geoResponces
+        self.savedResponces = weatherResponces
+        
+        
+        
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -57,9 +67,11 @@ class CityChooserVC: UITableViewController {
     }
     
     private func configureSelf() {
+        print("_________________________________________(£)@()*£)(£@)*\(isModalInPresentation)")
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.navigationItem.title = "Choose city"
         tableView.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
+        
     }
     
     private func configureSearchController() {
@@ -74,7 +86,7 @@ class CityChooserVC: UITableViewController {
     
     /// Скачивает из CD все объекты
     func updateSavedCities() {
-        savedCities = DataManager.shared.fetchSavedCities()
+       // savedCities = DataManager.shared.fetchSavedCities()
     }
     
     /// Возвращает в замыкании массив responce необходимыми для создания view
@@ -105,11 +117,19 @@ extension CityChooserVC {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let geo = savedCities[indexPath.row]
-        let responce = savedResponces[indexPath.row]
-        DataManager.shared.removeIsFirstToShowFlag()
-        DataManager.shared.setIsFirstToShowFlag(geo: geo)
-        delegate?.passResponces(geo, responceTuple: responce )
+//        let geo = savedCities[indexPath.row]
+//        let responce = savedResponces[indexPath.row]
+//        DataManager.shared.removeIsFirstToShowFlag()
+//        DataManager.shared.setIsFirstToShowFlag(geo: geo)
+//        delegate?.passResponces(geo, responceTuple: responce)
+        // установить в pageVC экран
+        // setViewControllers([pages[initialPage]], direction: .forward, animated: true)
+      
+        let index = indexPath.row
+        
+        guard let vc = navigationController?.viewControllers[0] as? PageVC else { return }
+        vc.setViewControllers([vc.pages[index]], direction: .forward, animated: true)
+        
         self.navigationController?.popToRootViewController(animated: true)
     }
 

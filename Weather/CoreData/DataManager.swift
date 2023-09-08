@@ -65,22 +65,25 @@ class DataManager {
      Достаёт из CD все сохраненные объекты и конвертирует в UI объекты
      - Returns: Массив GeoResponce
      */
-    func fetchSavedCities() -> [GeoResponce] {
-        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
-        var entities: [GeoResponceCD] = []
-        
-        do {
-           try entities = persistentContainer.viewContext.fetch(request)
-        } catch let error {
-            print("Не удалось fetch from CD 😢 \n \(error)")
-        }
-        
-        let geoResponces: [GeoResponce] = geoConverter(geoEntities: entities)
-        return geoResponces
-    }
+//    func fetchSavedCities() -> [GeoResponce] {
+//        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
+//        var entities: [GeoResponceCD] = []
+//
+//        do {
+//           try entities = persistentContainer.viewContext.fetch(request)
+//        } catch let error {
+//            print("Не удалось fetch from CD 😢 \n \(error)")
+//        }
+//
+//        let geoResponces: [GeoResponce] = geoConverter(geoEntities: entities)
+//        return geoResponces
+//    }
     
-    
-    func fetch(_ completionHandler: ([GeoResponce]) -> Void) {
+    /**
+     Достаёт из CD все сохраненные объекты и конвертирует в UI объекты
+     - Parameter completionHandler: Массив GeoResponce
+     */
+    func fetchSavedCities(_ completionHandler: ([GeoResponce]) -> Void) {
         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
         var entities: [GeoResponceCD] = []
         
@@ -154,7 +157,13 @@ class DataManager {
             
             // Не нашли город с флагом
         } else {
-            let geo = fetchSavedCities()
+//            let geo = fetchSavedCities()
+//            return geo.first!
+            
+            var geo: [GeoResponce] = []
+            fetchSavedCities { geoResponces in
+                geo = geoResponces
+            }
             return geo.first!
         }
     }

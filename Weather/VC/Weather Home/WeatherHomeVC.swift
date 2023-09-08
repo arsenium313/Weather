@@ -75,6 +75,7 @@ class WeatherHomeVC: UIViewController {
     
     private func configureSelf() {
        // cityChooserVC.delegate = self
+        modalPresentationStyle = .fullScreen
     }
     
     private func configureBundleView() {
@@ -92,10 +93,10 @@ class WeatherHomeVC: UIViewController {
     
     // MARK: - Configure Bar Buttons
     private func configureGoToCityChooserVCBarButton() {
-        let image = UIImage(systemName: "list.bullet")
-        let barButton = UIBarButtonItem(image: image, style: .plain, target: self,
-                                        action: #selector(goToCityChooserVC))
-        self.navigationItem.rightBarButtonItem = barButton
+       
+//        let barButton = UIBarButtonItem(image: image, style: .plain, target: self,
+//                                        action: #selector(goToCityChooserVC))
+//        self.navigationItem.rightBarButtonItem = barButton
     }
         
     
