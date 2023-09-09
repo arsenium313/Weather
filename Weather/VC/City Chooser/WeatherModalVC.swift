@@ -13,26 +13,25 @@ class WeatherModalVC: UIViewController {
     //MARK: Properties
     private let bundleView = BundleView()
     private let networkManager = NetworkManager()
-    private let cityChoserVC: CityChooserVC
+    private let cityChoserVC: CityChooserVC // нужен для обновления таблицы, добавления элементов в массивы
     private var geoResponceToSave: GeoResponce // чтоб сохранить его в UD или CoreData
-    var tuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)!
+    private var weatherConditionTuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)! // разобраться с опционалом
+    
     
     // MARK: - Init
     /**
-     - Parameter geoResponce: Координаты города который нужно найти
+     - Parameter geoResponce: Координаты города погоду которого нужно найти
      - Parameter cityChoserVC : Предыдущий экран, нужен здесь для обновления его таблицы (экран в своем Navigation stack)
      */
-    init(geoResponce geo: GeoResponce, cityChoserVC: CityChooserVC) { // создать отдельный nav bar чтоб не вновом nacControllere отображаться
-        print("WeatherModalVC Init")
+    init(geoResponce geo: GeoResponce, cityChoserVC: CityChooserVC) {
+        print("WeatherModalVC Init 🧐")
         self.geoResponceToSave = geo
         self.cityChoserVC = cityChoserVC
         super.init(nibName: nil, bundle: nil)
         
-        self.navigationItem.title = geo.nameOfLocation
-
         networkManager.downloadWeatherCondition(for: geo) {
             self.bundleView.setupUI(forGeo: geo, using: $0.0, $0.1)
-            self.tuple = $0
+            self.weatherConditionTuple = $0
         }
     } 
     
@@ -41,7 +40,7 @@ class WeatherModalVC: UIViewController {
     }
     
     deinit {
-        print("WeatherModalVC deinit")
+        print("WeatherModalVC deinit 🧐")
     }
     
     
@@ -76,30 +75,49 @@ class WeatherModalVC: UIViewController {
     }
     
     private func configureAddCityBarButton() {
-        let image = UIImage(systemName: "square.and.arrow.down")
-        let barButton = UIBarButtonItem(image: image, style: .plain,
-                                           target: self,
-                                           action: #selector(addCityBarButtonAction))
-        
-        barButton.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         navigationController?.navigationBar.titleTextAttributes =
         [NSAttributedString.Key.foregroundColor : UIColor.white]
-
-        self.navigationItem.rightBarButtonItem = barButton
+        self.navigationItem.rightBarButtonItem = addBarButton
+        addBarButton.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
     }
         
+    
+    // MARK: - UIBarButtonItem Creation and Configuration
+    private var addBarButton: UIBarButtonItem {
+        let image = UIImage(systemName: "square.and.arrow.down")
+        return UIBarButtonItem(image: image, style: .plain,
+                                           target: self,
+                               action: #selector(barButtonItemClicked(_:)))
+    }
 
+    
     // MARK: - @objc
     @objc
-    private func addCityBarButtonAction() {
+    private func barButtonItemClicked(_ sender: UIBarButtonItem) {
+        print("barButtonItemClicked 🧐")
         DataManager.shared.createGeoEntity(geo: geoResponceToSave)
         
-        // отправить два респонса на сити чузер
-        cityChoserVC.updateSavedCities()
-//        cityChoserVC.updateResponces()
-        cityChoserVC.savedResponces.append(tuple)
+        cityChoserVC.geoResponces.append(geoResponceToSave)
+        cityChoserVC.weatherResponceTuples?.append(weatherConditionTuple)
+        
         cityChoserVC.tableView.reloadData()
         cityChoserVC.searchController.isActive = false
+        
+        /// Создаём WeatherHomeVC и кладем его в массив в PageVC
+        /// PageVC это rootVC, поэтому всегда будет под 0 индексом
+        if let pageVC = cityChoserVC.navigationController?.viewControllers[0] as? PageVC {
+            print("Удалось привести к PageVC 🧐")
+            let weatherHomeVC = WeatherHomeVC()
+
+            weatherHomeVC.bundleView.setupUI(forGeo: geoResponceToSave,
+                                             using: weatherConditionTuple.0, weatherConditionTuple.1)
+            pageVC.pages.append(weatherHomeVC)
+            pageVC.changePageControlPageAmount { $0.numberOfPages += 1 }
+  
+        } else {
+            print("Не удалось привести к PageVC 😨")
+        }
+        
         dismiss(animated: true)
     }
 }

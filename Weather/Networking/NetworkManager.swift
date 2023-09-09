@@ -109,24 +109,24 @@ class NetworkManager {
     
     
     /**
-     Скачиваем погодные условия для указанных координат и возвращаем их в массиве
+     Скачиваем погодные условия для указанных координат и возвращаем их в отсортированном массиве
      - Parameter for: Массив GeoResponce для которого нужно скачать погодные условия
      - Returns completionHandler: Массив скачанных responce
      - Note: Используется для обновления погодных условий сразу на всех городах
      */
-    public func downloadWeatherConditionArray(for geo: [GeoResponce], _ completionHandler: @escaping ([(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) -> Void) {
+    public func downloadWeatherConditionArray(for geo: [GeoResponce],
+                                              _ completionHandler: @escaping ([(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) -> Void) {
         var responces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
+        var responceWithSortIndex: [(Int, OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
         let outerGroup = DispatchGroup()
-        let queue = DispatchQueue.global()
         
         for (i, geo) in geo.enumerated() {
-            print("iteration == \(i)")
             outerGroup.enter()
             let coordinates = Coordinates(lon: geo.lon, lat: geo.lat)
             var weatherResponce: OpenWeatherResponce!
             var airQualityResponce: OpenWeatherAirPollutionResponce!
-            
             let innerGroup = DispatchGroup()
+           
             innerGroup.enter()
             self.getWeather(for: coordinates) { responce in
                 weatherResponce = responce
@@ -139,15 +139,22 @@ class NetworkManager {
                 innerGroup.leave()
             }
             
-            innerGroup.notify(queue: queue) {
-                responces.append((weatherResponce, airQualityResponce))
-                print("InnerGroup notify \(i)")
+            innerGroup.notify(queue: .global()) {
+                responceWithSortIndex.append((i, weatherResponce, airQualityResponce))
                 outerGroup.leave()
             }
         }
         
+        /// Вызов когда скачаны погодные условия для всего входящего массива GeoResponce
         outerGroup.notify(queue: .main) {
-            print("outerGroup responces.count == \(responces.count)")
+            /**
+             Порядок входящего массива geo это порядок в котором нужно отображать WeatherHomeVC в PageController и порядок ячеек таблицы в CityChooserVC
+             т.к innerGroup.notify происходит в порядке скачивания погодных условий, а не порядке цикла, нужно вручную сортировать возвращаемый массив
+             для этого создаем еще один массив с индексом, сортируем по нему и добавляем элементы в возвращаемый массив responce
+             */
+            responceWithSortIndex.sort(by: { $0.0 < $1.0 })
+            responceWithSortIndex.forEach { responces.append(($1,$2)) }
+            
             completionHandler(responces)
         }
     }

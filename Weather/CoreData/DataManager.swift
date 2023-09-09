@@ -84,6 +84,7 @@ class DataManager {
      - Parameter completionHandler: Массив GeoResponce
      */
     func fetchSavedCities(_ completionHandler: ([GeoResponce]) -> Void) {
+        // сразу тут сортировать в правильном порядке(как сохранил при настройке таблицы)
         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
         var entities: [GeoResponceCD] = []
         

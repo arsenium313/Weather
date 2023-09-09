@@ -11,18 +11,21 @@ class PageVC: UIPageViewController {
 
     // MARK: Properties
     public let networkManager = NetworkManager()
-    public var initialPage = 0 // индекс в массиве VC который с isFirstToShow
+    /// индекс в массиве VC который с isFirstToShow
+    public var initialPage = 0
     public var pages: [WeatherHomeVC] = []
+   
     private let pageControl = UIPageControl()
     private let toolBar = UIToolbar()
-    private var savedCities: [GeoResponce] = [] // Нужно для быстрого отображения точек в pageControl(не ждать пока все загрузятся)
-    private var savedResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = [] // для последующего обновления view
+    /// Нужно для быстрого отображения точек в pageControl(не ждать пока все загрузятся)
+    private var geoResponces: [GeoResponce] = []
+   
+    private var cityChooserVC: CityChooserVC!
     
     
     // MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("Page vc ViewDidLoad!")
         setupUI()
     }
     
@@ -40,33 +43,34 @@ class PageVC: UIPageViewController {
         delegate = self
         
         DataManager.shared.fetchSavedCities() { geoResponces in
-            self.savedCities = geoResponces
+            self.geoResponces = geoResponces
+            self.cityChooserVC = CityChooserVC(geoResponces: geoResponces)
+            
+            /// Создаем WeatherHomeVC в количестве savedCities.count
             fillPagesArray()
-            // Указываем VC который нужно отобразить первым
+            
+            // тут ищем isFirstToShow и устанавливаем initialPage
+            
+            /// Устанавливаем первый VC
             setViewControllers([pages[initialPage]], direction: .forward, animated: true)
         }
   
-        networkManager.downloadWeatherConditionArray(for: savedCities) { responces in
-            // Для уже созданных WeatherVC которые лежат в массиве pages, обновляем bundleView скачанными погодными данными
-            self.savedResponces = responces
-            for (i, vc) in self.pages.enumerated() {
-                let geo = self.savedCities[i]
-                vc.bundleView.setupUI(forGeo: geo, using: responces[i].0, responces[i].1)
+        networkManager.downloadWeatherConditionArray(for: geoResponces) { weatherResponces  in
+            /// Отправляем weatherResponce в CityChooserVC c этой инфо рисуется ячейка
+            self.cityChooserVC.updateWeatherResponces(responceTuples: weatherResponces)
+            
+            /// Для уже созданных WeatherVC которые лежат в массиве pages, обновляем bundleView скачанными погодными данными
+            for (i, weatherHomeVC) in self.pages.enumerated() {
+                let geo = self.geoResponces[i]
+                weatherHomeVC.bundleView.setupUI(forGeo: geo, using: weatherResponces[i].0, weatherResponces[i].1)
             }
         }
         
     }
-    
-    /// Создаём WeatherHomeVC в количестве сохранённых в CD городов, и помещаем их в массив pages
-    private func fillPagesArray() {
-        for _ in 0...savedCities.count - 1 {
-            let vc = WeatherHomeVC()
-            pages.append(vc)
-        }
-    }
+
     
     private func configurePageControl() {
-        pageControl.numberOfPages = savedCities.count
+        pageControl.numberOfPages = geoResponces.count
         pageControl.pageIndicatorTintColor = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
         pageControl.currentPageIndicatorTintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         pageControl.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
@@ -81,8 +85,10 @@ class PageVC: UIPageViewController {
         ])
     }
     
+
+    
     private func configureToolBar() {
-        toolBar.backgroundColor = #colorLiteral(red: 0.9098039269, green: 0.4784313738, blue: 0.6431372762, alpha: 1)
+        toolBar.backgroundColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
         toolBar.items = [flexibleSpaceBarButtonItem, listBarButtonItem]
         
         self.view.addSubview(toolBar)
@@ -95,7 +101,32 @@ class PageVC: UIPageViewController {
     }
     
     
-    //MARK: - UIBarButtonItem Creation and Configuration
+    // MARK: - Update PageControl
+    /// Обновляет CurrentPage для указанного индекса
+    public func updatePageControlCurrentPage(to index: Int) {
+        let number = pageControl.numberOfPages
+        pageControl.numberOfPages = 0
+        pageControl.numberOfPages = number
+        pageControl.currentPage = index
+    }
+    
+    /// Возвращает в замыкании PageControl для изменения количества точек
+    public func changePageControlPageAmount(_ handler: (UIPageControl) -> Void) {
+        handler(self.pageControl)
+    }
+    
+    
+    // MARK: - Update Pages Array
+    /// Создаём WeatherHomeVC в количестве сохранённых в CD городов, и помещаем их в массив pages
+    private func fillPagesArray() {
+        for _ in 0...geoResponces.count - 1 {
+            let vc = WeatherHomeVC()
+            pages.append(vc)
+        }
+    }
+    
+    
+    // MARK: - UIBarButtonItem Creation and Configuration
     private var flexibleSpaceBarButtonItem: UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
@@ -115,12 +146,10 @@ class PageVC: UIPageViewController {
     
     @objc
     private func barButtonItemClicked(_ sender: UIBarButtonItem) {
-        print("Bar Button Clicked")
-//        pushViewController(cityChoserVC, animated: true)
-        let vc = CityChooserVC(geoResponces: savedCities, weatherResponces: savedResponces)
-//        vc.modalPresentationStyle = .fullScreen
-//        present(vc, animated: true)
-        navigationController?.pushViewController(vc, animated: true)
+        print("PageVC Bar Button Clicked 🧐")
+      //  let vc = CityChooserVC(geoResponces: savedCities, weatherResponces: savedResponces) // убрать отсюда вверх чтоб не создавался каждый раз
+
+        navigationController?.pushViewController(cityChooserVC, animated: true)
     }
 }
 
@@ -158,5 +187,6 @@ extension PageVC: UIPageViewControllerDelegate {
         guard let currentIndex = pages.firstIndex(of: viewControllers[0] as! WeatherHomeVC) else { return }
         
         pageControl.currentPage = currentIndex
+        // делаем currentVC = isFirstToShow
     }
 }
