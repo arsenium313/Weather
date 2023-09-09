@@ -94,28 +94,26 @@ class WeatherModalVC: UIViewController {
     // MARK: - @objc
     @objc
     private func barButtonItemClicked(_ sender: UIBarButtonItem) {
-        print("barButtonItemClicked 🧐")
-        DataManager.shared.createGeoEntity(geo: geoResponceToSave)
+        /// Создаём элемент в CD
+        let index = cityChoserVC.tableView.numberOfRows(inSection: 0)
+        DataManager.shared.createGeoEntity(geo: geoResponceToSave, index: index)
+        // сразу отправлять индекс
         
+        /// Обновляем таблицу в CityChooserVC
         cityChoserVC.geoResponces.append(geoResponceToSave)
         cityChoserVC.weatherResponceTuples?.append(weatherConditionTuple)
-        
         cityChoserVC.tableView.reloadData()
         cityChoserVC.searchController.isActive = false
         
         /// Создаём WeatherHomeVC и кладем его в массив в PageVC
         /// PageVC это rootVC, поэтому всегда будет под 0 индексом
         if let pageVC = cityChoserVC.navigationController?.viewControllers[0] as? PageVC {
-            print("Удалось привести к PageVC 🧐")
             let weatherHomeVC = WeatherHomeVC()
-
+            
             weatherHomeVC.bundleView.setupUI(forGeo: geoResponceToSave,
                                              using: weatherConditionTuple.0, weatherConditionTuple.1)
             pageVC.pages.append(weatherHomeVC)
             pageVC.changePageControlPageAmount { $0.numberOfPages += 1 }
-  
-        } else {
-            print("Не удалось привести к PageVC 😨")
         }
         
         dismiss(animated: true)

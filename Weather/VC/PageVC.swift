@@ -45,12 +45,11 @@ class PageVC: UIPageViewController {
         DataManager.shared.fetchSavedCities() { geoResponces in
             self.geoResponces = geoResponces
             self.cityChooserVC = CityChooserVC(geoResponces: geoResponces)
-            
             /// Создаем WeatherHomeVC в количестве savedCities.count
             fillPagesArray()
-            
-            // тут ищем isFirstToShow и устанавливаем initialPage
-            
+            /// Ищем isFirstToShow и устанавливаем initialPage
+            let firstGeo = DataManager.shared.fetchFirstToShow()
+            initialPage = geoResponces.firstIndex(where: {$0.lat == firstGeo.lat && $0.lon == firstGeo.lon}) ?? 0
             /// Устанавливаем первый VC
             setViewControllers([pages[initialPage]], direction: .forward, animated: true)
         }
@@ -146,9 +145,6 @@ class PageVC: UIPageViewController {
     
     @objc
     private func barButtonItemClicked(_ sender: UIBarButtonItem) {
-        print("PageVC Bar Button Clicked 🧐")
-      //  let vc = CityChooserVC(geoResponces: savedCities, weatherResponces: savedResponces) // убрать отсюда вверх чтоб не создавался каждый раз
-
         navigationController?.pushViewController(cityChooserVC, animated: true)
     }
 }
@@ -187,6 +183,6 @@ extension PageVC: UIPageViewControllerDelegate {
         guard let currentIndex = pages.firstIndex(of: viewControllers[0] as! WeatherHomeVC) else { return }
         
         pageControl.currentPage = currentIndex
-        // делаем currentVC = isFirstToShow
+        DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[currentIndex])
     }
 }

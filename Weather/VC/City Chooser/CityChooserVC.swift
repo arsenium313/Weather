@@ -110,10 +110,12 @@ extension CityChooserVC {
         guard let pageVC = navigationController?.viewControllers[0] as? PageVC else { return }
         let index = indexPath.row
             
+        /// Обновляем PageVC
         pageVC.setViewControllers([pageVC.pages[index]], direction: .forward, animated: false)
         pageVC.updatePageControlCurrentPage(to: index)
         
-        // разобраться в isFirstToShow
+        /// Устанавливаем isFirstToShow flag
+        DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[index])
         self.navigationController?.popToRootViewController(animated: true)
     }
 

@@ -22,7 +22,7 @@ class DataManager {
         return container
     }()
     
-    func saveContext () {
+    private func saveContext () {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
@@ -38,7 +38,7 @@ class DataManager {
      Удаляет объект из CD
      - Important: Перед удалением UI объекта, его нужно конвертировать в CD объект
      */
-    func delete<T>(_ object: T) {
+    public func delete<T>(_ object: T) {
         let context = persistentContainer.viewContext
         guard let object = object as? NSManagedObject else {return}
    
@@ -49,13 +49,14 @@ class DataManager {
     
     //MARK: - Create Entity
     /// Создает объект  CD идентичный указанному GeoResponce и сохраняет его
-    func createGeoEntity(geo: GeoResponce) {
+    public func createGeoEntity(geo: GeoResponce, index: Int) {
         let entity = GeoResponceCD(context: persistentContainer.viewContext)
         entity.nameOfLocation = geo.nameOfLocation
         entity.state = geo.state
         entity.lon = geo.lon
         entity.lat = geo.lat
         entity.country = geo.country
+        entity.index = Int16(index)
         saveContext()
     }
     
@@ -63,28 +64,11 @@ class DataManager {
     // MARK: - Fetch Entity
     /**
      Достаёт из CD все сохраненные объекты и конвертирует в UI объекты
-     - Returns: Массив GeoResponce
-     */
-//    func fetchSavedCities() -> [GeoResponce] {
-//        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
-//        var entities: [GeoResponceCD] = []
-//
-//        do {
-//           try entities = persistentContainer.viewContext.fetch(request)
-//        } catch let error {
-//            print("Не удалось fetch from CD 😢 \n \(error)")
-//        }
-//
-//        let geoResponces: [GeoResponce] = geoConverter(geoEntities: entities)
-//        return geoResponces
-//    }
-    
-    /**
-     Достаёт из CD все сохраненные объекты и конвертирует в UI объекты
      - Parameter completionHandler: Массив GeoResponce
      */
-    func fetchSavedCities(_ completionHandler: ([GeoResponce]) -> Void) {
+    public func fetchSavedCities(_ completionHandler: ([GeoResponce]) -> Void) {
         // сразу тут сортировать в правильном порядке(как сохранил при настройке таблицы)
+        // сразу возвращать индекс который isFirstToShow
         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
         var entities: [GeoResponceCD] = []
         
@@ -105,7 +89,7 @@ class DataManager {
      - Returns: CD объект для изменения или удаления
      - Note: т.к. UI не работает с моделями из CD, то нужно вручную конвертировать объекты из UI в CD
      */
-    func convertAndFetch(geo: GeoResponce) -> GeoResponceCD {
+    public func convertAndFetch(geo: GeoResponce) -> GeoResponceCD {
         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
         let predicate = NSCompoundPredicate(type: .and, subpredicates: [
             NSPredicate(format: "lat == %@", NSNumber(floatLiteral: geo.lat)),
@@ -129,15 +113,9 @@ class DataManager {
     
     
     // MARK: - Work with isFirstToShow Flag
-    /// Удаляет флаг в сохрананнёный объектах
-    public func removeIsFirstToShowFlag() {
-        let entities = fetchIsFirstToShowArray()
-        entities.forEach { $0.isFirstToShow = false }
-        saveContext()
-    }
-    
     /// Устанавливает флаг для указанного GeoResponce
     public func setIsFirstToShowFlag(geo: GeoResponce) {
+        self.removeIsFirstToShowFlag()
         let entity = convertAndFetch(geo: geo)
         entity.isFirstToShow = true
         saveContext()
@@ -151,16 +129,10 @@ class DataManager {
     public func fetchFirstToShow() -> GeoResponce {
         let entities = fetchIsFirstToShowArray()
         let geoArray = geoConverter(geoEntities: entities)
-     
-        // Нашли город с флагом
-        if let geo = geoArray.first {
+        
+        if let geo = geoArray.first { /// Нашли город с флагом
             return geo
-            
-            // Не нашли город с флагом
-        } else {
-//            let geo = fetchSavedCities()
-//            return geo.first!
-            
+        } else { /// Не нашли город с флагом
             var geo: [GeoResponce] = []
             fetchSavedCities { geoResponces in
                 geo = geoResponces
@@ -184,10 +156,17 @@ class DataManager {
         return entities
     }
     
+    /// Находит и удаляет флаг в сохрананнёныx объектах
+    private func removeIsFirstToShowFlag() {
+        let entities = fetchIsFirstToShowArray()
+        entities.forEach { $0.isFirstToShow = false }
+        saveContext()
+    }
+    
     
     // MARK: - Converter
     /**
-     Возвращает массив GeoResponce для указанного массива объектов CD
+     Возвращает отсортированный по индексу массив GeoResponce для указанного массива объектов CD
      - Parameter geoEntities: Массив объектов CD который нужно конвертировать
      - Returns: Массив объектов GeoResponce
      - Note: т.к. UI не работает с моделями из CD, то нужно вручную конвертировать объекты из CD в UI
@@ -195,7 +174,7 @@ class DataManager {
     private func geoConverter(geoEntities: [GeoResponceCD]) -> [GeoResponce] {
         var geoResponces: [GeoResponce] = []
         
-        for entity in geoEntities {
+        for entity in geoEntities.sorted(by: { $0.index < $1.index } ) {
             let geo = GeoResponce(nameOfLocation: entity.nameOfLocation,
                                   localizedNames: nil,
                                   lat: entity.lat, lon: entity.lon,
