@@ -110,12 +110,14 @@ class NetworkManager {
     
     /**
      Скачиваем погодные условия для указанных координат и возвращаем их в отсортированном массиве
+     Если geo пуст, то выйдет из вызывающего замыкания
      - Parameter for: Массив GeoResponce для которого нужно скачать погодные условия
      - Returns completionHandler: Массив скачанных responce
      - Note: Используется для обновления погодных условий сразу на всех городах
      */
     public func downloadWeatherConditionArray(for geo: [GeoResponce],
                                               _ completionHandler: @escaping ([(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) -> Void) {
+        guard !geo.isEmpty else { return }
         var responces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
         var responceWithSortIndex: [(Int, OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
         let outerGroup = DispatchGroup()

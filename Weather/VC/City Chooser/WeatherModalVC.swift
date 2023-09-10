@@ -97,7 +97,6 @@ class WeatherModalVC: UIViewController {
         /// Создаём элемент в CD
         let index = cityChoserVC.tableView.numberOfRows(inSection: 0)
         DataManager.shared.createGeoEntity(geo: geoResponceToSave, index: index)
-        // сразу отправлять индекс
         
         /// Обновляем таблицу в CityChooserVC
         cityChoserVC.geoResponces.append(geoResponceToSave)
@@ -112,6 +111,7 @@ class WeatherModalVC: UIViewController {
             
             weatherHomeVC.bundleView.setupUI(forGeo: geoResponceToSave,
                                              using: weatherConditionTuple.0, weatherConditionTuple.1)
+            pageVC.geoResponces.append(geoResponceToSave)
             pageVC.pages.append(weatherHomeVC)
             pageVC.changePageControlPageAmount { $0.numberOfPages += 1 }
         }

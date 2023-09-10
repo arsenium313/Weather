@@ -68,8 +68,10 @@ class DataManager {
      */
     public func fetchSavedCities(_ completionHandler: ([GeoResponce]) -> Void) {
         // сразу тут сортировать в правильном порядке(как сохранил при настройке таблицы)
-        // сразу возвращать индекс который isFirstToShow
-        let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
+         let request: NSFetchRequest<GeoResponceCD> = GeoResponceCD.fetchRequest()
+        // сделать сорт дескриптор
+        let sort = NSSortDescriptor(key: "index", ascending: true)
+        request.sortDescriptors = [sort]
         var entities: [GeoResponceCD] = []
         
         do {
@@ -104,12 +106,20 @@ class DataManager {
             print("Не удалось fetch from CD 😢 \n \(error)")
         }
         
-        return entities.first!
+        return entities.first! // был nil
     }
     
  
     
     // Индекс сделать от таблицы! tableview.row для последующего изменения порядка
+    // MARK: - Change Entity
+    /// Измеяет индекс в CD
+    public func changeIndex(geo: GeoResponce, newIndex: Int16) {
+        let entity =  self.convertAndFetch(geo: geo)
+        entity.index = newIndex
+        self.saveContext()
+    }
+    
     
     
     // MARK: - Work with isFirstToShow Flag

@@ -11,8 +11,11 @@ class SuggestionCitiesCell: UITableViewCell {
 
     //MARK: Properties
     static let identifier = "SuggestionCitiesCell"
+    /// нужно для поиска индекса при перестановке порядка таблицы
+    public var geo: GeoResponce!
     public var primaryText = "" { willSet { listConfig.text = newValue } }
     public var secondaryText = "" { willSet { listConfig.secondaryText = newValue } }
+    
     private var listConfig = UIListContentConfiguration.subtitleCell()
 
     
@@ -23,6 +26,7 @@ class SuggestionCitiesCell: UITableViewCell {
     
     private func configureSelf() {
         self.contentConfiguration = listConfig
+        self.showsReorderControl = true
     }
 
 }

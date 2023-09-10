@@ -18,6 +18,8 @@ class CityChooserVC: UITableViewController {
     private var resultsTableVC: ResultsTableVC?
     private let networkManager = NetworkManager()
     private var searchWorkItem: DispatchWorkItem?
+    private var cells: [SuggestionCitiesCell] = []
+    private let notificationCenter = NotificationCenter.default
     
     
     //MARK: - Init
@@ -61,6 +63,8 @@ class CityChooserVC: UITableViewController {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.navigationItem.title = "Choose city" // поменять на Погода как в эпл погоде
         tableView.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
+        navigationItem.rightBarButtonItem = editBarButtonItem
+        
     }
     
     private func configureSearchController() {
@@ -79,6 +83,69 @@ class CityChooserVC: UITableViewController {
         self.tableView.reloadData()
     }
     
+    
+    // MARK: - UIBarButtonItem Creation and Configuration
+    /// Включает режим редактирования
+    private var editBarButtonItem: UIBarButtonItem {
+        let image = UIImage(systemName: "ellipsis.circle")
+        return UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(barButtonItemClicked(_:)))
+    }
+   
+    private func deleteRow(indexPath: IndexPath) {
+        let cityToDelete = self.geoResponces[indexPath.row]
+        let cityToDeleteCD = DataManager.shared.convertAndFetch(geo: cityToDelete)
+        
+        /// Удаляем элемент из CD и self
+        DataManager.shared.delete(cityToDeleteCD)
+        self.weatherResponceTuples?.remove(at: indexPath.row)
+        self.geoResponces.remove(at: indexPath.row)
+        // удалить ячейку из массива
+        cells.removeAll(where: { $0.geo.lat == cityToDelete.lat && $0.geo.lon == cityToDelete.lon })
+        
+        /// Удаляем элемент из PageVC
+        if let pageVC = self.navigationController?.viewControllers[0] as? PageVC {
+            pageVC.changePageControlPageAmount { $0.numberOfPages -= 1 }
+            pageVC.pages.remove(at: indexPath.row)
+            
+            let index = pageVC.geoResponces.firstIndex(where: { $0.lat == cityToDelete.lat && $0.lon == cityToDelete.lon })
+            if let index = index {
+                pageVC.geoResponces.remove(at: index)
+            }
+        } else {
+            print("Не удалось привести к PageVC 😨")
+        }
+        
+        self.tableView.reloadData()
+    }
+    
+    // MARK: - @objc
+    @objc
+    private func barButtonItemClicked(_ sender: UIBarButtonItem) {
+        print("barBitton clicked ☮️")
+        if tableView.isEditing { // если делалось, то убирает
+            print("set editing to false 🈴")
+            // функция сохранения индексов
+            // по нажатию кнопки идет в старый индекс на pagerVC
+            
+            print("cells.count == \(cells.count) 🅿️")
+            for cell in cells {
+                guard let indexPath = tableView.indexPath(for: cell) else {
+                    print("cells.count == \(cells.count) 🔶")
+                    
+                    tableView.setEditing(false, animated: true)
+                    return
+                }
+                DataManager.shared.changeIndex(geo: cell.geo, newIndex: Int16(indexPath.row))
+            }
+    
+            tableView.setEditing(false, animated: true)
+            print("seted! editing to false 🈴")
+        } else { // если не делалось то делает
+            print("set editing to true ❇️")
+            tableView.setEditing(true, animated: true)
+        }
+    }
+    
 }
 
 
@@ -94,14 +161,17 @@ extension CityChooserVC {
         let geo = geoResponces[indexPath.row]
         
         cell.primaryText = geo.nameOfLocation ?? "nill"
- 
+        cell.geo = geo
+        cells.append(cell)
         /// Если показали CityChoserVC до того как скачали погодные условия, то показывает прочерки
         if let responce = weatherResponceTuples?[indexPath.row] {
             cell.secondaryText = "\(responce.0.tempAndPressure?.temp ?? -100). \(responce.0.weatherDescription?.first?.description ?? "nil")"
         } else {
             cell.secondaryText = "- -"
         }
-      
+      // когда городов еще не было, тогда ошибка и показывает - -
+// после нажатия делет кнопки не снимает режим редактирования
+
         cell.setupUI()
         return cell
     }
@@ -120,31 +190,24 @@ extension CityChooserVC {
     }
 
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
+        // перенести потом в кнопку
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete")
         { action, view, completionHandler in
-        
-            let cityToDelete = self.geoResponces[indexPath.row]
-            let cityToDeleteCD = DataManager.shared.convertAndFetch(geo: cityToDelete)
-            
-            /// Удаляем элемент из CD и self
-            DataManager.shared.delete(cityToDeleteCD)
-            self.weatherResponceTuples?.remove(at: indexPath.row)
-            self.geoResponces.remove(at: indexPath.row)
-            
-            /// Удаляем элемент из PageVC
-            if let pageVC = self.navigationController?.viewControllers[0] as? PageVC {
-                pageVC.changePageControlPageAmount { $0.numberOfPages -= 1 }
-                pageVC.pages.remove(at: indexPath.row)
-            } else {
-                print("Не удалось привести к PageVC 😨")
-            }
-            
-            self.tableView.reloadData()
+            self.deleteRow(indexPath: indexPath)
             completionHandler(true)
         }
         
         return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        ///Настройка при перемещении ячеек
+        print("Moved! 🥶 from \(sourceIndexPath.row) to \(destinationIndexPath.row) 🫡")
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        /// Настройка при удалении ячеек
+        deleteRow(indexPath: indexPath)
     }
     
 }

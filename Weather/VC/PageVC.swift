@@ -18,7 +18,7 @@ class PageVC: UIPageViewController {
     private let pageControl = UIPageControl()
     private let toolBar = UIToolbar()
     /// Нужно для быстрого отображения точек в pageControl(не ждать пока все загрузятся)
-    private var geoResponces: [GeoResponce] = []
+    public var geoResponces: [GeoResponce] = []
    
     private var cityChooserVC: CityChooserVC!
     
@@ -41,19 +41,24 @@ class PageVC: UIPageViewController {
         self.view.backgroundColor = #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1)
         dataSource = self
         delegate = self
-        
+    
         DataManager.shared.fetchSavedCities() { geoResponces in
-            self.geoResponces = geoResponces
-            self.cityChooserVC = CityChooserVC(geoResponces: geoResponces)
-            /// Создаем WeatherHomeVC в количестве savedCities.count
-            fillPagesArray()
-            /// Ищем isFirstToShow и устанавливаем initialPage
-            let firstGeo = DataManager.shared.fetchFirstToShow()
-            initialPage = geoResponces.firstIndex(where: {$0.lat == firstGeo.lat && $0.lon == firstGeo.lon}) ?? 0
-            /// Устанавливаем первый VC
-            setViewControllers([pages[initialPage]], direction: .forward, animated: true)
+            if geoResponces.isEmpty { // Если сохраненных городов нет
+                self.cityChooserVC = CityChooserVC(geoResponces: [])
+                setViewControllers([WeatherHomeVC()], direction: .forward, animated: true)
+            } else { // Если сохраненные города есть
+                self.geoResponces = geoResponces
+                self.cityChooserVC = CityChooserVC(geoResponces: geoResponces)
+                /// Создаем WeatherHomeVC в количестве savedCities.count
+                fillPagesArray()
+                /// Ищем isFirstToShow и устанавливаем initialPage
+                let firstGeo = DataManager.shared.fetchFirstToShow()
+                initialPage = geoResponces.firstIndex(where: {$0.lat == firstGeo.lat && $0.lon == firstGeo.lon}) ?? 0
+                /// Устанавливаем первый VC
+                setViewControllers([pages[initialPage]], direction: .forward, animated: true)
+            }
         }
-  
+        
         networkManager.downloadWeatherConditionArray(for: geoResponces) { weatherResponces  in
             /// Отправляем weatherResponce в CityChooserVC c этой инфо рисуется ячейка
             self.cityChooserVC.updateWeatherResponces(responceTuples: weatherResponces)
@@ -66,14 +71,13 @@ class PageVC: UIPageViewController {
         }
         
     }
-
     
     private func configurePageControl() {
         pageControl.numberOfPages = geoResponces.count
-        pageControl.pageIndicatorTintColor = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
+        pageControl.pageIndicatorTintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         pageControl.currentPageIndicatorTintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         pageControl.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
-        pageControl.currentPage = initialPage // начинается с 0
+        pageControl.currentPage = initialPage
         pageControl.addTarget(self, action: #selector(pageControlClicked(_:)), for: .valueChanged)
         
         self.view.addSubview(pageControl)
@@ -83,8 +87,6 @@ class PageVC: UIPageViewController {
             pageControl.centerXAnchor.constraint(equalTo: toolBar.centerXAnchor)
         ])
     }
-    
-
     
     private func configureToolBar() {
         toolBar.backgroundColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
@@ -183,6 +185,8 @@ extension PageVC: UIPageViewControllerDelegate {
         guard let currentIndex = pages.firstIndex(of: viewControllers[0] as! WeatherHomeVC) else { return }
         
         pageControl.currentPage = currentIndex
+        print("geo.count == \(geoResponces.count)  ☢️")
+        print("pages count == \(pages.count)  🅾️\n")
         DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[currentIndex])
     }
 }
