@@ -50,7 +50,7 @@ class WeatherHomeVC: UIViewController {
         bundleView.translatesAutoresizingMaskIntoConstraints = false
         let guide = self.view.layoutMarginsGuide
         NSLayoutConstraint.activate([
-            bundleView.topAnchor.constraint(equalTo: guide.topAnchor),
+            bundleView.topAnchor.constraint(equalTo: guide.topAnchor, constant: -30),
             bundleView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
             bundleView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             bundleView.bottomAnchor.constraint(equalTo: guide.bottomAnchor)

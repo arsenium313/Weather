@@ -50,9 +50,7 @@ class TemperatureView: UIView {
     }
     
     private func configureSelf() {
-        self.backgroundColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 0)
-        self.layer.borderColor = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1)
-        self.layer.borderWidth = 1
+
     }
     
     private func configureImageView() {
@@ -119,6 +117,7 @@ class TemperatureView: UIView {
         ])
        // windLabel.backgroundColor = .purple
     }
+    
     
     //MARK: - Parse JSON
     private func parseWeatherResponce(_ responce: TemperatureViewProtocol) {

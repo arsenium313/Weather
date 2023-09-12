@@ -11,17 +11,19 @@ import UIKit
 class BundleView: UIView {
     
     // MARK: Properties
-    // опционалы потомучто экран может быть загружен пустым, может вынести в опционал сам dundleVIew???
-    private var cityNameLabel: UILabel?
-    private var temperatureView: TemperatureView?
-    private var sunriseSunsetView: SunriseSunsetView?
-    private var airQualityView: AirQualityView?
+    private let cityNameLabel = UILabel()
     
+    // создаем их в любом случае, если не пришла какая инфа, отрисовать "nil"
+    private var temperatureView: TemperatureView!
+    private var sunriseSunsetView: SunriseSunsetView!
+    private var airQualityView: AirQualityView!
+    
+    private let scrol = UIScrollView()
     
     // MARK: - Init
     init() {
         super.init(frame: .zero)
-        print("BundleView init 🖼️✅")
+        print("BundleView init 🖼️ ✅")
     }
     
     required init?(coder: NSCoder) {
@@ -29,24 +31,11 @@ class BundleView: UIView {
     }
     
     deinit {
-        print("BundleView deinit 🖼️❌")
+        print("BundleView deinit 🖼️ ❌")
     }
     
     
     //MARK: - SetupUI
-//    /// Убирает все subview с BundleView, и делает subview nil
-//    public func viewReset() { // а нужно ли будет это в итоге?
-//        cityNameLabel?.removeFromSuperview()
-//        temperatureView?.removeFromSuperview()
-//        sunriseSunsetView?.removeFromSuperview()
-//        airQualityView?.removeFromSuperview()
-//
-//        cityNameLabel = nil
-//        temperatureView = nil
-//        sunriseSunsetView = nil
-//        airQualityView = nil
-//    }
-    
     /// Создаёт и добавляет subviews на BundleView используя указанные responce
     public func setupUI(forGeo geo: GeoResponce, using weatherResponce: OpenWeatherResponce, _ airQualityResponce: OpenWeatherAirPollutionResponce) {
         /// Создаём объекты для создания view используя переданный responce
@@ -64,20 +53,23 @@ class BundleView: UIView {
     
     // MARK: - Create and Configure Views
     private func configureCityNameLabel(withGeo geo: GeoResponce) {
-        cityNameLabel = UILabel()
-        guard let label = cityNameLabel else { return }
-        self.addSubview(label)
-        label.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(cityNameLabel)
+        cityNameLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: self.topAnchor),
-            label.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-          //  label.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.15)
+            cityNameLabel.topAnchor.constraint(equalTo: self.topAnchor),
+            cityNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            cityNameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            cityNameLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.06)
         ])
         
-        label.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-        label.layer.borderWidth = 0.5
-        label.text = geo.nameOfLocation ?? "☹️"
+        cityNameLabel.font = UIFont.systemFont(ofSize: 30)
+        cityNameLabel.textColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        cityNameLabel.textAlignment = .center
+        cityNameLabel.text = geo.nameOfLocation ?? "☹️"
+        
+        // рисуем границу view
+//        cityNameLabel.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+//        cityNameLabel.layer.borderWidth = 0.5
     }
     
     private func configureTemperatureView(withModel model: TemperatureViewDataModel) {
@@ -86,11 +78,15 @@ class BundleView: UIView {
         self.addSubview(view)
         view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: cityNameLabel!.bottomAnchor), //________________
+            view.topAnchor.constraint(equalTo: cityNameLabel.bottomAnchor),
             view.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             view.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             view.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3)
         ])
+        
+        // рисуем границу view
+//        self.layer.borderColor = #colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1)
+//        self.layer.borderWidth = 0.5
     }
     
     private func configureSunriseSunsetView(withModel model: SunriseSunsetViewDataModel) {
