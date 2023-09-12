@@ -10,19 +10,21 @@ import UIKit
 class PageVC: UIPageViewController {
 
     // MARK: Properties
-    public let networkManager = NetworkManager()
-    /// индекс в массиве VC который с isFirstToShow
-    public var initialPage = 0
     public var pages: [WeatherHomeVC] = []
    
+    private let networkManager = NetworkManager()
+    private let notificationCenter = NotificationCenter.default
     private let pageControl = UIPageControl()
-    private let toolBar = UIToolbar()
-    /// Нужно для быстрого отображения точек в pageControl(не ждать пока все загрузятся)
-    public var geoResponces: [GeoResponce] = []
-   
-    private var cityChooserVC: CityChooserVC!
+    // Чтобы не выскакивала ошибка в консоль нужно вручную указывать высоту
+    private let toolBar = UIToolbar(frame: CGRect(x: 0, y: 0,
+                                                  width: UIScreen.main.bounds.width, height: 45))
+    private var initialPage = 0
+    private var geoResponces: [GeoResponce] = []
+    private var weatherResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
+    /// Инициализируем здесь чтобы при notification информация уже пришла в cityChooserVC
+    private var cityChooserVC = CityChooserVC()
     
-    
+
     // MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,47 +40,44 @@ class PageVC: UIPageViewController {
     }
 
     private func configureSelf() {
-        self.view.backgroundColor = #colorLiteral(red: 0, green: 0.9768045545, blue: 0, alpha: 1)
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .never
+        self.view.backgroundColor = #colorLiteral(red: 0.1991047561, green: 0.2040857375, blue: 0.2466743588, alpha: 1)
         dataSource = self
         delegate = self
     
+        notificationCenter.addObserver(self, selector: #selector(reseveNotification(_:)),
+                                       name: .addGeoResponce, object: nil)
+       
         DataManager.shared.fetchSavedCities() { geoResponces in
-            if geoResponces.isEmpty { // Если сохраненных городов нет
-                self.cityChooserVC = CityChooserVC(geoResponces: [])
-                setViewControllers([WeatherHomeVC()], direction: .forward, animated: true)
-            } else { // Если сохраненные города есть
-                self.geoResponces = geoResponces
-                self.cityChooserVC = CityChooserVC(geoResponces: geoResponces)
-                /// Создаем WeatherHomeVC в количестве savedCities.count
-                fillPagesArray()
-                /// Ищем isFirstToShow и устанавливаем initialPage
-                let firstGeo = DataManager.shared.fetchFirstToShow()
-                initialPage = geoResponces.firstIndex(where: {$0.lat == firstGeo.lat && $0.lon == firstGeo.lon}) ?? 0
-                /// Устанавливаем первый VC
-                setViewControllers([pages[initialPage]], direction: .forward, animated: true)
-            }
+            let geoDictionary: [String : [GeoResponce]] = ["geo" : geoResponces]
+            notificationCenter.post(name: .addGeoResponce, object: self, userInfo: geoDictionary)
+            findInitialPageIndex()
         }
-        
-        networkManager.downloadWeatherConditionArray(for: geoResponces) { weatherResponces  in
-            /// Отправляем weatherResponce в CityChooserVC c этой инфо рисуется ячейка
-            self.cityChooserVC.updateWeatherResponces(responceTuples: weatherResponces)
-            
-            /// Для уже созданных WeatherVC которые лежат в массиве pages, обновляем bundleView скачанными погодными данными
-            for (i, weatherHomeVC) in self.pages.enumerated() {
+    
+        networkManager.downloadWeatherConditionArray(for: geoResponces) { [self] weatherResponces  in
+            fillPagesArray()
+            for (i, weatherHomeVC) in pages.enumerated() {
                 let geo = self.geoResponces[i]
-                weatherHomeVC.bundleView.setupUI(forGeo: geo, using: weatherResponces[i].0, weatherResponces[i].1)
+                weatherHomeVC.bundleView.setupUI(forGeo: geo, using: weatherResponces[i].0,
+                                                 weatherResponces[i].1)
             }
+            setViewControllers([pages[initialPage]], direction: .forward, animated: false)
+            /// Отправляем Notification
+            let weatherDictionary: [String : [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]]
+            = ["weather" : weatherResponces]
+            self.notificationCenter.post(name: .addWeatherResponce, object: self,
+                                         userInfo: weatherDictionary)
         }
         
     }
     
     private func configurePageControl() {
-        pageControl.numberOfPages = geoResponces.count
-        pageControl.pageIndicatorTintColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
-        pageControl.currentPageIndicatorTintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        pageControl.backgroundColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+        pageControl.isEnabled = false
+        pageControl.pageIndicatorTintColor = #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)
+        pageControl.currentPageIndicatorTintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        pageControl.hidesForSinglePage = true
         pageControl.currentPage = initialPage
-        pageControl.addTarget(self, action: #selector(pageControlClicked(_:)), for: .valueChanged)
         
         self.view.addSubview(pageControl)
         pageControl.translatesAutoresizingMaskIntoConstraints = false
@@ -89,20 +88,50 @@ class PageVC: UIPageViewController {
     }
     
     private func configureToolBar() {
-        toolBar.backgroundColor = #colorLiteral(red: 0.05882352963, green: 0.180392161, blue: 0.2470588237, alpha: 1)
+        toolBar.barTintColor = #colorLiteral(red: 0.1991047561, green: 0.2040857375, blue: 0.2466743588, alpha: 1)
+        toolBar.isTranslucent = false
         toolBar.items = [flexibleSpaceBarButtonItem, listBarButtonItem]
-        
         self.view.addSubview(toolBar)
         toolBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             toolBar.bottomAnchor.constraint(equalTo: self.view.layoutMarginsGuide.bottomAnchor),
             toolBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-            toolBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+            toolBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            // Чтобы не выскакивала ошибка в консоль нужно вручную указывать высоту
+            toolBar.heightAnchor.constraint(equalToConstant: 45)
         ])
+        
     }
     
     
-    // MARK: - Update PageControl
+    // MARK: - Update Pages Array
+    /// Создаём WeatherHomeVC, настраиваем его bundleView и кладем в массив pages
+    public func appendPage(geo: GeoResponce, weatherResponce tuple:
+                           (OpenWeatherResponce, OpenWeatherAirPollutionResponce)) {
+        let weatherVC = WeatherHomeVC()
+        weatherVC.bundleView.setupUI(forGeo: geo, using: tuple.0, tuple.1)
+        self.pages.append(weatherVC)
+    }
+    
+    /// Создаём WeatherHomeVC в количестве сохранённых в CD городов, и помещаем их в массив pages
+    private func fillPagesArray() {
+        guard !geoResponces.isEmpty else { return }
+        for _ in 0...geoResponces.count - 1 {
+            let vc = WeatherHomeVC()
+            self.pages.append(vc)
+        }
+    }
+    
+
+    // MARK: - Find Initial Page
+    /// Ищет isFirstToShow и устанавливает initialPage, Если не нашло, то ничего не делает и initialPage остаётся = 0
+    private func findInitialPageIndex() {
+        if let firstGeo = DataManager.shared.fetchFirstToShow() {
+            self.initialPage = self.geoResponces.firstIndex(where: {
+                $0.lat == firstGeo.lat && $0.lon == firstGeo.lon }) ?? 0
+        }
+    }
+    
     /// Обновляет CurrentPage для указанного индекса
     public func updatePageControlCurrentPage(to index: Int) {
         let number = pageControl.numberOfPages
@@ -111,52 +140,50 @@ class PageVC: UIPageViewController {
         pageControl.currentPage = index
     }
     
-    /// Возвращает в замыкании PageControl для изменения количества точек
-    public func changePageControlPageAmount(_ handler: (UIPageControl) -> Void) {
-        handler(self.pageControl)
-    }
-    
-    
-    // MARK: - Update Pages Array
-    /// Создаём WeatherHomeVC в количестве сохранённых в CD городов, и помещаем их в массив pages
-    private func fillPagesArray() {
-        for _ in 0...geoResponces.count - 1 {
-            let vc = WeatherHomeVC()
-            pages.append(vc)
-        }
-    }
-    
     
     // MARK: - UIBarButtonItem Creation and Configuration
     private var flexibleSpaceBarButtonItem: UIBarButtonItem {
         return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
+    
     private var listBarButtonItem: UIBarButtonItem {
         let image = UIImage(systemName: "list.bullet")
-        return UIBarButtonItem(image: image, style: .plain, target: self,
+        let button =  UIBarButtonItem(image: image, style: .done, target: self,
                                action: #selector(barButtonItemClicked(_:)))
+        button.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        return button
     }
     
     
     // MARK: - @objc
     @objc
-    private func pageControlClicked(_ sender: UIPageControl) {
-        let currentPage = sender.currentPage
-        setViewControllers([pages[currentPage]], direction: .forward, animated: true)
-    }
-    
-    @objc
     private func barButtonItemClicked(_ sender: UIBarButtonItem) {
         navigationController?.pushViewController(cityChooserVC, animated: true)
     }
+    
+    @objc
+    private func reseveNotification(_ sender: Notification) {
+        switch sender.name {
+        case .addGeoResponce:
+            guard let geo = sender.userInfo?["geo"] as? [GeoResponce] else { return }
+            self.geoResponces = geo
+            self.pageControl.numberOfPages = geo.count
+        default: return
+        }
+    }
+    
 }
 
 
 // MARK: - UIPageVC Data Source
 extension PageVC: UIPageViewControllerDataSource {
     /// Устанавливаем предыдущие VC
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-        guard let currentIndex = pages.firstIndex(of: viewController as! WeatherHomeVC) else { return nil }
+    func pageViewController(_ pageViewController: UIPageViewController,
+                            viewControllerBefore viewController: UIViewController)
+    -> UIViewController? {
+        guard let currentIndex = pages.firstIndex(of: viewController as! WeatherHomeVC)
+        else { return nil }
+        
         if currentIndex == 0 { // Если экран самый левый, по кругу не возвращаемся
             return nil
         } else {
@@ -165,8 +192,11 @@ extension PageVC: UIPageViewControllerDataSource {
     }
     
     /// Устанавливаем следующие VC
-    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-        guard let currentIndex = pages.firstIndex(of: viewController as! WeatherHomeVC) else { return nil }
+    func pageViewController(_ pageViewController: UIPageViewController,
+                            viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        guard let currentIndex = pages.firstIndex(of: viewController as! WeatherHomeVC)
+        else { return nil }
+        
         if currentIndex < pages.count - 1 { // count считается с 1, а index c 0
             return pages[currentIndex + 1]
         } else {
@@ -180,13 +210,15 @@ extension PageVC: UIPageViewControllerDataSource {
 // MARK: - UIPageVC Delegate
 extension PageVC: UIPageViewControllerDelegate {
     /// Обновляем необходимое после свайпов экранов WeatherHomeVC
-    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    func pageViewController(_ pageViewController: UIPageViewController,
+                            didFinishAnimating finished: Bool,
+                            previousViewControllers: [UIViewController],
+                            transitionCompleted completed: Bool) {
         guard let viewControllers = pageViewController.viewControllers else { return }
-        guard let currentIndex = pages.firstIndex(of: viewControllers[0] as! WeatherHomeVC) else { return }
+        guard let currentIndex = pages.firstIndex(of: viewControllers[0] as! WeatherHomeVC)
+        else { return }
         
         pageControl.currentPage = currentIndex
-        print("geo.count == \(geoResponces.count)  ☢️")
-        print("pages count == \(pages.count)  🅾️\n")
         DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[currentIndex])
     }
 }

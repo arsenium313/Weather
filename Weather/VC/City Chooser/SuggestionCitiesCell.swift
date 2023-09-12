@@ -11,12 +11,11 @@ class SuggestionCitiesCell: UITableViewCell {
 
     //MARK: Properties
     static let identifier = "SuggestionCitiesCell"
-    /// нужно для поиска индекса при перестановке порядка таблицы
-    public var geo: GeoResponce!
+
+    private var listConfig = UIListContentConfiguration.subtitleCell()
     public var primaryText = "" { willSet { listConfig.text = newValue } }
     public var secondaryText = "" { willSet { listConfig.secondaryText = newValue } }
     
-    private var listConfig = UIListContentConfiguration.subtitleCell()
 
     
     //MARK: - SetupUI

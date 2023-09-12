@@ -13,25 +13,29 @@ class WeatherModalVC: UIViewController {
     //MARK: Properties
     private let bundleView = BundleView()
     private let networkManager = NetworkManager()
-    private let cityChoserVC: CityChooserVC // нужен для обновления таблицы, добавления элементов в массивы
-    private var geoResponceToSave: GeoResponce // чтоб сохранить его в UD или CoreData
-    private var weatherConditionTuple: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)! // разобраться с опционалом
+    private let notificationCenter = NotificationCenter.default
+    /// Нужен для доступа к PageVC, забора массивов [GeoResponces] и [WeatherResponces]
+    private let cityChoserVC: CityChooserVC
+    /// Нужен для сохранения в CD, и отправке Notification
+    private var geoResponce: GeoResponce
+    /// Нужен для добавления в массив pages на PageVC
+    private var weatherResponce: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)?
     
     
     // MARK: - Init
     /**
      - Parameter geoResponce: Координаты города погоду которого нужно найти
-     - Parameter cityChoserVC : Предыдущий экран, нужен здесь для обновления его таблицы (экран в своем Navigation stack)
+     - Parameter cityChoserVC : Предыдущий экран
      */
     init(geoResponce geo: GeoResponce, cityChoserVC: CityChooserVC) {
-        print("WeatherModalVC Init 🧐")
-        self.geoResponceToSave = geo
+        print("WeatherModalVC Init ✅")
+        self.geoResponce = geo
         self.cityChoserVC = cityChoserVC
         super.init(nibName: nil, bundle: nil)
         
         networkManager.downloadWeatherCondition(for: geo) {
             self.bundleView.setupUI(forGeo: geo, using: $0.0, $0.1)
-            self.weatherConditionTuple = $0
+            self.weatherResponce = $0
         }
     } 
     
@@ -40,7 +44,7 @@ class WeatherModalVC: UIViewController {
     }
     
     deinit {
-        print("WeatherModalVC deinit 🧐")
+        print("WeatherModalVC deinit ❌")
     }
     
     
@@ -58,8 +62,12 @@ class WeatherModalVC: UIViewController {
 
     //MARK: - SetupUI
     private func setupUI() {
+        configureSelf()
         configureBundleView()
-        configureAddCityBarButton()
+    }
+    
+    private func configureSelf() {
+        navigationItem.rightBarButtonItem = addBarButton
     }
     
     private func configureBundleView() {
@@ -73,21 +81,16 @@ class WeatherModalVC: UIViewController {
             bundleView.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
         ])
     }
-    
-    private func configureAddCityBarButton() {
-        navigationController?.navigationBar.titleTextAttributes =
-        [NSAttributedString.Key.foregroundColor : UIColor.white]
-        self.navigationItem.rightBarButtonItem = addBarButton
-        addBarButton.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-    }
+
         
-    
     // MARK: - UIBarButtonItem Creation and Configuration
     private var addBarButton: UIBarButtonItem {
         let image = UIImage(systemName: "square.and.arrow.down")
-        return UIBarButtonItem(image: image, style: .plain,
-                                           target: self,
-                               action: #selector(barButtonItemClicked(_:)))
+        let button = UIBarButtonItem(image: image, style: .plain,
+                                     target: self,
+                         action: #selector(barButtonItemClicked(_:)))
+        button.tintColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        return button
     }
 
     
@@ -96,26 +99,28 @@ class WeatherModalVC: UIViewController {
     private func barButtonItemClicked(_ sender: UIBarButtonItem) {
         /// Создаём элемент в CD
         let index = cityChoserVC.tableView.numberOfRows(inSection: 0)
-        DataManager.shared.createGeoEntity(geo: geoResponceToSave, index: index)
+        DataManager.shared.createGeoEntity(geo: geoResponce, index: index)
         
-        /// Обновляем таблицу в CityChooserVC
-        cityChoserVC.geoResponces.append(geoResponceToSave)
-        cityChoserVC.weatherResponceTuples?.append(weatherConditionTuple)
-        cityChoserVC.tableView.reloadData()
+        /// Добавляем WeatherHomeVC в PageVC
+        guard let pageVC = cityChoserVC.navigationController?.viewControllers[0] as? PageVC,
+        let weatherResponce = weatherResponce else { return }
+        pageVC.appendPage(geo: geoResponce, weatherResponce: weatherResponce)
+        
+        /// Отправляем Notification
+        var geoResponces = cityChoserVC.geoResponces
+        geoResponces.append(geoResponce)
+        var weatherResponces = cityChoserVC.weatherResponces
+        weatherResponces.append(weatherResponce)
+        
+        let geoDictionary: [String : [GeoResponce]] = ["geo" : geoResponces]
+        notificationCenter.post(name: .addGeoResponce, object: self, userInfo: geoDictionary)
+        
+        let weatherDictionary: [String : [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]]
+        = ["weather" : weatherResponces]
+        self.notificationCenter.post(name: .addWeatherResponce, object: self,
+                                     userInfo: weatherDictionary)
+        
         cityChoserVC.searchController.isActive = false
-        
-        /// Создаём WeatherHomeVC и кладем его в массив в PageVC
-        /// PageVC это rootVC, поэтому всегда будет под 0 индексом
-        if let pageVC = cityChoserVC.navigationController?.viewControllers[0] as? PageVC {
-            let weatherHomeVC = WeatherHomeVC()
-            
-            weatherHomeVC.bundleView.setupUI(forGeo: geoResponceToSave,
-                                             using: weatherConditionTuple.0, weatherConditionTuple.1)
-            pageVC.geoResponces.append(geoResponceToSave)
-            pageVC.pages.append(weatherHomeVC)
-            pageVC.changePageControlPageAmount { $0.numberOfPages += 1 }
-        }
-        
         dismiss(animated: true)
     }
 }

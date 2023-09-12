@@ -24,9 +24,7 @@ class NetworkManager {
                     let decode: OpenWeatherResponce = try JSONDecoder().decode(OpenWeatherResponce.self, from: data)
                     completionHandler(decode)
                 } catch {
-                 //   print(error.localizedDescription)
                     print("Не удалось распарсить JSON 🙁")
-                    // уведомление что не получилось распарсить
                 }
             }
         }
@@ -46,9 +44,7 @@ class NetworkManager {
                     let decode: OpenWeatherAirPollutionResponce = try JSONDecoder().decode(OpenWeatherAirPollutionResponce.self, from: data)
                     completionHandler(decode)
                 } catch {
-                 //   print(error.localizedDescription)
-                    print("Не удалось распарсить JSON 🙁")
-                    // уведомление что не получилось распарсить
+                    print("Не удалось распарсить JSON ☹️")
                 }
             }
         }
@@ -69,9 +65,7 @@ class NetworkManager {
                     let decode: [GeoResponce] = try JSONDecoder().decode([GeoResponce].self, from: data)
                     completionHandler(decode)
                 } catch {
-                  //  print(error.localizedDescription)
                     print("Не удалось распарсить JSON ☹️")
-                    // уведомление что не получилось распарсить
                 }
             }
         }

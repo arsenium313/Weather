@@ -21,7 +21,7 @@ class BundleView: UIView {
     // MARK: - Init
     init() {
         super.init(frame: .zero)
-        print("Bundle Weather View init")
+        print("BundleView init 🖼️✅")
     }
     
     required init?(coder: NSCoder) {
@@ -29,32 +29,32 @@ class BundleView: UIView {
     }
     
     deinit {
-        print("Bundle Weather View deinit")
+        print("BundleView deinit 🖼️❌")
     }
     
     
     //MARK: - SetupUI
-    /// Убирает все subview с BundleView, и делает subview nil
-    public func viewReset() { // а нужно ли будет это в итоге?
-        cityNameLabel?.removeFromSuperview()
-        temperatureView?.removeFromSuperview()
-        sunriseSunsetView?.removeFromSuperview()
-        airQualityView?.removeFromSuperview()
-        
-        cityNameLabel = nil
-        temperatureView = nil
-        sunriseSunsetView = nil
-        airQualityView = nil
-    }
+//    /// Убирает все subview с BundleView, и делает subview nil
+//    public func viewReset() { // а нужно ли будет это в итоге?
+//        cityNameLabel?.removeFromSuperview()
+//        temperatureView?.removeFromSuperview()
+//        sunriseSunsetView?.removeFromSuperview()
+//        airQualityView?.removeFromSuperview()
+//
+//        cityNameLabel = nil
+//        temperatureView = nil
+//        sunriseSunsetView = nil
+//        airQualityView = nil
+//    }
     
     /// Создаёт и добавляет subviews на BundleView используя указанные responce
     public func setupUI(forGeo geo: GeoResponce, using weatherResponce: OpenWeatherResponce, _ airQualityResponce: OpenWeatherAirPollutionResponce) {
-        // Создаём объекты для создания view используя переданный responce
+        /// Создаём объекты для создания view используя переданный responce
         let mainInfoViewDataModel = TemperatureViewDataModel(openWeatherResponce: weatherResponce)
         let sunriseSunsetViewDataModel = SunriseSunsetViewDataModel(openWeatherResponce: weatherResponce)
         let airQualityViewDataModel = AirQualityViewDataModel(openWeatherResponce: airQualityResponce)
         
-        // создаем view
+        /// Создаем view
         configureCityNameLabel(withGeo: geo)
         configureTemperatureView(withModel: mainInfoViewDataModel)
         configureSunriseSunsetView(withModel: sunriseSunsetViewDataModel)

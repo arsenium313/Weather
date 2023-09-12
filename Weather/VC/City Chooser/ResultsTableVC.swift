@@ -24,7 +24,7 @@ class ResultsTableVC: UITableViewController {
     //MARK: - Init
     init() {
         super.init(nibName: nil, bundle: nil)
-        print("ResultsVC init 🧐")
+        print("ResultsVC init ✅")
     }
     
     required init?(coder: NSCoder) {
@@ -32,7 +32,7 @@ class ResultsTableVC: UITableViewController {
     }
     
     deinit {
-        print("resultVC deinit 🧐")
+        print("ResultVC deinit ❌")
     }
     
     
@@ -55,14 +55,14 @@ class ResultsTableVC: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let geo = geoResponces[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
-        cell.primaryText = geo.nameOfLocation ?? "nil"
-        cell.secondaryText = "\(geo.state ?? "nil"). \(geo.country ?? "nil")"
+        cell.primaryText = geo.nameOfLocation ?? "–"
+        cell.secondaryText = "\(geo.state ?? "–"). \(geo.country ?? "–")"
         cell.setupUI()
         return cell
     }
 
     
-    //MARK: - TableView Delegate
+    // MARK: - TableView Delegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let geo = geoResponces[indexPath.row]
         let modalVC = WeatherModalVC(geoResponce: geo, cityChoserVC: parentCityChooserVC)

@@ -8,25 +8,28 @@
 import UIKit
 
 class CityChooserVC: UITableViewController {
-
+    
     //MARK: Properties
     public var searchController: UISearchController!
-    public var geoResponces: [GeoResponce]
+    /// public для weatherModalVC чтобы оттуда отправлять notification
+    public var geoResponces: [GeoResponce] = []
     /// Приходит с PageVC как только загрузится
-    public var weatherResponceTuples: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]?
-    
+    public var weatherResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
     private var resultsTableVC: ResultsTableVC?
     private let networkManager = NetworkManager()
-    private var searchWorkItem: DispatchWorkItem?
-    private var cells: [SuggestionCitiesCell] = []
     private let notificationCenter = NotificationCenter.default
+    /// Нужно для отправки запроса поиска с задержкой
+    private var searchWorkItem: DispatchWorkItem?
     
     
     //MARK: - Init
-    init(geoResponces: [GeoResponce]) {
-        self.geoResponces = geoResponces
+    init() {
+        print("CityChooserVC init ✅")
         super.init(nibName: nil, bundle: nil)
-        print("CityChooserVC init 🧐")
+        notificationCenter.addObserver(self, selector: #selector(reseveNotification(_:)),
+                                       name: .addGeoResponce, object: nil)
+        notificationCenter.addObserver(self, selector: #selector(reseveNotification(_:)),
+                                       name: .addWeatherResponce, object: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -34,144 +37,144 @@ class CityChooserVC: UITableViewController {
     }
     
     deinit {
-        print("CityChooserVC deinit 🧐")
+        print("CityChooserVC deinit ❌")
     }
     
     
     //MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("CityChoser View Did Load 🧐")
         setupUI()
     }
-    
-    /// Из-за разных фонов WeatherVC и CityChoserVC нужно вручную менять цвет акцента верхнего navigationBar
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
-        navigationController?.navigationBar.tintColor = #colorLiteral(red: 0.1764705926, green: 0.4980392158, blue: 0.7568627596, alpha: 1)
+        /// Меняем цвет большого title
+        navigationController?.navigationBar.largeTitleTextAttributes
+        = [.foregroundColor : UIColor.red]
+        /// Меняем цвет маленького title, появляется когда пропадает большой
+        navigationController?.navigationBar.titleTextAttributes
+        = [NSAttributedString.Key.foregroundColor: UIColor.red]
     }
-    
 
     //MARK: - SetupUI
     private func setupUI() {
-        configureSelf()
         configureSearchController()
+        configureSelf()
     }
     
     private func configureSelf() {
         self.view.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        self.navigationItem.title = "Choose city" // поменять на Погода как в эпл погоде
-        tableView.register(SuggestionCitiesCell.self, forCellReuseIdentifier: SuggestionCitiesCell.identifier)
-        navigationItem.rightBarButtonItem = editBarButtonItem
         
+        tableView.register(SuggestionCitiesCell.self,
+                           forCellReuseIdentifier: SuggestionCitiesCell.identifier)
+        
+        /// Настройка  NavigationBar
+        navigationItem.title = "Погода"
+        navigationItem.largeTitleDisplayMode = .always
+        navigationItem.rightBarButtonItem = editBarButtonItem
+        navigationItem.hidesBackButton = true
     }
     
     private func configureSearchController() {
         resultsTableVC = ResultsTableVC()
         resultsTableVC?.parentCityChooserVC = self
+        
         searchController = UISearchController(searchResultsController: resultsTableVC)
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
+        searchController.searchBar.placeholder = "Поиск города"
         searchController.searchBar.tintColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
         searchController.searchResultsUpdater = self
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
     }
 
-    /// Заполняем массив weatherResponceTuples данными, для отображения погодных условий в ячейках городов
-    public func updateWeatherResponces(responceTuples: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) {
-        self.weatherResponceTuples = responceTuples
-        self.tableView.reloadData()
-    }
-    
     
     // MARK: - UIBarButtonItem Creation and Configuration
     /// Включает режим редактирования
     private var editBarButtonItem: UIBarButtonItem {
         let image = UIImage(systemName: "ellipsis.circle")
-        return UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(barButtonItemClicked(_:)))
+        let button = UIBarButtonItem(image: image, style: .plain, target: self,
+                                     action: #selector(barButtonItemClicked(_:)))
+        button.tintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        return button
     }
    
-    private func deleteRow(indexPath: IndexPath) {
+    
+    // MARK: - Work With TableView
+    private func deleteRow(at indexPath: IndexPath) {
         let cityToDelete = self.geoResponces[indexPath.row]
-        let cityToDeleteCD = DataManager.shared.convertAndFetch(geo: cityToDelete)
-        
-        /// Удаляем элемент из CD и self
-        DataManager.shared.delete(cityToDeleteCD)
-        self.weatherResponceTuples?.remove(at: indexPath.row)
-        self.geoResponces.remove(at: indexPath.row)
-        // удалить ячейку из массива
-        cells.removeAll(where: { $0.geo.lat == cityToDelete.lat && $0.geo.lon == cityToDelete.lon })
-        
-        /// Удаляем элемент из PageVC
-        if let pageVC = self.navigationController?.viewControllers[0] as? PageVC {
-            pageVC.changePageControlPageAmount { $0.numberOfPages -= 1 }
-            pageVC.pages.remove(at: indexPath.row)
-            
-            let index = pageVC.geoResponces.firstIndex(where: { $0.lat == cityToDelete.lat && $0.lon == cityToDelete.lon })
-            if let index = index {
-                pageVC.geoResponces.remove(at: index)
-            }
-        } else {
-            print("Не удалось привести к PageVC 😨")
+        if let cityToDeleteCD = DataManager.shared.convertAndFetch(geo: cityToDelete) {
+            DataManager.shared.delete(cityToDeleteCD)
         }
         
-        self.tableView.reloadData()
+        self.weatherResponces.remove(at: indexPath.row)
+        self.geoResponces.remove(at: indexPath.row)
+        
+        
+        let geoDictionary: [String : [GeoResponce]] = ["geo" : self.geoResponces]
+        notificationCenter.post(name: .addGeoResponce, object: self, userInfo: geoDictionary)
+        
+        guard let pageVC = navigationController?.viewControllers[0] as? PageVC else { return }
+        pageVC.pages.remove(at: indexPath.row)
     }
+    
     
     // MARK: - @objc
     @objc
     private func barButtonItemClicked(_ sender: UIBarButtonItem) {
-        print("barBitton clicked ☮️")
-        if tableView.isEditing { // если делалось, то убирает
-            print("set editing to false 🈴")
-            // функция сохранения индексов
-            // по нажатию кнопки идет в старый индекс на pagerVC
-            
-            print("cells.count == \(cells.count) 🅿️")
-            for cell in cells {
-                guard let indexPath = tableView.indexPath(for: cell) else {
-                    print("cells.count == \(cells.count) 🔶")
-                    
-                    tableView.setEditing(false, animated: true)
-                    return
-                }
-                DataManager.shared.changeIndex(geo: cell.geo, newIndex: Int16(indexPath.row))
-            }
-    
+        if tableView.isEditing {
+            DataManager.shared.changeIndex(geoArray: geoResponces)
             tableView.setEditing(false, animated: true)
-            print("seted! editing to false 🈴")
-        } else { // если не делалось то делает
-            print("set editing to true ❇️")
+        } else {
             tableView.setEditing(true, animated: true)
+        }
+    }
+    
+    @objc
+    private func reseveNotification(_ sender: Notification) {
+        switch sender.name {
+            
+        case .addWeatherResponce:
+            guard let weatherResponce = sender.userInfo?["weather"]
+                    as? [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] else { return }
+            self.weatherResponces = weatherResponce
+            self.tableView.reloadData()
+            
+        case .addGeoResponce:
+            guard let geo = sender.userInfo?["geo"] as? [GeoResponce] else { return }
+            self.geoResponces = geo
+            self.tableView.reloadData()
+            
+        default: return
         }
     }
     
 }
 
 
-//MARK: - Table delegate / dataSource
+//MARK: - TableView Delegate / DataSource
 extension CityChooserVC {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return geoResponces.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier, for: indexPath) as! SuggestionCitiesCell
+    override func tableView(_ tableView: UITableView,
+                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: SuggestionCitiesCell.identifier,
+                                                 for: indexPath) as! SuggestionCitiesCell
         let geo = geoResponces[indexPath.row]
         
-        cell.primaryText = geo.nameOfLocation ?? "nill"
-        cell.geo = geo
-        cells.append(cell)
+        cell.primaryText = geo.nameOfLocation ?? "- -"
+        
         /// Если показали CityChoserVC до того как скачали погодные условия, то показывает прочерки
-        if let responce = weatherResponceTuples?[indexPath.row] {
-            cell.secondaryText = "\(responce.0.tempAndPressure?.temp ?? -100). \(responce.0.weatherDescription?.first?.description ?? "nil")"
+        if !weatherResponces.isEmpty {
+            let weatherResponce = weatherResponces[indexPath.row]
+            cell.secondaryText = "\(weatherResponce.0.tempAndPressure?.temp ?? -100). \(weatherResponce.0.weatherDescription?.first?.description ?? "nil")"
         } else {
             cell.secondaryText = "- -"
         }
-      // когда городов еще не было, тогда ошибка и показывает - -
-// после нажатия делет кнопки не снимает режим редактирования
-
+        
         cell.setupUI()
         return cell
     }
@@ -189,25 +192,41 @@ extension CityChooserVC {
         self.navigationController?.popToRootViewController(animated: true)
     }
 
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        // перенести потом в кнопку
+    override func tableView(_ tableView: UITableView,
+                            trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete")
         { action, view, completionHandler in
-            self.deleteRow(indexPath: indexPath)
+            self.deleteRow(at: indexPath)
             completionHandler(true)
         }
-        
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
     
-    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        ///Настройка при перемещении ячеек
-        print("Moved! 🥶 from \(sourceIndexPath.row) to \(destinationIndexPath.row) 🫡")
+    override func tableView(_ tableView: UITableView,
+                            moveRowAt sourceIndexPath: IndexPath,
+                            to destinationIndexPath: IndexPath) {
+        /// Изменяем массив geoResponces при перемещении ячеек
+        let geoItem = geoResponces[sourceIndexPath.row]
+        geoResponces.remove(at: sourceIndexPath.row)
+        geoResponces.insert(geoItem, at: destinationIndexPath.row)
+        
+        /// Изменяем массив weatherResponces при перемещении ячеек
+        let weatherItem = weatherResponces[sourceIndexPath.row]
+        weatherResponces.remove(at: sourceIndexPath.row)
+        weatherResponces.insert(weatherItem, at: destinationIndexPath.row)
+        
+        
+        guard let pageVC = navigationController?.viewControllers[0] as? PageVC else { return }
+        let page = pageVC.pages[sourceIndexPath.row]
+        pageVC.pages.remove(at: sourceIndexPath.row)
+        pageVC.pages.insert(page, at: destinationIndexPath.row)
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        /// Настройка при удалении ячеек
-        deleteRow(indexPath: indexPath)
+    override func tableView(_ tableView: UITableView,
+                            commit editingStyle: UITableViewCell.EditingStyle,
+                            forRowAt indexPath: IndexPath) {
+        /// Кнопка в режиме редактирования таблицы "Удалить", действия соответствующие
+        deleteRow(at: indexPath)
     }
     
 }

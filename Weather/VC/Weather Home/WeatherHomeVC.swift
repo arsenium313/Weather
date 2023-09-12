@@ -15,7 +15,7 @@ class WeatherHomeVC: UIViewController {
     
     // MARK: - Init
     init() {
-        print("WeatherVC Init 🧐")
+        print("WeatherHomeVC Init ✅")
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -24,7 +24,7 @@ class WeatherHomeVC: UIViewController {
     }
     
     deinit {
-        print("Weather VC deinit")
+        print("WeatherHomeVC deinit ❌")
     }
     
     
