@@ -9,12 +9,23 @@ import UIKit
 
 class WeatherHomeVC: UIViewController {
 
-    //MARK: Properties
-    public var bundleView = BundleView()
-
+    //MARK: Properties    
+    internal var collectionView: UICollectionView!
+    internal var dataSource: UICollectionViewDiffableDataSource<SectionLayoutKind, CellIdentifier>! = nil
+    
+    internal var geoResponce: GeoResponce?
+    internal var weatherResponce: OpenWeatherResponce?
+    internal var airPollutionResponce: OpenWeatherAirPollutionResponce?
+    
     
     // MARK: - Init
-    init() {
+    init(geoResponce: GeoResponce,
+         weatherResponce: OpenWeatherResponce,
+         airPollutionResponce: OpenWeatherAirPollutionResponce) {
+       
+        self.geoResponce = geoResponce
+        self.weatherResponce = weatherResponce
+        self.airPollutionResponce = airPollutionResponce
         print("WeatherHomeVC Init ✅")
         super.init(nibName: nil, bundle: nil)
     }
@@ -42,21 +53,26 @@ class WeatherHomeVC: UIViewController {
     
     //MARK: - SetupUI
     private func setupUI() {
-        configureBundleView()
+        configureCollectionView()
+        configureDataSource()
     }
     
-    private func configureBundleView() {
-        self.view.addSubview(bundleView)
-        bundleView.translatesAutoresizingMaskIntoConstraints = false
+    private func configureCollectionView() {
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        collectionView.backgroundColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
+        
+        self.view.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         let guide = self.view.layoutMarginsGuide
         NSLayoutConstraint.activate([
-            bundleView.topAnchor.constraint(equalTo: guide.topAnchor, constant: -30),
-            bundleView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
-            bundleView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
-            bundleView.bottomAnchor.constraint(equalTo: guide.bottomAnchor)
+            collectionView.topAnchor.constraint(equalTo: guide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: guide.bottomAnchor,constant: -45)
         ])
     }
 
+    
 }
 
 

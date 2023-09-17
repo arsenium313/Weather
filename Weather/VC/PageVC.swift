@@ -56,12 +56,22 @@ class PageVC: UIPageViewController {
         }
     
         networkManager.downloadWeatherConditionArray(for: geoResponces) { [self] weatherResponces  in
-            fillPagesArray()
-            for (i, weatherHomeVC) in pages.enumerated() {
-                let geo = self.geoResponces[i]
-                weatherHomeVC.bundleView.setupUI(forGeo: geo, using: weatherResponces[i].0,
-                                                 weatherResponces[i].1)
+            // Создаешь тут массив pages сразу инициализировав с responce 
+//            fillPagesArray()
+//            for (i, weatherHomeVC) in pages.enumerated() {
+//                let geo = self.geoResponces[i]
+////                weatherHomeVC.bundleView.setupUI(forGeo: geo, using: weatherResponces[i].0,
+////                                                 weatherResponces[i].1)
+//            }
+            
+            for (i, weatherResponce) in weatherResponces.enumerated() {
+                let vc = WeatherHomeVC(geoResponce: geoResponces[i],
+                                       weatherResponce: weatherResponce.0,
+                                       airPollutionResponce: weatherResponce.1)
+                pages.append(vc)
             }
+            
+            
             setViewControllers([pages[initialPage]], direction: .forward, animated: false)
             /// Отправляем Notification
             let weatherDictionary: [String : [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]]
@@ -108,18 +118,20 @@ class PageVC: UIPageViewController {
     /// Создаём WeatherHomeVC, настраиваем его bundleView и кладем в массив pages
     public func appendPage(geo: GeoResponce, weatherResponce tuple:
                            (OpenWeatherResponce, OpenWeatherAirPollutionResponce)) {
-        let weatherVC = WeatherHomeVC()
-        weatherVC.bundleView.setupUI(forGeo: geo, using: tuple.0, tuple.1)
+        let weatherVC = WeatherHomeVC(geoResponce: geo,
+                                      weatherResponce: tuple.0,
+                                      airPollutionResponce: tuple.1)
+    //    weatherVC.bundleView.setupUI(forGeo: geo, using: tuple.0, tuple.1)
         self.pages.append(weatherVC)
     }
     
     /// Создаём WeatherHomeVC в количестве сохранённых в CD городов, и помещаем их в массив pages
     private func fillPagesArray() {
-        guard !geoResponces.isEmpty else { return }
-        for _ in 0...geoResponces.count - 1 {
-            let vc = WeatherHomeVC()
-            self.pages.append(vc)
-        }
+//        guard !geoResponces.isEmpty else { return }
+//        for _ in 0...geoResponces.count - 1 {
+//            let vc = WeatherHomeVC()
+//            self.pages.append(vc)
+//        }
     }
     
 
