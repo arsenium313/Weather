@@ -7,23 +7,11 @@
 
 import Foundation
 
-/// Список обязательных свойст для создания TemperatureView
-protocol TemperatureViewProtocol {
-    var currentTemp: Int { get }
-    var minTemp: Int { get }
-    var maxTemp: Int { get }
-    var feelsLikeTemp: Int { get }
-    var windSpeed: Int { get }
-    var windDirection: Int { get }
-    var description: String { get }
-}
-
-
-/**
- TemperatureView принимает объект этой модели для инициализации.
- - Note: Под каждый api  делать отдельный инициализатор
-*/
-struct TemperatureViewDataModel: TemperatureViewProtocol {
+/// Посредник между JSON и View.
+/// TemperatureView принимает эту модель для инициализации.
+/// Если в JSON поле nil, вернет значение по умолчанию
+struct TemperatureViewDataModel {
+    
     let currentTemp: Int
     let minTemp: Int
     let maxTemp: Int
@@ -32,9 +20,7 @@ struct TemperatureViewDataModel: TemperatureViewProtocol {
     let windDirection: Int
     let description: String
     
-    /**
-     Для сайта https://openweathermap.org
-     */
+    /// Для сайта https://openweathermap.org
     init(openWeatherResponce responce: OpenWeatherResponce) {
         self.currentTemp = Int(responce.tempAndPressure?.temp?.rounded(.awayFromZero) ?? 0)
         self.minTemp = Int(responce.tempAndPressure?.tempMin?.rounded(.awayFromZero) ?? 0)

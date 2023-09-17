@@ -45,7 +45,7 @@ class BundleView: UIView {
         
         /// Создаем view
         configureCityNameLabel(withGeo: geo)
-        configureTemperatureView(withModel: mainInfoViewDataModel)
+        createTemperatureView(with: TemperatureViewDataModel(openWeatherResponce: weatherResponce))
         configureSunriseSunsetView(withModel: sunriseSunsetViewDataModel)
         configureAirQualityView(withModel: airQualityViewDataModel)
     }
@@ -72,7 +72,7 @@ class BundleView: UIView {
 //        cityNameLabel.layer.borderWidth = 0.5
     }
     
-    private func configureTemperatureView(withModel model: TemperatureViewDataModel) {
+    private func createTemperatureView(with model: TemperatureViewDataModel) {
         temperatureView = TemperatureView(model)
         guard let view = temperatureView else { return }
         self.addSubview(view)

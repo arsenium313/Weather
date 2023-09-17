@@ -18,6 +18,7 @@ class TemperatureView: UIView {
     private var feelsLikeLabel: FeelsLikeLabel!
     private var windLabel: WindLabel!
     
+    /// Значения приходят из функции parseWeatherResponce
     private var degree: Int!
     private var descriptionWeather: String!
     private var minTemp: Int!
@@ -28,9 +29,9 @@ class TemperatureView: UIView {
     
     
     //MARK: - Init
-    init(_ weather: TemperatureViewDataModel) { // какие данные будут падать сюда? weatherResponce!
+    init(_ weatherData: TemperatureViewDataModel) {
         super.init(frame: .zero)
-        parseWeatherResponce(weather) // переименовать weather
+        parseWeatherData(weatherData)
         setupUI()
     }
     
@@ -41,16 +42,11 @@ class TemperatureView: UIView {
     
     //MARK: - SetupUI
     func setupUI() {
-        configureSelf()
         configureImageView()
         configureDegreesLabel()
         configureDescriptionLabel()
         configureFeelsLikeLabel()
         configureWindLabel()
-    }
-    
-    private func configureSelf() {
-
     }
     
     private func configureImageView() {
@@ -119,15 +115,16 @@ class TemperatureView: UIView {
     }
     
     
-    //MARK: - Parse JSON
-    private func parseWeatherResponce(_ responce: TemperatureViewProtocol) {
-        degree = responce.currentTemp
-        descriptionWeather = responce.description
-        minTemp = responce.minTemp
-        maxTemp = responce.maxTemp
-        feelsLikeTemp = responce.feelsLikeTemp
-        windSpeed = responce.windSpeed
-        windDirection = responce.windDirection
+    // MARK: - Parse JSON Model
+    /// Заполняет внутренние переменные данными из JSON
+    private func parseWeatherData(_ data: TemperatureViewDataModel) {
+        self.degree = data.currentTemp
+        self.descriptionWeather = data.description
+        self.minTemp = data.minTemp
+        self.maxTemp = data.maxTemp
+        self.feelsLikeTemp = data.feelsLikeTemp
+        self.windSpeed = data.windSpeed
+        self.windDirection = data.windDirection
     }
 
 }
