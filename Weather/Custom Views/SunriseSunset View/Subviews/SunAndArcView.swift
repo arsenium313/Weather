@@ -13,13 +13,16 @@ class SunAndArcView: UIView {
     var startTimeStamp: Int = 0
     var endTimeStamp: Int = 0
   
-    private let arcView = ArcView()
-    private let sunView = SunView()
+    let arcImage = UIImage(named: "arcImage")
+    private lazy var arcView = UIImageView(image: arcImage) //ArcView()
+    private let sunImage = UIImage(named: "sunImage")
+    private let sunView =  SunView()//UIImageView
     private var radius: CGFloat = 0
 
     
     //MARK: - Init
     override init(frame: CGRect) {
+      //  self.sunView = UIImageView(image: sunImage)
         super.init(frame: frame)
         self.addSubview(arcView)
         self.addSubview(sunView)
@@ -30,10 +33,19 @@ class SunAndArcView: UIView {
     }
     
     
+    // MARK: - SetupUI
+    private func setupUI() {
+        configureImageView()
+    }
+    private func configureImageView() {
+        
+    }
+    
     //MARK: - Drawing
     override func draw(_ rect: CGRect) {
+        print("sunAndArc 🎨")
         self.radius = rect.width - rect.width / 2 < rect.height ? (rect.width / 2) * 0.95 : rect.height * 0.95 // Коэфициент размера дуги относительно размера вью
-        arcView.radius = radius
+      //  arcView.radius = radius
         
         let sunSize = radius * 0.7 // Размер солнца
         sunView.bounds.size = CGSize(width: sunSize, height: sunSize)

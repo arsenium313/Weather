@@ -40,10 +40,10 @@ class WeatherHomeVC: UIViewController {
     
     
     // MARK: - View Life Circle
-    override func loadView() {
-        let view = GradientRootView()
-        self.view = view
-    }
+//    override func loadView() {
+//        let view = GradientRootView()
+//        self.view = view
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,7 +59,7 @@ class WeatherHomeVC: UIViewController {
     
     private func configureCollectionView() {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
-        collectionView.backgroundColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
+        collectionView.backgroundColor = .none
         
         self.view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false

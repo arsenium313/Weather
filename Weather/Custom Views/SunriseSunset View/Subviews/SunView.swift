@@ -9,7 +9,19 @@ import UIKit
 
 class SunView: UIView {
       
+  
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        print("Sun Init ✅")
+    }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    deinit {
+        print("Sun deinit ❌")
+    }
     //MARK: - Drawing
     override func draw(_ rect: CGRect) {
         drawSun(rect)
@@ -17,6 +29,7 @@ class SunView: UIView {
     
     ///Рисуем солнце и  его градиент
     func drawSun(_ rect: CGRect) {
+        print("Sun 🎨")
         let center = CGPoint(x: rect.midX, y: rect.midY)
         // Коэфициент размера круга относительно всего вью, следить чтобы влезли черточки:
         let radius = rect.width < rect.height ? center.x * 0.7 : center.y * 0.7
@@ -39,6 +52,7 @@ class SunView: UIView {
     
     /// Рисуем чёрточки на окружности солнца
     func drawSunDashes(_ rect: CGRect, radius: CGFloat) {
+        print("sunDashes 🎨")
         let dashesCount = 9
         let angle = CGFloat(Double.pi * 2) / CGFloat(dashesCount)
         
@@ -57,7 +71,7 @@ class SunView: UIView {
         replicatorLayer.instanceTransform = CATransform3DMakeRotation(angle, 0, 0, 1)
         replicatorLayer.addSublayer(dashLayer)
         replicatorLayer.frame = rect
-  
+        
         self.layer.addSublayer(replicatorLayer)
     }
     

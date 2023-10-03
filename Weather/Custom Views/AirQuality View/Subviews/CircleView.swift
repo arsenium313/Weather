@@ -10,6 +10,7 @@ import UIKit
 class CircleView: UIView {
 
     //MARK: Properties
+    private var isDrawn = false
     private let index: CGFloat
     
     
@@ -26,6 +27,8 @@ class CircleView: UIView {
     
     //MARK: - Drawing
     override func draw(_ rect: CGRect) {
+        guard !isDrawn else { return }
+        print("airQuality circle 🎨")
         let radius = rect.width / 2.3 // выявлено методом научного тыка
         let arcCenter = CGPoint(x: rect.midX, y: rect.maxY - radius * 0.7) // выявлено методом научного тыка
         let path = UIBezierPath(arcCenter: arcCenter, radius: radius, startAngle: .pi - 0.7, endAngle: 2 * .pi + 0.7 , clockwise: true) // выявлено методом научного тыка
@@ -59,6 +62,7 @@ class CircleView: UIView {
         gradientLayer.frame = rect
         gradientLayer.mask = colorCircleLayer
         self.layer.addSublayer(gradientLayer)
+        isDrawn = true
     }
     
 }

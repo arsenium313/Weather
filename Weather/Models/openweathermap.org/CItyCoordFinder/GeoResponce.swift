@@ -22,3 +22,4 @@ struct GeoResponce: Decodable {
         case localizedNames = "local_names"
     }
 }
+

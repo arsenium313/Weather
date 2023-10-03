@@ -56,19 +56,12 @@ class PageVC: UIPageViewController {
         }
     
         networkManager.downloadWeatherConditionArray(for: geoResponces) { [self] weatherResponces  in
-            // Создаешь тут массив pages сразу инициализировав с responce 
-//            fillPagesArray()
-//            for (i, weatherHomeVC) in pages.enumerated() {
-//                let geo = self.geoResponces[i]
-////                weatherHomeVC.bundleView.setupUI(forGeo: geo, using: weatherResponces[i].0,
-////                                                 weatherResponces[i].1)
-//            }
-            
             for (i, weatherResponce) in weatherResponces.enumerated() {
                 let vc = WeatherHomeVC(geoResponce: geoResponces[i],
                                        weatherResponce: weatherResponce.0,
                                        airPollutionResponce: weatherResponce.1)
                 pages.append(vc)
+                //vc.view.setNeedsLayout()
             }
             
             
@@ -231,6 +224,6 @@ extension PageVC: UIPageViewControllerDelegate {
         else { return }
         
         pageControl.currentPage = currentIndex
-        DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[currentIndex])
+       // DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[currentIndex])
     }
 }

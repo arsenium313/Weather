@@ -10,6 +10,7 @@ import UIKit
 class DegreesLabel: UIView {
 
     //MARK: Properties
+    private var isDrawn = false
     let degree: String
     
     
@@ -27,6 +28,8 @@ class DegreesLabel: UIView {
     
     //MARK: - Drawing
     override func draw(_ rect: CGRect) {
+        guard !isDrawn else { return }
+        print("degreeLabel 🎨")
         let font = UIFont(name: "Avenir-Black", size: 1)
         
         let textLayer = CATextLayer()
@@ -43,6 +46,7 @@ class DegreesLabel: UIView {
 
         gradientLayer.mask = textLayer
         self.layer.addSublayer(gradientLayer)
+        isDrawn = true
     }
    
 }

@@ -14,7 +14,14 @@ class ArcView: UIView {
 
     
     //MARK: - Drawing
+    
     override func draw(_ rect: CGRect) {
+//        guard let context = UIGraphicsGetCurrentContext() else {return}
+//        
+//        context.saveGState() // сохраняем настройки контекста
+//        context.restoreGState() // возвращаем к сохраненным настройкам
+        
+        print("arc 🎨")
         drawGradient(rect)
         drawArc(rect)
     }

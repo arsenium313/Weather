@@ -41,6 +41,7 @@ class SunriseSunsetView: UIView {
     
     //MARK: - Drawing
     override func draw(_ rect: CGRect) {
+        print("sunriseSunset gradient 🎨")
         // Рисуем градиент:
         let startColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.1607843137, alpha: 1)
         let endColor = #colorLiteral(red: 0.1843137255, green: 0.1921568627, blue: 0.2274509804, alpha: 1)
