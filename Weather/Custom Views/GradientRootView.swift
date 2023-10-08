@@ -18,7 +18,6 @@ class GradientRootView: UIView {
     
     //MARK: - Drawing
     override func draw(_ rect: CGRect) {
-      //  guard !isDrawn else { return }
         print("gradient 🎨")
         let startPoint = CGPoint(x: rect.minX, y: rect.minY)
         let endPoint = CGPoint(x: rect.minX, y: rect.maxY)

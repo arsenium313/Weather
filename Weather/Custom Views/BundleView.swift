@@ -59,7 +59,7 @@ class BundleView: UIView { // будет не нужен!!!!!!!!!!!!!!!!!!
             cityNameLabel.topAnchor.constraint(equalTo: self.topAnchor),
             cityNameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             cityNameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            cityNameLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.06)
+            cityNameLabel.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.1)
         ])
         
         cityNameLabel.font = UIFont.systemFont(ofSize: 30)

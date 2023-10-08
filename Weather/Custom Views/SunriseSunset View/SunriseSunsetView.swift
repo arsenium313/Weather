@@ -10,58 +10,37 @@ import UIKit
 class SunriseSunsetView: UIView {
  
     //MARK: Properties
+    private let backgroundImageView = UIImageView()
     private var titleLabel: UILabel!
     private var leftLabel: UILabel! // вынести в отдельный класс
     private var rightLabel: UILabel! // вынести в отдельный класс
-    let sunAndArcView: SunAndArcView!
+    private var sunAndArcView: SunAndArcView!
 
-    let startTimeStamp: Int
-    let endTimeStamp: Int
+    private let startTimeStamp: Int
+    private let endTimeStamp: Int
  
     enum SunCase {
         case sunrise
         case sunset
     }
     
+    
     //MARK: - Init
     init(_ weather: SunriseSunsetViewDataModel) { // переименовать weather
         self.startTimeStamp = weather.startTimeStamp
         self.endTimeStamp = weather.endTimeStamp
-        sunAndArcView = SunAndArcView(startTime: startTimeStamp,
-                                      endTime: endTimeStamp)
-    
         super.init(frame: .zero)
-//        setupUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-    //MARK: - Drawing
-    override func draw(_ rect: CGRect) {
-        print("sunriseSunset gradient 🎨")
-        // Рисуем градиент:
-        let startColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.1607843137, alpha: 1)
-        let endColor = #colorLiteral(red: 0.1843137255, green: 0.1921568627, blue: 0.2274509804, alpha: 1)
-        let colors = [startColor.cgColor, endColor.cgColor] as CFArray
-        
-        let startPoint = CGPoint(x: rect.minX, y: rect.minY)
-        let endPoint = CGPoint(x: rect.minX, y: rect.maxY)
-        
-        let context = UIGraphicsGetCurrentContext()
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0.0, 1.0])
-        
-        guard let gradient = gradient, let context = context else { return }
-        context.drawLinearGradient(gradient, start: startPoint, end: endPoint, options: [])
-    }
-    
-    
+
     //MARK: - SetupUI
     internal func setupUI() {
         configureSelf()
+        configureBackgroundImageView()
         configureMainLabel()
         configureLeftLabel()
         configureRightLabel()
@@ -72,6 +51,14 @@ class SunriseSunsetView: UIView {
         self.layer.cornerRadius = 10 // сделать динамически? чем больше вью, тем больше нужен радиус?
         self.layer.masksToBounds = true
     }
+    
+    private func configureBackgroundImageView() {
+        self.addSubview(backgroundImageView)
+        backgroundImageView.frame = self.bounds
+        let img = GradientViewBackgroundRenderer().createBackgroundImage(in: self.bounds)
+        backgroundImageView.image = img
+    }
+    
     
     private func configureMainLabel() {
         titleLabel = UILabel()
@@ -119,6 +106,8 @@ class SunriseSunsetView: UIView {
     }
     
     private func configureSunriseSunsetView() {
+        sunAndArcView = SunAndArcView(startTime: startTimeStamp,
+                                      endTime: endTimeStamp)
         self.addSubview(sunAndArcView)
         sunAndArcView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -128,7 +117,6 @@ class SunriseSunsetView: UIView {
             sunAndArcView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.62)
         ])
         sunAndArcView.layoutIfNeeded()
-//        print(sunAndArcView.bounds)
         sunAndArcView.configureView()
     }
     
@@ -140,12 +128,14 @@ class SunriseSunsetView: UIView {
         let attributedString = getAttributedStringFromTimeString(timeString, sunCase: sunCase)
         return attributedString
     }
+    
     ///Конвертирует timeStamp в  строку формата HH:MM
     private func getTimeStringFromTimeStamp(_ timeStamp: Int) -> String {
         let date = Date(timeIntervalSince1970: TimeInterval(timeStamp))
         let formatted = date.formatted(date: .omitted, time: .shortened)
         return formatted
     }
+    
     /**
      - Parameter timeString: Строка в формате HH:MM
      - Parameter sunCase: Определяет какую дополнительную строку вернет метод
