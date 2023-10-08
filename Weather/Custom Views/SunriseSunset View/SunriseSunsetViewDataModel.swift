@@ -7,18 +7,11 @@
 
 import Foundation
 
-/// Список обязательных свойст для создания SunriseSunsetView
-protocol SunriseSunsetViewProtocol {
-    var startTimeStamp: Int { get }
-    var endTimeStamp: Int { get }
-}
-
-
 /**
  SunriseSunsetView принимает объект этой модели для инициализации.
  - Note: Под каждый api  делать отдельный инициализатор
  */
-struct SunriseSunsetViewDataModel: SunriseSunsetViewProtocol {
+struct SunriseSunsetViewDataModel {
     let startTimeStamp: Int
     let endTimeStamp: Int
     

@@ -31,7 +31,7 @@ class SunriseSunsetView: UIView {
                                       endTime: endTimeStamp)
     
         super.init(frame: .zero)
-        setupUI()
+//        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -60,7 +60,7 @@ class SunriseSunsetView: UIView {
     
     
     //MARK: - SetupUI
-    private func setupUI() {
+    internal func setupUI() {
         configureSelf()
         configureMainLabel()
         configureLeftLabel()
@@ -128,7 +128,7 @@ class SunriseSunsetView: UIView {
             sunAndArcView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.62)
         ])
         sunAndArcView.layoutIfNeeded()
-        print(sunAndArcView.bounds)
+//        print(sunAndArcView.bounds)
         sunAndArcView.configureView()
     }
     

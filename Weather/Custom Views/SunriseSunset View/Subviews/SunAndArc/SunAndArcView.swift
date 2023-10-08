@@ -63,7 +63,7 @@ class SunAndArcView: UIView {
         sunImageView.image = sunImage
         
         // Позиционируем imageView на superView
-        let angle =  90 //findAngle(startTime: startTime, endTime: endTime)
+        let angle =  findAngle(startTime: startTime, endTime: endTime)
         let center = findPositionOfSunFor(angle: angle, radius: arcRadius)
         sunImageView.center = center
     }

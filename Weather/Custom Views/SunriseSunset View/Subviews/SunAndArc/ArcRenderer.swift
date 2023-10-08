@@ -28,7 +28,7 @@ struct ArcRenderer {
             //Рисуем пунктир
             let dashes: [CGFloat] = [6, 12]
             path.setLineDash(dashes, count: dashes.count, phase: 0)
-            #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1).setStroke()
+            #colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1).setStroke()
             path.stroke()
         }
         

@@ -8,7 +8,7 @@
 import UIKit
 
 /// Содержит subviews с погодой
-class BundleView: UIView {
+class BundleView: UIView { // будет не нужен!!!!!!!!!!!!!!!!!!
     
     // MARK: Properties
     private let cityNameLabel = UILabel()
