@@ -13,7 +13,7 @@ class SunriseSunsetView: UIView {
     private var titleLabel: UILabel!
     private var leftLabel: UILabel! // вынести в отдельный класс
     private var rightLabel: UILabel! // вынести в отдельный класс
-    let sunAndArcView = SunAndArcView()
+    let sunAndArcView: SunAndArcView!
 
     let startTimeStamp: Int
     let endTimeStamp: Int
@@ -27,9 +27,9 @@ class SunriseSunsetView: UIView {
     init(_ weather: SunriseSunsetViewDataModel) { // переименовать weather
         self.startTimeStamp = weather.startTimeStamp
         self.endTimeStamp = weather.endTimeStamp
-        sunAndArcView.startTimeStamp = startTimeStamp
-        sunAndArcView.endTimeStamp = endTimeStamp
-        
+        sunAndArcView = SunAndArcView(startTime: startTimeStamp,
+                                      endTime: endTimeStamp)
+    
         super.init(frame: .zero)
         setupUI()
     }
@@ -127,6 +127,9 @@ class SunriseSunsetView: UIView {
             sunAndArcView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             sunAndArcView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.62)
         ])
+        sunAndArcView.layoutIfNeeded()
+        print(sunAndArcView.bounds)
+        sunAndArcView.configureView()
     }
     
     

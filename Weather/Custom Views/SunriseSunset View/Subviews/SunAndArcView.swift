@@ -8,24 +8,21 @@
 import UIKit
 
 class SunAndArcView: UIView {
-
-    //MARK: Properties
-    var startTimeStamp: Int = 0
-    var endTimeStamp: Int = 0
-  
-    let arcImage = UIImage(named: "arcImage")
-    private lazy var arcView = UIImageView(image: arcImage) //ArcView()
-    private let sunImage = UIImage(named: "sunImage")
-    private let sunView =  SunView()//UIImageView
-    private var radius: CGFloat = 0
-
+    
+    // MARK: Properties
+    private let arcImageView = UIImageView()
+    private let sunImageView = UIImageView()
+    
+    private var startTime: Int
+    private var endTime: Int
+    private var arcRadius: CGFloat = 0
+    
     
     //MARK: - Init
-    override init(frame: CGRect) {
-      //  self.sunView = UIImageView(image: sunImage)
-        super.init(frame: frame)
-        self.addSubview(arcView)
-        self.addSubview(sunView)
+    init(startTime: Int, endTime: Int) {
+        self.startTime = startTime
+        self.endTime = endTime
+        super.init(frame: .zero)
     }
     
     required init?(coder: NSCoder) {
@@ -34,36 +31,66 @@ class SunAndArcView: UIView {
     
     
     // MARK: - SetupUI
+    public func configureView() {
+        arcRadius = findArcRadius()
+        setupUI()
+    }
+    
     private func setupUI() {
-        configureImageView()
-    }
-    private func configureImageView() {
-        
+        createArc()
+        createSun()
     }
     
-    //MARK: - Drawing
-    override func draw(_ rect: CGRect) {
-        print("sunAndArc 🎨")
-        self.radius = rect.width - rect.width / 2 < rect.height ? (rect.width / 2) * 0.95 : rect.height * 0.95 // Коэфициент размера дуги относительно размера вью
-      //  arcView.radius = radius
-        
-        let sunSize = radius * 0.7 // Размер солнца
-        sunView.bounds.size = CGSize(width: sunSize, height: sunSize)
+    private func createArc() {
+        self.addSubview(arcImageView)
+        arcImageView.frame = self.bounds
+        let arcImage = ArcRenderer().createArcImage(in: self.bounds,
+                                                    arcRadius: arcRadius)
+        arcImageView.image = arcImage
+    }
     
-        let angle = findAngle(startTime: startTimeStamp, endTime: endTimeStamp)
-        let center = configurePositionOfSunFor(angle)
-        sunView.center = center
+    private func createSun() {
+        self.addSubview(sunImageView)
+        /// Размер солнца относительно view
+        let sunSizeRatio = 0.3
+        let sunSize = self.bounds.width * sunSizeRatio
+        sunImageView.bounds.size = CGSize(width: sunSize,
+                                          height: sunSize)
 
-        arcView.frame = rect
+        let sunImage = SunRenderer().createSunImage(in: CGRect(origin: .zero,
+                                                            size: CGSize(width: sunSize,
+                                                                         height: sunSize)))
+        sunImageView.image = sunImage
+        
+        // Позиционируем imageView на superView
+        let angle =  90 //findAngle(startTime: startTime, endTime: endTime)
+        let center = findPositionOfSunFor(angle: angle, radius: arcRadius)
+        sunImageView.center = center
     }
-
     
-    //MARK: - Configure Position of the sun
+    
+    // MARK: - Positioning of the sun
+    
     /**
-        Рисуем положение солнца на дуге
+     Находим радиус дуги относительно размера view
+     - Returns: Размер арки, которая впишется в размеры view,
+     независимо что больше – ширина или высота view
+     */
+    private func findArcRadius() -> CGFloat {
+        let rect = self.bounds
+        /// Коэффициент радиуса арки относительно view
+        let sizeRatio: CGFloat = 0.95 // чем больше, тем больше радиус арки относительно view
+        return rect.width - rect.width / 2 < rect.height ?
+        (rect.width / 2) * sizeRatio : rect.height * sizeRatio
+    }
+    
+    /**
+        Находим положение солнца на дуге
         - Parameter angle: Угол от центра дуги в градусах, на котором отобразить солнце
+        - Parameter radius: Размер арки
+        - Returns: center точку координат
     */
-    private func configurePositionOfSunFor(_ angle: Int) -> CGPoint {
+    private func findPositionOfSunFor(angle: Int, radius: CGFloat) -> CGPoint {
         // sin() и cos() принимают угол в радианах, в градусы переводим вручную
         let x = self.bounds.midX + radius * cos(CGFloat(angle) * (.pi / 180))
         let y = self.bounds.maxY - radius * sin(CGFloat(angle) * (.pi / 180))
@@ -81,5 +108,4 @@ class SunAndArcView: UIView {
         let angle = 180 * ratio
         return Int(angle)
     }
-    
 }

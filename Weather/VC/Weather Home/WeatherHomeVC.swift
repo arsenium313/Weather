@@ -70,6 +70,7 @@ class WeatherHomeVC: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: guide.bottomAnchor,constant: -45)
         ])
+        self.view.layoutIfNeeded()
     }
 
     
