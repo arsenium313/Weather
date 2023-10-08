@@ -66,7 +66,9 @@ class CustomCell: UICollectionViewCell {
     private func configureAirPollutionView(_ responce: OpenWeatherAirPollutionResponce) {
         let dataModel = AirQualityViewDataModel(openWeatherResponce: responce)
         let customView = AirQualityView(dataModel: dataModel)
+        
         constraints(view: customView)
+        customView.configureView()
     }
     
     private func configureBlankView() {

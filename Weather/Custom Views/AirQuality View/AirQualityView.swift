@@ -10,9 +10,9 @@ import UIKit
 class AirQualityView: UIView {
 
     //MARK: Properties
-    private var isDrawn = false
-    private let index: CGFloat  //  от 0 до 1  из JSON
+    private let index: CGFloat  //  от 0 до 1? а не 5?  из JSON
     
+    private let backgroundImageView = UIImageView()
     private var indexLabel: IndexLabel! //  индекс и строка описания под ним
     private var circleView: CircleView! // цветной круг
     private var nameLabel: UILabel!
@@ -22,7 +22,6 @@ class AirQualityView: UIView {
     init(dataModel: AirQualityViewDataModel) {
         self.index = CGFloat(dataModel.index)
         super.init(frame: .zero)
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -31,8 +30,9 @@ class AirQualityView: UIView {
     
     
     //MARK: - SetupUI
-    private func setupUI() {
+    internal func setupUI() {
         setupSelf()
+        configureBackgroundImageView()
         configureCircleView()
         configureIndexLabel()
         configureNameLabel()
@@ -41,6 +41,13 @@ class AirQualityView: UIView {
     private func setupSelf() {
         self.clipsToBounds = true
         self.layer.cornerRadius = 15 // сделать автоматически
+    }
+    
+    private func configureBackgroundImageView() {
+        self.addSubview(backgroundImageView)
+        backgroundImageView.frame = self.bounds
+        let img = GradientViewBackgroundRenderer().createBackgroundImage(in: self.bounds)
+        backgroundImageView.image = img
     }
     
     private func configureCircleView() {
@@ -53,6 +60,8 @@ class AirQualityView: UIView {
             circleView.heightAnchor.constraint(equalTo: self.heightAnchor),
             circleView.widthAnchor.constraint(equalTo: self.widthAnchor)
         ])
+        circleView.layoutIfNeeded()
+        circleView.setupUI()
     }
     
     private func configureIndexLabel() {
@@ -79,29 +88,6 @@ class AirQualityView: UIView {
         
         ])
     }
-    
-    
-    //MARK: - Drawing
-    override func draw(_ rect: CGRect) {
-        guard !isDrawn else { return }
-        print("airQuality gradient 🎨")
-        /// Рисуем градиент:
-        let startColor = #colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.1607843137, alpha: 1)
-        let endColor = #colorLiteral(red: 0.1843137255, green: 0.1921568627, blue: 0.2274509804, alpha: 1)
-        let colors = [startColor.cgColor, endColor.cgColor] as CFArray
-        
-        let startPoint = CGPoint(x: rect.minX, y: rect.minY)
-        let endPoint = CGPoint(x: rect.minX, y: rect.maxY)
-        
-        let context = UIGraphicsGetCurrentContext()
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let gradient = CGGradient(colorsSpace: colorSpace, colors: colors, locations: [0.0, 1.0])
-        
-        guard let gradient = gradient, let context = context else { return }
-        context.drawLinearGradient(gradient, start: startPoint, end: endPoint, options: [])
-        isDrawn = true
-    }
-
 }
 
 

@@ -6,10 +6,11 @@
 //
 
 import Foundation
-
-/// Посредник между JSON и View.
-/// TemperatureView принимает эту модель для инициализации.
-/// Если в JSON поле nil, вернет значение по умолчанию
+/**
+ Посредник между JSON и View.
+ TemperatureView принимает эту модель для инициализации.
+ Если в JSON поле nil, вернет значение по умолчанию
+ */
 struct TemperatureViewDataModel {
     
     let currentTemp: Int

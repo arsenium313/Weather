@@ -10,7 +10,7 @@ import UIKit
 class IndexLabel: UILabel {
 
     //MARK: Properties
-    let index: Int
+    private let index: Int
     
     
     //MARK: - Init

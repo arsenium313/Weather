@@ -11,5 +11,4 @@ extension SunriseSunsetView: ConfigureViewProtocol {
    public func configureView() {
         setupUI()
     }
-    
 }
