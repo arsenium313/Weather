@@ -38,20 +38,15 @@ class CustomCell: UICollectionViewCell {
     
     // MARK: - Configure Views
     private func configureTitleView(_ responce: GeoResponce) {
-        let customView = UILabel()
-        customView.text = responce.nameOfLocation
-        customView.tintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        customView.adjustsFontSizeToFitWidth = true
-        customView.textAlignment = .center
-        customView.font = .systemFont(ofSize: 100)
-        customView.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        let dataModel = CityNameViewDataModel(openWeatherResponce: responce)
+        let customView = CityNameView(dataModel: dataModel)
         constraints(view: customView)
+        customView.configureView()
     }
     
     private func configureWeatherView(_ responce: OpenWeatherResponce) {
         let dataModel = TemperatureViewDataModel(openWeatherResponce: responce)
         let customView = TemperatureView(dataModel)
-        customView.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         constraints(view: customView)
     }
     

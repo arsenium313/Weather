@@ -1,8 +1,8 @@
 //
-//  AirQualityView+ConfigureViewProtocol.swift
+//  CityNameView+ConfigureViewProtocol.swift
 //  Weather
 //
-//  Created by Арсений Кухарев on 08.10.2023.
+//  Created by Арсений Кухарев on 09.10.2023.
 //
 
 import Foundation
@@ -12,7 +12,7 @@ import Foundation
  2.  Ячейка позиционирует view
  3.  Вручную запускаем создание UI у subview когда знаем bounds этих subview
  */
-extension AirQualityView: ConfigureViewProtocol {
+extension CityNameView: ConfigureViewProtocol {
     public func configureView() {
         setupUI()
     }
