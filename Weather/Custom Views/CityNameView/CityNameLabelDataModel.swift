@@ -12,7 +12,7 @@ import Foundation
  AirQualityView принимает эту модель для инициализации.
  Если в JSON поле nil, вернет значение по умолчанию
  */
-struct CityNameViewDataModel {
+struct CityNameLabelDataModel {
     let cityName: String
     
     /// Для сайта https://openweathermap.org

@@ -38,8 +38,8 @@ class CustomCell: UICollectionViewCell {
     
     // MARK: - Configure Views
     private func configureTitleView(_ responce: GeoResponce) {
-        let dataModel = CityNameViewDataModel(openWeatherResponce: responce)
-        let customView = CityNameView(dataModel: dataModel)
+        let dataModel = CityNameLabelDataModel(openWeatherResponce: responce)
+        let customView = CityNameLabel(dataModel: dataModel)
         constraints(view: customView)
         customView.configureView()
     }
@@ -48,6 +48,7 @@ class CustomCell: UICollectionViewCell {
         let dataModel = TemperatureViewDataModel(openWeatherResponce: responce)
         let customView = TemperatureView(dataModel)
         constraints(view: customView)
+        customView.configureView()
     }
     
     private func configureSunView(_ responce: OpenWeatherResponce) {

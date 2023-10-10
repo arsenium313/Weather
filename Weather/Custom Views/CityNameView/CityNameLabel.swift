@@ -1,21 +1,21 @@
 //
-//  DegreesLabel.swift
-//  GradientTest
+//  CityNameView.swift
+//  Weather
 //
-//  Created by Арсений Кухарев on 16.07.2023.
+//  Created by Арсений Кухарев on 09.10.2023.
 //
 
 import UIKit
 
-class DegreesLabel: UILabel {
+class CityNameLabel: UILabel {
 
     //MARK: Properties
-   private let degree: String
+    private let cityName: String
     
     
     //MARK: - Init
-    init(degree: Int) {
-        self.degree = String(degree)
+    init(dataModel: CityNameLabelDataModel) {
+        self.cityName = dataModel.cityName
         super.init(frame: .zero)
     }
     
@@ -33,20 +33,20 @@ class DegreesLabel: UILabel {
         self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         self.layer.borderWidth = 1
         
-        self.text = degree + "°"
+        self.text = cityName
         self.adjustsFontSizeToFitWidth = true
         self.textAlignment = .center
         self.font = .systemFont(ofSize: 100)
         self.textColor = UIColor.createGradientColor(in: self.bounds,
-                                                     for: [#colorLiteral(red: 0.5725490451, green: 0, blue: 0.2313725501, alpha: 1).cgColor,
-                                                           #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1).cgColor])
+                                                     for: [#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1).cgColor,
+                                                           #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1).cgColor])
     }
-   
 }
 
+
 //MARK: - ConfigureViewProtocol
-extension DegreesLabel: ConfigureViewProtocol {
-    func configureView() {
+extension CityNameLabel: ConfigureViewProtocol {
+    public func configureView() {
         setupUI()
     }
 }

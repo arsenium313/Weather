@@ -25,10 +25,20 @@ class CircleView: UIImageView {
     
     
     // MARK: - SetupUI
-    public func setupUI() {
+    private func setupUI() {
         let img = CircleRenderer().createCircle(in: self.bounds,
                                                     forIndex: index)
         self.image = img
     }
         
+}
+
+
+//MARK: - ConfigureViewProtocol
+extension CircleView: ConfigureViewProtocol {
+    public func configureView() {
+        setupUI()
+    }
+    
+    
 }

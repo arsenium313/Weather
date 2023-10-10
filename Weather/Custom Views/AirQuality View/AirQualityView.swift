@@ -61,7 +61,7 @@ class AirQualityView: UIView {
             circleView.widthAnchor.constraint(equalTo: self.widthAnchor)
         ])
         circleView.layoutIfNeeded()
-        circleView.setupUI()
+        circleView.configureView()
     }
     
     private func configureIndexLabel() {
@@ -85,9 +85,14 @@ class AirQualityView: UIView {
         NSLayoutConstraint.activate([
             nameLabel.leadingAnchor.constraint(equalTo: self.layoutMarginsGuide.leadingAnchor),
             nameLabel.topAnchor.constraint(equalTo: self.layoutMarginsGuide.topAnchor)
-        
         ])
     }
 }
 
 
+//MARK: - ConfigureViewProtocol
+extension AirQualityView: ConfigureViewProtocol {
+    public func configureView() {
+        setupUI()
+    }
+}

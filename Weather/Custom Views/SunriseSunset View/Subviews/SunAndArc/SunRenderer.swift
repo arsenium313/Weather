@@ -23,12 +23,13 @@ struct SunRenderer {
         
         let gradient = CGGradient(colorsSpace: nil,
                                   colors: [#colorLiteral(red: 0.9977391362, green: 0.7576897144, blue: 0, alpha: 1).cgColor, #colorLiteral(red: 0.9983323216, green: 0.5765205026, blue: 0, alpha: 1).cgColor] as CFArray,
-                                  locations: [0, 1])
+                                  locations: nil)
         
         let renderer = UIGraphicsImageRenderer(size: rendererSize)
         
         let img = renderer.image { uiContext in
             let ctx = uiContext.cgContext
+            
             // Рисуем круг
             ctx.addEllipse(in: CGRect(origin: sunOrigin, size: sunSize))
             ctx.saveGState()
@@ -38,6 +39,7 @@ struct SunRenderer {
                                    end: CGPoint(x: rect.midX, y: rect.maxY),
                                    options: .drawsBeforeStartLocation)
             ctx.restoreGState()
+            
             // Рисуем лучи
             let dashLayer = createSunDashesLayer(in: rect)
             dashLayer.render(in: ctx)

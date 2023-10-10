@@ -9,30 +9,35 @@ import UIKit
 
 class TemperatureView: UIView {
 
-    //MARK: - Properties
+    //MARK: Properties
     private lazy var guide = self.layoutMarginsGuide
     
-    private var weatherImageView: UIImageView!
+    private let weatherImageView = UIImageView() // будет кастомный
     private var degreesLabel: DegreesLabel!
     private var descriptionLabel: DescriptionWeatherLabel!
     private var feelsLikeLabel: FeelsLikeLabel!
     private var windLabel: WindLabel!
     
-    /// Значения приходят из функции parseWeatherResponce
-    private var degree: Int!
-    private var descriptionWeather: String!
-    private var minTemp: Int!
-    private var maxTemp: Int!
-    private var feelsLikeTemp: Int!
-    private var windSpeed: Int!
-    private var windDirection: Int!
+    private let degree: Int
+    private let descriptionWeather: String
+    private let minTemp: Int
+    private let maxTemp: Int
+    private let feelsLikeTemp: Int
+    private let windSpeed: Int
+    private let windDirection: Int
     
     
     //MARK: - Init
-    init(_ weatherData: TemperatureViewDataModel) {
+    init(_ dataModel: TemperatureViewDataModel) {
+        self.degree = dataModel.currentTemp
+        self.descriptionWeather = dataModel.description
+        self.minTemp = dataModel.minTemp
+        self.maxTemp = dataModel.maxTemp
+        self.feelsLikeTemp = dataModel.feelsLikeTemp
+        self.windSpeed = dataModel.windSpeed
+        self.windDirection = dataModel.windDirection
+        
         super.init(frame: .zero)
-        parseWeatherData(weatherData)
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -41,7 +46,7 @@ class TemperatureView: UIView {
     
     
     //MARK: - SetupUI
-    func setupUI() {
+    private func setupUI() {
         configureImageView()
         configureDegreesLabel()
         configureDescriptionLabel()
@@ -50,8 +55,6 @@ class TemperatureView: UIView {
     }
     
     private func configureImageView() {
-        let image = UIImage(named: "icon_1")
-        weatherImageView = UIImageView(image: image)
         self.addSubview(weatherImageView)
         weatherImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -60,45 +63,52 @@ class TemperatureView: UIView {
             weatherImageView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.7),
             weatherImageView.widthAnchor.constraint(equalTo: weatherImageView.heightAnchor)
         ])
-      //  weatherImageView.backgroundColor = .orange
+        
+        let img = UIImage(named: "icon_1")
+        weatherImageView.image = img
     }
     
     private func configureDegreesLabel() {
         degreesLabel = DegreesLabel(degree: degree)
         self.addSubview(degreesLabel)
         degreesLabel.translatesAutoresizingMaskIntoConstraints = false
+       
         NSLayoutConstraint.activate([
             degreesLabel.leadingAnchor.constraint(equalTo: weatherImageView.trailingAnchor),
             degreesLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             degreesLabel.topAnchor.constraint(equalTo: self.topAnchor),
             degreesLabel.heightAnchor.constraint(equalTo: weatherImageView.heightAnchor, multiplier: 0.7),
         ])
-      //  degreesLabel.backgroundColor = .blue
+     
+        degreesLabel.layoutIfNeeded()
+        degreesLabel.configureView()
     }
     
     private func configureDescriptionLabel() {
         descriptionLabel = DescriptionWeatherLabel(text: descriptionWeather)
         self.addSubview(descriptionLabel)
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             descriptionLabel.leadingAnchor.constraint(equalTo: weatherImageView.trailingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             descriptionLabel.topAnchor.constraint(equalTo: degreesLabel.bottomAnchor),
             descriptionLabel.heightAnchor.constraint(equalTo: weatherImageView.heightAnchor, multiplier: 0.3)
         ])
-       // descriptionLabel.backgroundColor = .red
     }
     
     private func configureFeelsLikeLabel() {
-        feelsLikeLabel = FeelsLikeLabel(minTemp: minTemp, maxTemp: maxTemp, feelsLikeTemp: feelsLikeTemp)
+        feelsLikeLabel = FeelsLikeLabel(minTemp: minTemp, 
+                                        maxTemp: maxTemp,
+                                        feelsLikeTemp: feelsLikeTemp)
         self.addSubview(feelsLikeLabel)
         feelsLikeLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            feelsLikeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor,constant: 10),
+            feelsLikeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
             feelsLikeLabel.topAnchor.constraint(equalTo: weatherImageView.bottomAnchor),
             feelsLikeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor),
         ])
-        //feelsLikeLabel.backgroundColor = .green
+     
     }
     
     private func configureWindLabel() {
@@ -113,19 +123,14 @@ class TemperatureView: UIView {
         ])
        // windLabel.backgroundColor = .purple
     }
-    
-    
-    // MARK: - Parse JSON Model
-    /// Заполняет внутренние переменные данными из JSON
-    private func parseWeatherData(_ data: TemperatureViewDataModel) {
-        self.degree = data.currentTemp
-        self.descriptionWeather = data.description
-        self.minTemp = data.minTemp
-        self.maxTemp = data.maxTemp
-        self.feelsLikeTemp = data.feelsLikeTemp
-        self.windSpeed = data.windSpeed
-        self.windDirection = data.windDirection
-    }
 
 }
 
+//MARK: - ConfigureViewProtocol
+extension TemperatureView: ConfigureViewProtocol {
+    public func configureView() {
+        setupUI()
+    }
+    
+    
+}

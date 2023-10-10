@@ -24,6 +24,7 @@ class IndexLabel: UILabel {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
@@ -38,7 +39,7 @@ class IndexLabel: UILabel {
     
     
     //MARK: - Work with attributed string
-    func getAttributedStringFor(_ index: Int) -> NSMutableAttributedString {
+    private func getAttributedStringFor(_ index: Int) -> NSMutableAttributedString {
         let indexString = String(index) + "\n"
         let indexAttributedString = NSAttributedString(string: indexString, attributes: [
             NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1),
@@ -57,7 +58,7 @@ class IndexLabel: UILabel {
         return totalString
     }
     
-    func getAqiCategoryFor(_ index: Int) -> String {
+    private func getAqiCategoryFor(_ index: Int) -> String {
         switch index {
         case 1: return "Good"
         case 2: return "Fair"

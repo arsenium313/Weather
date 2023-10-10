@@ -31,6 +31,9 @@ class DescriptionWeatherLabel: UILabel {
     }
     
     private func configureSelf() {
+        self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        self.layer.borderWidth = 1
+        
         self.text = descriptionText
         self.textColor = #colorLiteral(red: 1, green: 0.9999999404, blue: 1, alpha: 1)
         
@@ -38,13 +41,7 @@ class DescriptionWeatherLabel: UILabel {
         self.font = font
     }
     
+
     
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
 
 }
