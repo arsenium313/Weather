@@ -24,7 +24,6 @@ class CityChooserVC: UITableViewController {
     
     //MARK: - Init
     init() {
-        print("CityChooserVC init ✅")
         super.init(nibName: nil, bundle: nil)
         notificationCenter.addObserver(self, selector: #selector(reseveNotification(_:)),
                                        name: .addGeoResponce, object: nil)
@@ -36,11 +35,7 @@ class CityChooserVC: UITableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
-        print("CityChooserVC deinit ❌")
-    }
-    
-    
+
     //MARK: - View Life Circle
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -32,7 +32,6 @@ class CustomCell: UICollectionViewCell {
     
     private func constraints(view: UIView) {
         self.contentView.addSubview(view)
-        print("cell contentView.bounds = \(self.contentView.bounds) 🐥")
         view.frame = self.contentView.bounds
     }
     

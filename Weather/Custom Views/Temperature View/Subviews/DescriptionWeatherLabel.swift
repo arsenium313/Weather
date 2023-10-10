@@ -31,9 +31,6 @@ class DescriptionWeatherLabel: UILabel {
     }
     
     private func configureSelf() {
-        self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        self.layer.borderWidth = 1
-        
         self.text = descriptionText
         self.textColor = #colorLiteral(red: 1, green: 0.9999999404, blue: 1, alpha: 1)
         

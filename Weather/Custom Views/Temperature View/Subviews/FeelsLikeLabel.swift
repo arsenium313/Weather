@@ -35,9 +35,6 @@ class FeelsLikeLabel: UILabel {
     }
     
     private func configureSelf() {
-        self.layer.borderColor = #colorLiteral(red: 0.1764705926, green: 0.01176470611, blue: 0.5607843399, alpha: 1)
-        self.layer.borderWidth = 1
-        
         self.attributedText = getAttributedString()
     }
     

@@ -30,9 +30,6 @@ class DegreesLabel: UILabel {
     }
     
     private func configureSelf() {
-        self.layer.borderColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
-        self.layer.borderWidth = 1
-        
         self.text = degree + "°"
         self.adjustsFontSizeToFitWidth = true
         self.textAlignment = .center

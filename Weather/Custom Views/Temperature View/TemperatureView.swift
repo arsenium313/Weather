@@ -10,7 +10,7 @@ import UIKit
 class TemperatureView: UIView {
 
     //MARK: Properties
-    private let weatherImageView = UIImageView() // будет кастомный
+    private var weatherImageView: WeatherImageView!
     private var degreesLabel: DegreesLabel!
     private var descriptionLabel: DescriptionWeatherLabel!
     private var feelsLikeLabel: FeelsLikeLabel!
@@ -18,6 +18,7 @@ class TemperatureView: UIView {
     
     private let degree: Int
     private let descriptionWeather: String
+    private let imageID: Int
     private let minTemp: Int
     private let maxTemp: Int
     private let feelsLikeTemp: Int
@@ -34,7 +35,7 @@ class TemperatureView: UIView {
         self.feelsLikeTemp = dataModel.feelsLikeTemp
         self.windSpeed = dataModel.windSpeed
         self.windDirection = dataModel.windDirection
-        
+        self.imageID = dataModel.imageID
         super.init(frame: .zero)
     }
     
@@ -53,19 +54,15 @@ class TemperatureView: UIView {
     }
     
     private func configureImageView() {
+        weatherImageView = WeatherImageView(withId: imageID)
         self.addSubview(weatherImageView)
         weatherImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             weatherImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             weatherImageView.topAnchor.constraint(equalTo: self.topAnchor),
             weatherImageView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.7),
-            weatherImageView.widthAnchor.constraint(equalTo: weatherImageView.heightAnchor)
+            weatherImageView.widthAnchor.constraint(equalTo: self.widthAnchor,multiplier: 0.4)
         ])
-        let img = UIImage(named: "icon_1")
-        weatherImageView.image = img
-        
-        weatherImageView.layer.borderWidth = 1
-        weatherImageView.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
     }
     
     private func configureDegreesLabel() {
