@@ -52,11 +52,11 @@ class WeatherHomeVC: UIViewController {
         collectionView = UICollectionView(frame: .zero, 
                                           collectionViewLayout: createLayout())
         collectionView.backgroundColor = .none
-        
+        collectionView.showsVerticalScrollIndicator = false
         self.view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        let guide = self.view.layoutMarginsGuide
         
+        let guide = self.view.layoutMarginsGuide
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: guide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),

@@ -17,7 +17,6 @@ class DescriptionWeatherLabel: UILabel {
     init(text: String) {
         self.descriptionText = text
         super.init(frame: .zero)
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -31,15 +30,22 @@ class DescriptionWeatherLabel: UILabel {
     }
     
     private func configureSelf() {
-        self.text = descriptionText
-        self.textAlignment = .center
-        self.textColor = #colorLiteral(red: 1, green: 0.9999999404, blue: 1, alpha: 1)
+        let fontSize = self.bounds.height
+        let font = UIFont(name: "PingFangTC-Ultralight", size: fontSize)
         
-        let font = UIFont(name: "PingFangTC-Ultralight", size: 25)
+        self.text = descriptionText
+        self.adjustsFontSizeToFitWidth = true
+        self.textColor = #colorLiteral(red: 1, green: 0.9999999404, blue: 1, alpha: 1)
+        self.textAlignment = .center
         self.font = font
     }
-    
 
-    
+}
 
+
+//MARK: - ConfigureViewProtocol
+extension DescriptionWeatherLabel: ConfigureViewProtocol {
+   public func configureView() {
+        setupUI()
+    }
 }

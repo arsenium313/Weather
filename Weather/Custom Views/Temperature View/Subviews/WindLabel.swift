@@ -8,7 +8,7 @@
 import UIKit
 
 class WindLabel: UILabel {
-
+    
     //MARK: Properties
     private let speed: Int
     private let direction: Int
@@ -19,7 +19,6 @@ class WindLabel: UILabel {
         self.speed = speed
         self.direction = direction
         super.init(frame: .zero)
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -30,29 +29,44 @@ class WindLabel: UILabel {
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
-        self.textAlignment = .right
     }
     
     private func configureSelf() {
+        self.textAlignment = .right
         self.attributedText = getAttributedString()
     }
-
     
-    //MARK: - Work with text
+}
+
+
+//MARK: - ConfigureViewProtocol
+extension WindLabel: ConfigureViewProtocol {
+    public func configureView() {
+        setupUI()
+    }
+}
+
+
+//MARK: - Work with text
+extension WindLabel {
     ///Возвращает строку формата – "Wind"  / Скорость ветра /  Направление ветра
     private func getAttributedString() -> NSMutableAttributedString {
+        let fontSize = self.bounds.height * 0.3
         let firstString = "Wind "
         let secondString = String(speed) + " M/S "
         let thirdString = getStringDirection()
         
         let firstAttributedString = NSAttributedString(string: firstString, attributes: [
-            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1)
+            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1),
+            .font : UIFont.systemFont(ofSize: fontSize)
         ])
         let secondAttributedString = NSAttributedString(string: secondString, attributes: [
-            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1),
+            .font : UIFont.systemFont(ofSize: fontSize)
         ])
         let thirdAttributedString = NSAttributedString(string: thirdString, attributes: [
-            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1)
+            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1),
+            .font : UIFont.systemFont(ofSize: fontSize)
         ])
         
         let mainString = NSMutableAttributedString()
@@ -84,3 +98,4 @@ class WindLabel: UILabel {
         }
     }
 }
+

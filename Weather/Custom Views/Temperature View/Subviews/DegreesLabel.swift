@@ -31,9 +31,9 @@ class DegreesLabel: UILabel {
     
     private func configureSelf() {
         self.text = String(degree) + "°"
-        self.adjustsFontSizeToFitWidth = true
         self.textAlignment = .center
-        self.font = .boldSystemFont(ofSize: 100)
+        let fontSize = self.bounds.height
+        self.font = .boldSystemFont(ofSize: fontSize)
         self.textColor = UIColor.createGradientColor(in: self.bounds,
                                                      for: getColors(for: degree))
     }
@@ -43,7 +43,7 @@ class DegreesLabel: UILabel {
 
 //MARK: - ConfigureViewProtocol
 extension DegreesLabel: ConfigureViewProtocol {
-    func configureView() {
+    public func configureView() {
         setupUI()
     }
 }

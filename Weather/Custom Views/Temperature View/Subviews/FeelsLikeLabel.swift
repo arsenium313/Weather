@@ -21,7 +21,6 @@ class FeelsLikeLabel: UILabel {
         self.maxTemp = maxTemp
         self.feelsLikeTemp = feelsLikeTemp
         super.init(frame: .zero)
-        setupUI()
     }
     
     required init?(coder: NSCoder) {
@@ -36,12 +35,14 @@ class FeelsLikeLabel: UILabel {
     
     private func configureSelf() {
         self.attributedText = getAttributedString()
-        self.textAlignment = .right
+        self.adjustsFontSizeToFitWidth = true
+        self.textAlignment = .left
     }
     
     
     //MARK: - Work with text
     private func getAttributedString() -> NSMutableAttributedString {
+        let fontSize = self.bounds.height * 0.3
         let minString = String(minTemp)
         let maxString = String(maxTemp)
         let feelsLikeString = String(feelsLikeTemp)
@@ -50,16 +51,26 @@ class FeelsLikeLabel: UILabel {
         let rightString = feelsLikeString  + "°"
         
         let leftAttributedString = NSAttributedString(string: leftString, attributes: [
-            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1)
+            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1),
+            .font : UIFont.systemFont(ofSize: fontSize)
         ])
         
         let rightAttributedString = NSAttributedString(string: rightString, attributes: [
-            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            NSAttributedString.Key.foregroundColor : #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1),
+            .font : UIFont.systemFont(ofSize: fontSize)
         ])
         
         let mainString = NSMutableAttributedString()
         mainString.append(leftAttributedString)
         mainString.append(rightAttributedString)
         return mainString
+    }
+}
+
+
+//MARK: - ConfigureViewProtocol
+extension FeelsLikeLabel: ConfigureViewProtocol {
+    public func configureView() {
+        setupUI()
     }
 }
