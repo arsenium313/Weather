@@ -26,7 +26,7 @@ class WeatherHomeVC: UIViewController {
         self.geoResponce = geoResponce
         self.weatherResponce = weatherResponce
         self.airPollutionResponce = airPollutionResponce
-        print("WeatherHomeVC Init ✅")
+
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -34,17 +34,8 @@ class WeatherHomeVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
-        print("WeatherHomeVC deinit ❌")
-    }
-    
     
     // MARK: - View Life Circle
-//    override func loadView() {
-//        let view = GradientRootView()
-//        self.view = view
-//    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -58,21 +49,21 @@ class WeatherHomeVC: UIViewController {
     }
     
     private func configureCollectionView() {
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
+        collectionView = UICollectionView(frame: .zero, 
+                                          collectionViewLayout: createLayout())
         collectionView.backgroundColor = .none
         
         self.view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         let guide = self.view.layoutMarginsGuide
+        
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: guide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: guide.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: guide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: guide.bottomAnchor,constant: -45)
         ])
-        self.view.layoutIfNeeded()
     }
-
     
 }
 

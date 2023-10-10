@@ -10,8 +10,6 @@ import UIKit
 class TemperatureView: UIView {
 
     //MARK: Properties
-    private lazy var guide = self.layoutMarginsGuide
-    
     private let weatherImageView = UIImageView() // будет кастомный
     private var degreesLabel: DegreesLabel!
     private var descriptionLabel: DescriptionWeatherLabel!
@@ -63,9 +61,11 @@ class TemperatureView: UIView {
             weatherImageView.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.7),
             weatherImageView.widthAnchor.constraint(equalTo: weatherImageView.heightAnchor)
         ])
-        
         let img = UIImage(named: "icon_1")
         weatherImageView.image = img
+        
+        weatherImageView.layer.borderWidth = 1
+        weatherImageView.layer.borderColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
     }
     
     private func configureDegreesLabel() {
@@ -104,7 +104,7 @@ class TemperatureView: UIView {
         self.addSubview(feelsLikeLabel)
         feelsLikeLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            feelsLikeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 10),
+            feelsLikeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             feelsLikeLabel.topAnchor.constraint(equalTo: weatherImageView.bottomAnchor),
             feelsLikeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor),
         ])
@@ -121,16 +121,14 @@ class TemperatureView: UIView {
             windLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
             windLabel.topAnchor.constraint(equalTo: weatherImageView.bottomAnchor)
         ])
-       // windLabel.backgroundColor = .purple
     }
-
+    
 }
+
 
 //MARK: - ConfigureViewProtocol
 extension TemperatureView: ConfigureViewProtocol {
     public func configureView() {
         setupUI()
     }
-    
-    
 }
