@@ -36,17 +36,18 @@ class FeelsLikeLabel: UILabel {
     
     private func configureSelf() {
         self.attributedText = getAttributedString()
+        self.textAlignment = .right
     }
     
     
     //MARK: - Work with text
-    func getAttributedString() -> NSMutableAttributedString {
+    private func getAttributedString() -> NSMutableAttributedString {
         let minString = String(minTemp)
         let maxString = String(maxTemp)
         let feelsLikeString = String(feelsLikeTemp)
         
-        let leftString = minString + "º/" + maxString + "º | Feels like "
-        let rightString = feelsLikeString + "º  |  "
+        let leftString = minString + "°/" + maxString + "° | Feels like "
+        let rightString = feelsLikeString  + "°"
         
         let leftAttributedString = NSAttributedString(string: leftString, attributes: [
             NSAttributedString.Key.foregroundColor : #colorLiteral(red: 0.6078431373, green: 0.6196078431, blue: 0.6784313725, alpha: 1)

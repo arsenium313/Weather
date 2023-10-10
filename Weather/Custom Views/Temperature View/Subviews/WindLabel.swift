@@ -10,8 +10,8 @@ import UIKit
 class WindLabel: UILabel {
 
     //MARK: Properties
-    let speed: Int
-    let direction: Int
+    private let speed: Int
+    private let direction: Int
     
     
     //MARK: - Init
@@ -30,17 +30,17 @@ class WindLabel: UILabel {
     //MARK: - SetupUI
     private func setupUI() {
         configureSelf()
-        self.textAlignment = .left
+        self.textAlignment = .right
     }
     
     private func configureSelf() {
         self.attributedText = getAttributedString()
     }
 
+    
     //MARK: - Work with text
+    ///Возвращает строку формата – "Wind"  / Скорость ветра /  Направление ветра
     private func getAttributedString() -> NSMutableAttributedString {
-        // 1-Wind  2-60 M/S  3-North
-        
         let firstString = "Wind "
         let secondString = String(speed) + " M/S "
         let thirdString = getStringDirection()

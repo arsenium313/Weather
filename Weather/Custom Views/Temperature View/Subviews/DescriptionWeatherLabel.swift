@@ -32,6 +32,7 @@ class DescriptionWeatherLabel: UILabel {
     
     private func configureSelf() {
         self.text = descriptionText
+        self.textAlignment = .center
         self.textColor = #colorLiteral(red: 1, green: 0.9999999404, blue: 1, alpha: 1)
         
         let font = UIFont(name: "PingFangTC-Ultralight", size: 25)

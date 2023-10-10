@@ -46,16 +46,17 @@ class TemperatureView: UIView {
     
     //MARK: - SetupUI
     private func setupUI() {
-        configureImageView()
+        configureWeatherImageView()
         configureDegreesLabel()
         configureDescriptionLabel()
         configureFeelsLikeLabel()
         configureWindLabel()
     }
     
-    private func configureImageView() {
+    private func configureWeatherImageView() {
         weatherImageView = WeatherImageView(withId: imageID)
         self.addSubview(weatherImageView)
+        
         weatherImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             weatherImageView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
@@ -68,8 +69,8 @@ class TemperatureView: UIView {
     private func configureDegreesLabel() {
         degreesLabel = DegreesLabel(degree: degree)
         self.addSubview(degreesLabel)
+        
         degreesLabel.translatesAutoresizingMaskIntoConstraints = false
-       
         NSLayoutConstraint.activate([
             degreesLabel.leadingAnchor.constraint(equalTo: weatherImageView.trailingAnchor),
             degreesLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
@@ -84,8 +85,8 @@ class TemperatureView: UIView {
     private func configureDescriptionLabel() {
         descriptionLabel = DescriptionWeatherLabel(text: descriptionWeather)
         self.addSubview(descriptionLabel)
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             descriptionLabel.leadingAnchor.constraint(equalTo: weatherImageView.trailingAnchor),
             descriptionLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
@@ -99,18 +100,19 @@ class TemperatureView: UIView {
                                         maxTemp: maxTemp,
                                         feelsLikeTemp: feelsLikeTemp)
         self.addSubview(feelsLikeLabel)
+        
         feelsLikeLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             feelsLikeLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
             feelsLikeLabel.topAnchor.constraint(equalTo: weatherImageView.bottomAnchor),
             feelsLikeLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor),
         ])
-     
     }
     
     private func configureWindLabel() {
         windLabel = WindLabel(speed: windSpeed, direction: windDirection)
         self.addSubview(windLabel)
+        
         windLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             windLabel.leadingAnchor.constraint(equalTo: feelsLikeLabel.trailingAnchor),
