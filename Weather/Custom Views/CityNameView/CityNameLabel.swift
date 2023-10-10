@@ -30,10 +30,11 @@ class CityNameLabel: UILabel {
     }
     
     private func configureSelf() {
+        let fontSize = self.bounds.height
         self.text = cityName
         self.adjustsFontSizeToFitWidth = true
         self.textAlignment = .center
-        self.font = .systemFont(ofSize: 100)
+        self.font = .systemFont(ofSize: fontSize)
         self.textColor = UIColor.createGradientColor(in: self.bounds,
                                                      for: [#colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1).cgColor,
                                                            #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1).cgColor])
