@@ -29,6 +29,8 @@ class CityChooserVC: UITableViewController {
                                        name: .addGeoResponce, object: nil)
         notificationCenter.addObserver(self, selector: #selector(reseveNotification(_:)),
                                        name: .addWeatherResponce, object: nil)
+        
+     
     }
     
     required init?(coder: NSCoder) {
@@ -40,6 +42,7 @@ class CityChooserVC: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+       
     }
 
     override func viewWillAppear(_ animated: Bool) {
