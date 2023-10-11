@@ -22,6 +22,9 @@ class PageVC: UIPageViewController {
                                                                 height: 45)))
     internal var initialPageIndex = 0
     /// Заполняется из reseveNotification
+    //  Нужен для скачивания из него погоды
+    // нужен для количества точек в pageControl
+    // нужен для поиска первой страницы поиска
     internal var geoResponces: [GeoResponce] = []
     internal var weatherResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
     /// Инициализируем здесь чтобы при notification .weather информация уже пришла в cityChooserVC

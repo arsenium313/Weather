@@ -51,7 +51,7 @@ class NetworkManager {
         task.resume()
     }
     
-    public func getCoordinateByCityName(cityName: String, _ completionHandler: @escaping ([GeoResponce]) -> Void) {
+    public func getCoordinate(forCityName cityName: String, _ completionHandler: @escaping ([GeoResponce]) -> Void) {
         let stringUrl = "https://api.openweathermap.org/geo/1.0/direct?q=\(cityName)&limit=20&appid=\(apiKey)".addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed)
         let url = URL(string: stringUrl ?? "")
         guard let url = url else { return }

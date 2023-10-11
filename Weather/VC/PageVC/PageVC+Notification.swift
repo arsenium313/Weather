@@ -30,7 +30,8 @@ extension PageVC {
     
     /**
      Для .geo:
-     – Заполняем массив geoResponces
+     – Очищаем массив geoResponces
+     – Заполняем массив geoResponces 
      – Устанавливаем количество точек в pageControl
      */
     @objc
@@ -38,6 +39,7 @@ extension PageVC {
         switch sender.name {
         case .geo:
             guard let geo = sender.userInfo?["geo"] as? [GeoResponce] else { return }
+            self.geoResponces.removeAll()
             self.geoResponces = geo
             self.pageControl.numberOfPages = geo.count
         default: return
