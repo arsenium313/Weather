@@ -26,9 +26,9 @@ class CityChooserVC: UITableViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         notificationCenter.addObserver(self, selector: #selector(reseveNotification(_:)),
-                                       name: .addGeoResponce, object: nil)
+                                       name: .geo, object: nil)
         notificationCenter.addObserver(self, selector: #selector(reseveNotification(_:)),
-                                       name: .addWeatherResponce, object: nil)
+                                       name: .weather, object: nil)
         
      
     }
@@ -110,7 +110,7 @@ class CityChooserVC: UITableViewController {
         
         
         let geoDictionary: [String : [GeoResponce]] = ["geo" : self.geoResponces]
-        notificationCenter.post(name: .addGeoResponce, object: self, userInfo: geoDictionary)
+        notificationCenter.post(name: .geo, object: self, userInfo: geoDictionary)
         
         guard let pageVC = navigationController?.viewControllers[0] as? PageVC else { return }
         pageVC.pages.remove(at: indexPath.row)
@@ -132,13 +132,13 @@ class CityChooserVC: UITableViewController {
     private func reseveNotification(_ sender: Notification) {
         switch sender.name {
             
-        case .addWeatherResponce:
+        case .weather:
             guard let weatherResponce = sender.userInfo?["weather"]
                     as? [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] else { return }
             self.weatherResponces = weatherResponce
             self.tableView.reloadData()
             
-        case .addGeoResponce:
+        case .geo:
             guard let geo = sender.userInfo?["geo"] as? [GeoResponce] else { return }
             self.geoResponces = geo
             self.tableView.reloadData()

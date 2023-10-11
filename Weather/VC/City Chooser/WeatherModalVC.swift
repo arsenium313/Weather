@@ -113,11 +113,11 @@ class WeatherModalVC: UIViewController {
         weatherResponces.append(weatherResponce)
         
         let geoDictionary: [String : [GeoResponce]] = ["geo" : geoResponces]
-        notificationCenter.post(name: .addGeoResponce, object: self, userInfo: geoDictionary)
+        notificationCenter.post(name: .geo, object: self, userInfo: geoDictionary)
         
         let weatherDictionary: [String : [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]]
         = ["weather" : weatherResponces]
-        self.notificationCenter.post(name: .addWeatherResponce, object: self,
+        self.notificationCenter.post(name: .weather, object: self,
                                      userInfo: weatherDictionary)
         
         cityChoserVC.searchController.isActive = false

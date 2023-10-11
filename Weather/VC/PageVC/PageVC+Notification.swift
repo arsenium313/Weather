@@ -9,34 +9,39 @@ import UIKit
 
 extension PageVC {
     
-    /// Отправляем Notification ___________ЗАЧЕМ??? куда???
-    internal func configureNotification() {
+    /// Отправляем Notification .weather
+    internal func sendNotification(withData
+                                   data: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]) {
         let weatherDictionary: [String : [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]]
-        = ["weather" : weatherResponces]
-        self.notificationCenter.post(name: .addWeatherResponce,
+        = ["weather" : data]
+        
+        self.notificationCenter.post(name: .weather,
                                      object: self,
                                      userInfo: weatherDictionary)
     }
     
+    /// Добавляем PageVC в подписчики нотификации
     internal func addNotificationObserver() {
         notificationCenter.addObserver(self,
                                        selector: #selector(reseveNotification(_:)),
-                                       name: .addGeoResponce,
+                                       name: .geo,
                                        object: nil)
     }
     
+    /**
+     Для .geo:
+     – Заполняем массив geoResponces
+     – Устанавливаем количество точек в pageControl
+     */
     @objc
-    internal func reseveNotification(_ sender: Notification) {
+    private func reseveNotification(_ sender: Notification) {
         switch sender.name {
-        case .addGeoResponce:
+        case .geo:
             guard let geo = sender.userInfo?["geo"] as? [GeoResponce] else { return }
             self.geoResponces = geo
             self.pageControl.numberOfPages = geo.count
         default: return
         }
     }
-    
-    
-    
-    
+
 }

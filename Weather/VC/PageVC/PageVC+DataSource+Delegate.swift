@@ -50,6 +50,7 @@ extension PageVC: UIPageViewControllerDelegate {
         else { return }
     
         pageControl.currentPage = currentIndex
+        DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[currentIndex])
     }
     
 }

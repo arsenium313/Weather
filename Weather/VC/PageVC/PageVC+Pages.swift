@@ -10,7 +10,7 @@ import UIKit
 extension PageVC {
     
     /// Создаём WeatherHomeVC, настраиваем его bundleView и кладем в массив pages
-    public func appendPage(geo: GeoResponce, weatherResponce tuple:
+    public func appendPage(geo: GeoResponce, weatherResponce tuple: // зачем вообще метод?
                            (OpenWeatherResponce, OpenWeatherAirPollutionResponce)) {
         let weatherVC = WeatherHomeVC(geoResponce: geo,
                                       weatherResponce: tuple.0,
@@ -18,12 +18,15 @@ extension PageVC {
         self.pages.append(weatherVC)
     }
     
-    /// Ищет isFirstToShow и устанавливает initialPage, Если не нашло, то ничего не делает и initialPage остаётся = 0
-    internal func findInitialPageIndex() {
+    
+    
+    /// Возвращает индекс в массиве GeoResponce, если не найдено, то вернет 0
+    internal func getFirstToShowIndex() -> Int {
         if let firstGeo = DataManager.shared.fetchFirstToShow() {
-            self.initialPage = self.geoResponces.firstIndex(where: {
+            return self.geoResponces.firstIndex(where: {
                 $0.lat == firstGeo.lat && $0.lon == firstGeo.lon }) ?? 0
         }
+        return 0
     }
     
     /// Обновляет CurrentPage для указанного индекса
