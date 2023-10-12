@@ -10,8 +10,21 @@ import UIKit
 class ResultsTableVC: UITableViewController {
 
     //MARK: Properties
-    public var parentCityChooserVC: CityChooserVC! // зачем тут нужен вообще?
     internal var searchResults: [GeoResponce] = []
+    
+    /// Передастся в ModalVC для сохранения города в CD
+    internal let index: Int
+    
+    
+    //MARK: - Init
+    init(index: Int) {
+        self.index = index
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     
     //MARK: - View Life Circle

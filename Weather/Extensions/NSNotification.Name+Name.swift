@@ -8,6 +8,13 @@
 import Foundation
 /// Для точечного синтаксиса
 extension NSNotification.Name {
-    static let weather = NSNotification.Name.init("addWeatherResponce")
-    static let geo = NSNotification.Name.init("addGeoResponce")
+    static let weatherArray = NSNotification.Name.init("addWeatherResponce2")
+    static let geoArray = NSNotification.Name.init("geoArray")
+    static let singleGeo = NSNotification.Name.init("singleGeo")
+    static let singleWeather = NSNotification.Name.init("singleWeather")
+    static let weatherTuple = NSNotification.Name.init("weatherTuple")
+}
+
+extension NSNotification {
+    static let keyName = "keyName"
 }

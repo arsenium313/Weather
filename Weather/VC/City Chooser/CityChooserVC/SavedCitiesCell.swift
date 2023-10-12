@@ -8,20 +8,21 @@
 import UIKit
 
 class SavedCitiesCell: UITableViewCell {
+    
     //MARK: Properties
     static let identifier = "SavedCitiesCell"
-
     private var listConfig = UIListContentConfiguration.subtitleCell()
-    
-    public var primaryText = "" { willSet { listConfig.text = newValue } }
-    public var secondaryText = "" { willSet { listConfig.secondaryText = newValue } }
     
     
     //MARK: - SetupUI
-    private func setupUI() {
+    public func setupUI(withGeo geo: GeoResponce,
+                        withWeather weather: OpenWeatherResponce?) {
+        
+        listConfig.text = geo.nameOfLocation ?? "--"
+        listConfig.secondaryText = "\(weather?.tempAndPressure?.temp ?? -100). \(weather?.weatherDescription?.first?.description ?? "nil")"
         configureSelf()
     }
-    
+
     private func configureSelf() {
         self.contentConfiguration = listConfig
         self.showsReorderControl = true
@@ -30,10 +31,4 @@ class SavedCitiesCell: UITableViewCell {
 }
 
 
-//MARK: - ConfigureViewProtocol
-extension SavedCitiesCell: ConfigureViewProtocol {
-   public func configureView() {
-        configureSelf()
-    }
-}
  

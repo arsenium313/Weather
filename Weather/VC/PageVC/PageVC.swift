@@ -26,7 +26,7 @@ class PageVC: UIPageViewController {
     // нужен для количества точек в pageControl
     // нужен для поиска первой страницы поиска
     internal var geoResponces: [GeoResponce] = []
-    internal var weatherResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
+    internal var weatherResponceTuples: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
     /// Инициализируем здесь чтобы при notification .weather информация уже пришла в cityChooserVC
     internal var cityChooserVC = CityChooserVC()
     
@@ -62,6 +62,9 @@ class PageVC: UIPageViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .never
         
+        /// Через делегат удаляем VC из массива pages
+        cityChooserVC.delegate = self
+        
         /**
          1. Скачиваем из CoreData массив координат городов
          2. Отправляем нотификацию .geo:
@@ -73,16 +76,15 @@ class PageVC: UIPageViewController {
          4. Скачиваем данные для массива координат
          5. Создаём ViewControllers и помещаем их в массив
          6. Устанавливаем для PageVC массив с VC для отображения
-         7. Отправляем нотификацию .weather
+         7. Отправляем нотификацию .weatherArray
          */
         
         // 1
         DataManager.shared.fetchSavedCities() { geoResponces in
-            let geoDictionary: [String : [GeoResponce]] = ["geo" : geoResponces]
             // 2
-            notificationCenter.post(name: .geo,
+            notificationCenter.post(name: .geoArray,
                                     object: self,
-                                    userInfo: geoDictionary)
+                                    userInfo: [NSNotification.keyName : geoResponces])
             // 3
             // Устанавливаем currentPage до того как скачаются данные
             self.initialPageIndex = getFirstToShowIndex()
@@ -90,19 +92,23 @@ class PageVC: UIPageViewController {
         
         // 4
         networkManager.downloadWeatherConditionArray(for: geoResponces) { [self] responce  in
+            /// Массив для отправки в notification
+            var weatherResponces: [OpenWeatherResponce] = []
+            
             for (i, responce) in responce.enumerated() {
                 // 5
                 let vc = WeatherHomeVC(geoResponce: geoResponces[i],
                                        weatherResponce: responce.0,
                                        airPollutionResponce: responce.1)
                 pages.append(vc)
+                weatherResponces.append(responce.0)
             }
             // 6
             self.setViewControllers([pages[initialPageIndex]],
                                     direction: .forward,
                                     animated: false)
             // 7
-            sendNotification(withData: responce)
+            sendNotification(withData: weatherResponces)
         }
     }
     

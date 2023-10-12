@@ -21,7 +21,7 @@ extension CityChooserVC {
          В PageVC:
          - Обновляет массив geoResponce(после свайпов в pageVC присваивается правильный индекс в isFirstToShow)
          - Обновляет количество точек в pageControl
-         4.
+         4. Удаляем из PageVC ненужную страницу
          */
         
         // 1
@@ -34,17 +34,19 @@ extension CityChooserVC {
         self.geoResponces.remove(at: indexPath.row)
         
         // 3
-        let geoDictionary: [String : [GeoResponce]] = ["geo" : self.geoResponces]
-        notificationCenter.post(name: .geo, object: self, userInfo: geoDictionary)
+        notificationCenter.post(name: .geoArray, 
+                                object: self,
+                                userInfo: [NSNotification.keyName : geoResponces])
         
         // 4
-        guard let pageVC = navigationController?.viewControllers[0] as? PageVC else { return }
-        pageVC.pages.remove(at: indexPath.row) // вывести в делегат
+        delegate?.pageRemove(at: indexPath.row)
     }
     
     
     //MARK: - numberOfRowsInSection
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, 
+                            numberOfRowsInSection section: Int) -> Int {
+        
         return geoResponces.count
     }
     
@@ -52,36 +54,36 @@ extension CityChooserVC {
     //MARK: - cellForRowAt
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: SavedCitiesCell.identifier,
                                                  for: indexPath) as! SavedCitiesCell
         let geo = geoResponces[indexPath.row]
-        
-        cell.primaryText = geo.nameOfLocation ?? "- -"
-        
-        /// Если показали CityChoserVC до того как скачали погодные условия, то показывает прочерки
+     
+        /// Если показали CityChoserVC, а погоды еще нет, то передаёт nil вместо погодных условий
         if !weatherResponces.isEmpty {
             let weatherResponce = weatherResponces[indexPath.row]
-            cell.secondaryText = "\(weatherResponce.0.tempAndPressure?.temp ?? -100). \(weatherResponce.0.weatherDescription?.first?.description ?? "nil")"
+            cell.setupUI(withGeo: geo,
+                         withWeather: weatherResponce)
         } else {
-            cell.secondaryText = "- -"
+            cell.setupUI(withGeo: geo,
+                         withWeather: nil)
         }
         
-        cell.configureView()
         return cell
     }
     
     
     //MARK: - didSelectRowAt
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let pageVC = navigationController?.viewControllers[0] as? PageVC else { return }
-        let index = indexPath.row
-            
-        /// Обновляем PageVC
-        pageVC.setViewControllers([pageVC.pages[index]], direction: .forward, animated: false)
-        pageVC.updatePageControlCurrentPage(to: index)
+    override func tableView(_ tableView: UITableView, 
+                            didSelectRowAt indexPath: IndexPath) {
         
-        /// Устанавливаем isFirstToShow flag
+        /// Обновляем currentPage в PageVC
+        let index = indexPath.row
+        delegate?.setCurrentVCTo(index)
+ 
+        /// Устанавливаем какой город показывать первым при запуске
         DataManager.shared.setIsFirstToShowFlag(geo: geoResponces[index])
+        
         self.navigationController?.popToRootViewController(animated: true)
     }
 
@@ -89,6 +91,7 @@ extension CityChooserVC {
     //MARK: - trailingSwipeActionsConfigurationForRowAt
     override func tableView(_ tableView: UITableView,
                             trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete")
         { action, view, completionHandler in
             self.deleteRow(at: indexPath)
@@ -101,22 +104,21 @@ extension CityChooserVC {
     //MARK: - moveRowAt
     override func tableView(_ tableView: UITableView,
                             moveRowAt sourceIndexPath: IndexPath,
-                            to destinationIndexPath: IndexPath) {
-        /// Изменяем массив geoResponces при перемещении ячеек
+                            to destinationIndexPath: IndexPath) { 
+        
+        /// Изменяем массив geoResponces при перетаскивании ячеек
         let geoItem = geoResponces[sourceIndexPath.row]
         geoResponces.remove(at: sourceIndexPath.row)
         geoResponces.insert(geoItem, at: destinationIndexPath.row)
         
-        /// Изменяем массив weatherResponces при перемещении ячеек
+        /// Изменяем массив weatherResponces при перетаскивании ячеек
         let weatherItem = weatherResponces[sourceIndexPath.row]
         weatherResponces.remove(at: sourceIndexPath.row)
         weatherResponces.insert(weatherItem, at: destinationIndexPath.row)
         
-        
-        guard let pageVC = navigationController?.viewControllers[0] as? PageVC else { return }
-        let page = pageVC.pages[sourceIndexPath.row]
-        pageVC.pages.remove(at: sourceIndexPath.row)
-        pageVC.pages.insert(page, at: destinationIndexPath.row)
+        /// Изменяем массив pages в PageVC при перетаскивании ячеек
+        delegate?.reorderPages(sourceIndex: sourceIndexPath.row,
+                              destinationIndex: destinationIndexPath.row)
     }
     
     
@@ -124,7 +126,8 @@ extension CityChooserVC {
     override func tableView(_ tableView: UITableView,
                             commit editingStyle: UITableViewCell.EditingStyle,
                             forRowAt indexPath: IndexPath) {
-        /// Кнопка в режиме редактирования таблицы "Удалить", действия соответствующие
+        
+        /// Дейтсвия на нажатие кнопки появляющейся в режиме редактирования таблицы:
         deleteRow(at: indexPath)
     }
     

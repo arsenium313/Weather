@@ -15,22 +15,24 @@ class WeatherModalVC: UIViewController {
     private let networkManager = NetworkManager()
     private let notificationCenter = NotificationCenter.default
     /// Нужен для доступа к PageVC, забора массивов [GeoResponces] и [WeatherResponces]
-    private let cityChoserVC: CityChooserVC
+  //  private let cityChoserVC: CityChooserVC
     /// Нужен для сохранения в CD, и отправке Notification
     private var geoResponce: GeoResponce
     /// Нужен для добавления в массив pages на PageVC
     private var weatherResponce: (OpenWeatherResponce, OpenWeatherAirPollutionResponce)?
     
+    private let index: Int
     
     // MARK: - Init
     /**
      - Parameter geoResponce: Координаты города погоду которого нужно найти
      - Parameter cityChoserVC : Предыдущий экран
      */
-    init(geoResponce geo: GeoResponce, cityChoserVC: CityChooserVC) {
+    init(geoResponce geo: GeoResponce, tableCount index: Int) { // не cityChooser принимать, а индекс для CD entity
         print("WeatherModalVC Init ✅")
+        self.index = index
         self.geoResponce = geo
-        self.cityChoserVC = cityChoserVC
+        //self.cityChoserVC = cityChoserVC
         super.init(nibName: nil, bundle: nil)
         
         networkManager.downloadWeatherCondition(for: geo) {
@@ -93,34 +95,64 @@ class WeatherModalVC: UIViewController {
         return button
     }
 
+    /**
+     для инициализации передаем geo и ищем в интернете данные
+     */
+    
+    /**
+     При нажатии кнопки "Добавить"
+     1. Создаём элемент geo в CD
+     
+     Отправляем информацию в CityChooser
+     - добавляем geo в массив - единичный нотификация
+     - добавляем openWeatherResponce в массив -  новая единичная нотификаяция
+     
+     
+     
+     Отправляем информацию в PageVC
+     - добавляем geo в массив - единичный нотификация
+     - создаем weatherVC и добавляем его в массив pages - пока вопрос ?
+     
+     
+     
+     10. Убираем активную поисковую строку из предыдущего экрана
+     11. dismiss этот экран
+     */
     
     // MARK: - @objc
     @objc
     private func barButtonItemClicked(_ sender: UIBarButtonItem) {
+        //1
         /// Создаём элемент в CD
-        let index = cityChoserVC.tableView.numberOfRows(inSection: 0)
-        DataManager.shared.createGeoEntity(geo: geoResponce, index: index)
+        DataManager.shared.createGeoEntity(geo: geoResponce, 
+                                           index: index)
         
-        /// Добавляем WeatherHomeVC в PageVC
-        guard let pageVC = cityChoserVC.navigationController?.viewControllers[0] as? PageVC,
-        let weatherResponce = weatherResponce else { return }
-        pageVC.appendPage(geo: geoResponce, weatherResponce: weatherResponce)
+        guard let weatherResponce = weatherResponce else {
+            dismiss(animated: true)
+            return
+        }
         
-        /// Отправляем Notification
-        var geoResponces = cityChoserVC.geoResponces
-        geoResponces.append(geoResponce)
-        var weatherResponces = cityChoserVC.weatherResponces
-        weatherResponces.append(weatherResponce)
+        /// Принимает:
+        /// - CityChooserVC
+        /// - PageVC
+        notificationCenter.post(name: .singleGeo,
+                                object: self,
+                                userInfo: [NSNotification.keyName : geoResponce])
         
-        let geoDictionary: [String : [GeoResponce]] = ["geo" : geoResponces]
-        notificationCenter.post(name: .geo, object: self, userInfo: geoDictionary)
-        
-        let weatherDictionary: [String : [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)]]
-        = ["weather" : weatherResponces]
-        self.notificationCenter.post(name: .weather, object: self,
-                                     userInfo: weatherDictionary)
-        
-        cityChoserVC.searchController.isActive = false
+        /// Принимает:
+        /// - CityChooserVC
+        notificationCenter.post(name: .singleWeather,
+                                object: self,
+                                userInfo: [NSNotification.keyName : weatherResponce.0])
+       
+        /// Принимает:
+        /// - PageVC
+        notificationCenter.post(name: .weatherTuple,
+                                object: self,
+                                userInfo: [NSNotification.keyName : (geoResponce,
+                                                                     weatherResponce.0,
+                                                                     weatherResponce.1)])
+    
         dismiss(animated: true)
     }
 }

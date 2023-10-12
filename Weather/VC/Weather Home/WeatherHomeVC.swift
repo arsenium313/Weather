@@ -13,7 +13,7 @@ class WeatherHomeVC: UIViewController {
     internal var collectionView: UICollectionView!
     internal var dataSource: UICollectionViewDiffableDataSource<SectionLayoutKind, CellIdentifier>! = nil
     
-    internal var geoResponce: GeoResponce?
+    internal var geoResponce: GeoResponce? // зачем опционал?
     internal var weatherResponce: OpenWeatherResponce?
     internal var airPollutionResponce: OpenWeatherAirPollutionResponce?
     

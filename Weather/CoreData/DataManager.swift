@@ -113,7 +113,7 @@ class DataManager {
 
     
     // MARK: - Change Entity
-    /// Измеяет индекс в CD для всего указанного массива
+    /// Измеяет индекс в CD для всего указанного массива в соответствии с новым порядком в переданном массиве
     public func changeIndex(geoArray: [GeoResponce]) {
         for (i, geo) in geoArray.enumerated() {
             if let entity = convertAndFetch(geo: geo) {

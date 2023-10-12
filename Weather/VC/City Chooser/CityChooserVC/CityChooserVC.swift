@@ -10,20 +10,21 @@ import UIKit
 class CityChooserVC: UITableViewController {
     
     //MARK: Properties
-    public var searchController: UISearchController! // подумать как убрать паблик
-    /// public для weatherModalVC чтобы оттуда отправлять notification
-    /// для имен городов
-    public var geoResponces: [GeoResponce] = []
-    /// Приходит с PageVC через notification
-    /// для погоды в городе
-    public var weatherResponces: [(OpenWeatherResponce, OpenWeatherAirPollutionResponce)] = []
-   
+    internal var searchController: UISearchController!
+    internal weak var delegate: CityChooserVCDelegate?
     internal let networkManager = NetworkManager()
     internal let notificationCenter = NotificationCenter.default
-    /// Для отправки запроса поиска с задержкой
+    
+    /// Приходит через notification, для имен городов в ячейках
+    internal var geoResponces: [GeoResponce] = []
+    
+    /// Приходит через notification, для погоды в ячейках
+    internal var weatherResponces: [OpenWeatherResponce] = []
+   
+    /// Для отправки поискового поиска с задержкой при наборе текста
     internal var searchWorkItem: DispatchWorkItem?
     
-    
+
     //MARK: - Init
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -33,11 +34,7 @@ class CityChooserVC: UITableViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    /**
-     1. Инициализируется из PageVC
-     2. В инициализаторе подписываемся на нотификации
-     
-     */
+
 
     //MARK: - View Life Circle
     override func viewDidLoad() {
@@ -71,9 +68,8 @@ class CityChooserVC: UITableViewController {
     }
     
     private func configureSearchController() {
-        let resultsVC = ResultsTableVC()
-        resultsVC.parentCityChooserVC = self
-        
+        let resultsVC = ResultsTableVC(index: geoResponces.count)
+
         searchController = UISearchController(searchResultsController: resultsVC)
         searchController.searchBar.placeholder = "Поиск города"
         searchController.searchBar.tintColor = #colorLiteral(red: 0, green: 0.46, blue: 0.89, alpha: 1)
