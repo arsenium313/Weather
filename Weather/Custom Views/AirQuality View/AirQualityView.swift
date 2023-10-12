@@ -12,7 +12,6 @@ class AirQualityView: UIView {
     //MARK: Properties
     private let index: CGFloat  //  от 0 до 1? а не 5?  из JSON
     
-    private let backgroundImageView = UIImageView()
     private var indexLabel: IndexLabel! //  индекс и строка описания под ним
     private var circleView: CircleView! // цветной круг
     private var nameLabel: UILabel!
@@ -32,24 +31,19 @@ class AirQualityView: UIView {
     //MARK: - SetupUI
     internal func setupUI() {
         setupSelf()
-        configureBackgroundImageView()
         configureCircleView()
         configureIndexLabel()
         configureNameLabel()
     }
     
     private func setupSelf() {
+        self.backgroundColor = UIColor.createGradientColor(in: self.bounds,
+                                                           for: [#colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.1607843137, alpha: 1).cgColor,
+                                                                 #colorLiteral(red: 0.1843137255, green: 0.1921568627, blue: 0.2274509804, alpha: 1).cgColor])
         self.clipsToBounds = true
         self.layer.cornerRadius = 15 // сделать автоматически
     }
-    
-    private func configureBackgroundImageView() {
-        self.addSubview(backgroundImageView)
-        backgroundImageView.frame = self.bounds
-        let img = GradientViewBackgroundRenderer().createBackgroundImage(in: self.bounds)
-        backgroundImageView.image = img
-    }
-    
+
     private func configureCircleView() {
         circleView = CircleView(index: index)
         self.addSubview(circleView)

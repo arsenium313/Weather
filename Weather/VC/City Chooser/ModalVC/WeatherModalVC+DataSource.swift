@@ -1,13 +1,13 @@
 //
-//  WeatherHomeVC+ConfigureDataSource.swift
+//  WeatherModalVC+DataSource.swift
 //  Weather
 //
-//  Created by Арсений Кухарев on 17.09.2023.
+//  Created by Арсений Кухарев on 12.10.2023.
 //
 
 import UIKit
 
-extension WeatherHomeVC {
+extension WeatherModalVC {
         
     internal func configureDataSource() {
 
@@ -30,7 +30,8 @@ extension WeatherHomeVC {
         
         
         // MARK: - DataSource
-         dataSource = UICollectionViewDiffableDataSource<SectionLayoutKind, CellIdentifier>(collectionView: collectionView)
+        guard let cv = collectionView else { return }
+        dataSource = UICollectionViewDiffableDataSource<SectionLayoutKind, CellIdentifier>(collectionView: cv)
         { (collectionView, indexPath, itemIdentifier: CellIdentifier) -> UICollectionViewCell in
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistation,
                                                                 for: indexPath,

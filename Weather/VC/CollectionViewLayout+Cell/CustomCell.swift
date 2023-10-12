@@ -10,7 +10,7 @@ import UIKit
 class CustomCell: UICollectionViewCell {
     
     // MARK: SetupUI
-    public func setupUI<T>(for kind: CellIdentifier, responce: T) {
+    public func setupUI<T>(for kind: CellIdentifier, with responce: T) {
         
         switch kind {
         case .title:

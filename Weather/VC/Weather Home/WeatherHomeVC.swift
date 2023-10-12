@@ -12,8 +12,8 @@ class WeatherHomeVC: UIViewController {
     //MARK: Properties    
     internal var collectionView: UICollectionView!
     internal var dataSource: UICollectionViewDiffableDataSource<SectionLayoutKind, CellIdentifier>! = nil
-    
-    internal var geoResponce: GeoResponce? // зачем опционал?
+    private let collectionViewConfig = CollectionViewConfigurator()
+    internal var geoResponce: GeoResponce?
     internal var weatherResponce: OpenWeatherResponce?
     internal var airPollutionResponce: OpenWeatherAirPollutionResponce?
     
@@ -50,7 +50,7 @@ class WeatherHomeVC: UIViewController {
     
     private func configureCollectionView() {
         collectionView = UICollectionView(frame: .zero, 
-                                          collectionViewLayout: createLayout())
+                                          collectionViewLayout: collectionViewConfig.createLayout())
         collectionView.backgroundColor = .none
         collectionView.showsVerticalScrollIndicator = false
         self.view.addSubview(collectionView)

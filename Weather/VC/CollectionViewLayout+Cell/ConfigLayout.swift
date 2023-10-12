@@ -1,15 +1,15 @@
 //
-//  WeatherHomeVC+CreateLayout.swift
+//  UICollectionView+Layout.swift
 //  Weather
 //
-//  Created by Арсений Кухарев on 17.09.2023.
+//  Created by Арсений Кухарев on 12.10.2023.
 //
 
 import UIKit
 
-extension WeatherHomeVC {
+struct CollectionViewConfigurator {
     
-    internal func createLayout() -> UICollectionViewLayout {
+    public func createLayout() -> UICollectionViewLayout {
         let layout = UICollectionViewCompositionalLayout
         { (sectionIndex, _) -> NSCollectionLayoutSection? in
             guard let sectionLayoutKind = SectionLayoutKind(rawValue: sectionIndex)
@@ -31,6 +31,8 @@ extension WeatherHomeVC {
         return layout
     }
     
+    
+    //MARK: - Top Section
     private func createTopSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                              heightDimension: .fractionalHeight(1.0))
@@ -44,6 +46,8 @@ extension WeatherHomeVC {
         return section
     }
     
+    
+    //MARK: - Middle Section
     private func createMiddleSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                              heightDimension: .fractionalHeight(1.0))
@@ -58,6 +62,8 @@ extension WeatherHomeVC {
         return section
     }
     
+    
+    //MARK: - Bottom Section
     private func createBottomSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                              heightDimension: .fractionalHeight(1.0))
@@ -71,5 +77,5 @@ extension WeatherHomeVC {
         let section = NSCollectionLayoutSection(group: group)
         return section
     }
-    
 }
+

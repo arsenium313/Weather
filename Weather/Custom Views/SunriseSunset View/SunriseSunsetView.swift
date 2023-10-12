@@ -10,7 +10,6 @@ import UIKit
 class SunriseSunsetView: UIView {
  
     //MARK: Properties
-    private let backgroundImageView = UIImageView()
     private var titleLabel: UILabel!
     private var leftLabel: UILabel! // вынести в отдельный класс
     private var rightLabel: UILabel! // вынести в отдельный класс
@@ -40,7 +39,6 @@ class SunriseSunsetView: UIView {
     //MARK: - SetupUI
     internal func setupUI() {
         configureSelf()
-        configureBackgroundImageView()
         configureMainLabel()
         configureLeftLabel()
         configureRightLabel()
@@ -48,17 +46,13 @@ class SunriseSunsetView: UIView {
     }
     
     private func configureSelf() {
+        self.backgroundColor = UIColor.createGradientColor(in: self.bounds,
+                                                           for: [#colorLiteral(red: 0.137254902, green: 0.137254902, blue: 0.1607843137, alpha: 1).cgColor,
+                                                                 #colorLiteral(red: 0.1843137255, green: 0.1921568627, blue: 0.2274509804, alpha: 1).cgColor])
+        
         self.layer.cornerRadius = 10 // сделать динамически? чем больше вью, тем больше нужен радиус?
         self.layer.masksToBounds = true
     }
-    
-    private func configureBackgroundImageView() {
-        self.addSubview(backgroundImageView)
-        backgroundImageView.frame = self.bounds
-        let img = GradientViewBackgroundRenderer().createBackgroundImage(in: self.bounds)
-        backgroundImageView.image = img
-    }
-    
     
     private func configureMainLabel() {
         titleLabel = UILabel()
