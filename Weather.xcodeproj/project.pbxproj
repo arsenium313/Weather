@@ -148,6 +148,7 @@
 		C7C6594F2AD02C8C00D8DC51 /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
 		C7C8C2442A56CA8F005E6392 /* GeoResponce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoResponce.swift; sourceTree = "<group>"; };
 		C7C8C2462A56CB76005E6392 /* localNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = localNames.swift; sourceTree = "<group>"; };
+		C7C9B5ED2B1A0E4700302AF5 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C7D04F0A2A6F8857006FA195 /* IndexLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndexLabel.swift; sourceTree = "<group>"; };
 		C7D04F0B2A6F8857006FA195 /* CircleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
 		C7D04F0C2A6F8857006FA195 /* AirQualityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AirQualityView.swift; sourceTree = "<group>"; };
@@ -262,6 +263,7 @@
 		C72B99DC2A556A3300C5088E = {
 			isa = PBXGroup;
 			children = (
+				C7C9B5ED2B1A0E4700302AF5 /* README.md */,
 				C72B99E72A556A3300C5088E /* Weather */,
 				C72B99E62A556A3300C5088E /* Products */,
 			);
